@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    default: dev
+  application:
+    name: springstarter
+
+server:
+  port: ${PORT:8080}
