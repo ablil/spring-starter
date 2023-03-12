@@ -25,6 +25,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation("com.auth0:java-jwt:4.3.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
+
 
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")

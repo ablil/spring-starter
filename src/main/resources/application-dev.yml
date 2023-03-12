@@ -13,3 +13,7 @@ spring:
       enabled: true
   jpa:
     show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
