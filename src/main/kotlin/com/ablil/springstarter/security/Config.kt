@@ -24,7 +24,8 @@ class Config(
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html",
-                "/register"
+                "/register",
+                "/login"
             ).permitAll()
                 .anyRequest().authenticated()
         }

@@ -16,4 +16,10 @@ class AccountService(
         val account = Account(id = null, username = username, password = passwordEncoder.encode(plainPassword))
         accountRepository.save(account).also { logger.info("registered user $username") }
     }
+
+    fun authenticate(username: String, plainPassword: String): Boolean {
+        return accountRepository.findByUsername(username)
+            ?.let { passwordEncoder.matches(plainPassword, it.password) }
+            ?: false;
+    }
 }
