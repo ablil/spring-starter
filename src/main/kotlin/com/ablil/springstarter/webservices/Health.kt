@@ -11,4 +11,7 @@ class Health {
 
     @GetMapping("/private")
     fun private() = "private"
+
+    @GetMapping("/admin")
+    fun admin() = "admin"
 }
