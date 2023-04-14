@@ -5,10 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import java.time.Duration
 import java.time.Instant
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 class JwtUtil {
     companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java)
         private const val ISSUER = "myapp";
         private val ALGORITHM = Algorithm.HMAC256(ISSUER)
         private val verifier = JWT.require(ALGORITHM).withIssuer(ISSUER).build()
@@ -25,6 +28,7 @@ class JwtUtil {
             verifier.verify(token)
             true
         } catch (e: JWTVerificationException) {
+            logger.warn("Failed to verify token $token")
             false
         }
 
