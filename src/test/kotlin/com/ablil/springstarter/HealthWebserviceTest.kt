@@ -3,6 +3,7 @@ package com.ablil.springstarter
 import com.ablil.springstarter.domain.accounts.Account
 import com.ablil.springstarter.domain.accounts.AccountRepository
 import com.ablil.springstarter.utils.JwtUtil
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -18,6 +19,11 @@ class HealthWebserviceTest(
 ) {
 
     private val testAccount = Account(id = null, username = "testaccount", password = "supersecretpassword")
+
+    @BeforeEach
+    fun setup() {
+        accountRepository.deleteAll()
+    }
 
     @Test
     fun `should be healthy`() {
