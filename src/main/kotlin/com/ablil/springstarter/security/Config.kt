@@ -4,36 +4,43 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
 
 @Configuration
 class Config(
     private val bearerTokenFilter: JWTTokenFilter
 ) {
 
+    private val publicEndpoints = arrayOf(
+        "/health",
+        "/error",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/register",
+        "/login"
+    )
+
     @Bean
     fun getSecurityConfig(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests {
-            it.requestMatchers(
-                "/health",
-                "/error",
-                "/v3/api-docs/**",
-                "/swagger-ui/**",
-                "/swagger-ui.html",
-                "/register",
-                "/login"
-            ).permitAll()
-                .anyRequest().authenticated()
+        http.invoke {
+            authorizeRequests {
+                publicEndpoints.forEach { path -> authorize(path, permitAll) }
+                authorize(anyRequest, authenticated)
+            }
+            csrf { disable() }
+            httpBasic { disable() }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(bearerTokenFilter)
         }
-            .csrf { it.disable() }
-            .formLogin { it.disable() }
-            .httpBasic { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .addFilterBefore(bearerTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.formLogin { it.disable() }
         return http.build()
     }
 
