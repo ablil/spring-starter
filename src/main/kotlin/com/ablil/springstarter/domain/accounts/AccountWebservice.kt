@@ -1,5 +1,6 @@
 package com.ablil.springstarter.domain.accounts
 
+import com.ablil.springstarter.domain.accounts.dtos.RegistrationRequest
 import com.ablil.springstarter.domain.accounts.dtos.Token
 import com.ablil.springstarter.domain.accounts.dtos.UsernameAndPassword
 import com.ablil.springstarter.domain.accounts.exceptions.InvalidCredentials
@@ -17,8 +18,8 @@ class AccountWebservice(
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@RequestBody body: UsernameAndPassword) {
-        accountService.register(body.username, body.password)
+    fun register(@RequestBody body: RegistrationRequest) {
+        accountService.register(body)
     }
 
     @PostMapping("/login")

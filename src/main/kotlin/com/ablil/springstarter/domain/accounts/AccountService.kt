@@ -1,5 +1,6 @@
 package com.ablil.springstarter.domain.accounts
 
+import com.ablil.springstarter.domain.accounts.dtos.RegistrationRequest
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -12,16 +13,20 @@ class AccountService(
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun register(username: String, plainPassword: String): Account {
+    fun register(req: RegistrationRequest): Account {
         val account = Account(
             id = null,
-            username = username,
-            password = passwordEncoder.encode(plainPassword),
+            username = req.username,
+            password = passwordEncoder.encode(req.password),
             status = AccountStatus.INACTIVE,
-            firstName = null,
-            lastName = null,
+            firstName = req.firstName?.trim(),
+            lastName = req.lastName?.trim(),
         )
-        return accountRepository.save(account).also { logger.info("registered user $username") }
+        return accountRepository.save(account).also { logger.info("registered user ${req.username}") }
+    }
+
+    fun register(username: String, password: String): Account {
+        return register(RegistrationRequest.withUsernameAndPassword(username, password))
     }
 
     fun authenticate(username: String, plainPassword: String): Boolean {
