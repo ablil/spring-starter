@@ -1,5 +1,6 @@
 package com.ablil.springstarter.domain.accounts
 
+import com.ablil.springstarter.testdata.TestAccounts
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,11 +37,13 @@ class AccountWebserviceTest(
         assertNotNull(account)
         assertEquals("testuser", account?.username)
         assertNotEquals("supersecretpassword", account?.password)
+        assertEquals(AccountStatus.INACTIVE, account?.status)
     }
 
     @Test
     fun `should login user successfully`() {
         accountService.register("testuser", "supersecretpassword")
+        accountService.activate("testuser")
 
         mockMvc.post("/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -52,4 +55,17 @@ class AccountWebserviceTest(
             jsonPath("$.token") { exists() }
         }
     }
+
+    @Test
+    fun `should not allow login for inactive user`() {
+        accountService.register(TestAccounts.inactiveUser.username, TestAccounts.inactiveUser.password)
+
+        mockMvc.post("/login") {
+            contentType = MediaType.APPLICATION_JSON
+            content = """
+                {"username": "${TestAccounts.inactiveUser.username}", "password": "${TestAccounts.inactiveUser.password}" }
+            """.trimIndent()
+        }.andExpect { status { isUnauthorized() } }
+    }
+
 }

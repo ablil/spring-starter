@@ -36,6 +36,7 @@ class JWTTokenFilter(
         val username = JwtUtil.extractClaim(token, "principal")
         try {
             userDetailsService.loadUserByUsername(username)
+                ?.takeIf { it.isEnabled }
                 ?.let { UsernamePasswordAuthenticationToken(it, token, emptyList()) }
                 ?.also {
                     val emptyContext = SecurityContextHolder.createEmptyContext().apply { authentication = it }

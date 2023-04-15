@@ -1,6 +1,7 @@
 package com.ablil.springstarter.security
 
 import com.ablil.springstarter.domain.accounts.AccountRepository
+import com.ablil.springstarter.domain.accounts.AccountStatus
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -16,7 +17,7 @@ class CustomUserDetailsService(
         return accountRepository.findByUsername(username)?.let {
             User.withUsername(username)
                 .password(it.password)
-                .disabled(false)
+                .disabled(it.status == AccountStatus.INACTIVE)
                 .accountLocked(false)
                 .accountExpired(false)
                 .authorities(emptyList())

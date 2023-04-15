@@ -1,7 +1,7 @@
 package com.ablil.springstarter
 
-import com.ablil.springstarter.domain.accounts.Account
 import com.ablil.springstarter.domain.accounts.AccountRepository
+import com.ablil.springstarter.testdata.TestAccounts
 import com.ablil.springstarter.utils.JwtUtil
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,8 +17,6 @@ class HealthWebserviceTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val accountRepository: AccountRepository
 ) {
-
-    private val testAccount = Account(id = null, username = "testaccount", password = "supersecretpassword")
 
     @BeforeEach
     fun setup() {
@@ -41,7 +39,7 @@ class HealthWebserviceTest(
 
     @Test
     fun `should access private endpoint given auth token`() {
-        val account = accountRepository.save(testAccount)
+        val account = accountRepository.save(TestAccounts.activeUser)
         val token = JwtUtil.generate(account.username)
 
         mockMvc.get("/private") {
@@ -70,12 +68,19 @@ class HealthWebserviceTest(
 
     @Test
     fun `should return authenticate user username`() {
-        val account = accountRepository.save(testAccount)
+        val account = accountRepository.save(TestAccounts.activeUser)
         val token = JwtUtil.generate(account.username)
 
         mockMvc.get("/health/user") { headers { setBearerAuth(token) } }
             .andExpect {
                 status { isOk() }
             }
+    }
+
+    @Test
+    fun `should not allows access to inactive user`() {
+        val account = accountRepository.save(TestAccounts.inactiveUser)
+        val token = JwtUtil.generate(account.username)
+        mockMvc.get("/private") { headers { setBearerAuth(token) } }.andExpect { status { isForbidden() } }
     }
 }
