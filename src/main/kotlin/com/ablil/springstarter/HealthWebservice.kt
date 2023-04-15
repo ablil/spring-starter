@@ -1,5 +1,6 @@
 package com.ablil.springstarter
 
+import com.ablil.springstarter.utils.SecurityUtil
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springdoc.core.annotations.RouterOperation
@@ -27,5 +28,5 @@ class HealthWebservice {
 
     @GetMapping("/health/user")
     @Operation(summary = "Get authenticated user username")
-    fun getCurrentUser(): String = (SecurityContextHolder.getContext().authentication.principal as UserDetails).username
+    fun getCurrentUser(): String = SecurityUtil.getCurrentUser().username
 }
