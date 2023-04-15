@@ -6,3 +6,6 @@ spring:
 
 server:
   port: ${PORT:8080}
+
+springdoc:
+  default-produces-media-type: application/json
