@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import java.lang.IllegalArgumentException
 
 @Component
 class JWTTokenFilter(
@@ -23,11 +24,15 @@ class JWTTokenFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        request.getHeader("Authorization")
-            ?.takeIf { it.startsWith("Bearer") }
-            ?.substring("Bearer ".length)
-            ?.takeIf(JwtUtil::isValid)
-            ?.also(::authenticate)
+        if ( request.getHeader("Authorization") != null && request.getHeader("Authorization")?.startsWith("Bearer ") == true) {
+            val token = request.getHeader("Authorization").substring("Bearer ".length)
+            if ( JwtUtil.isValid(token) ) {
+                authenticate(token)
+            } else {
+                throw IllegalArgumentException("Invalid token")
+            }
+        }
+
 
         filterChain.doFilter(request, response)
     }
