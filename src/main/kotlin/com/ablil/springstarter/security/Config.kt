@@ -22,8 +22,7 @@ class Config(
         "/swagger-ui/**",
         "/swagger-ui.html",
         "/auth/register/**",
-        "/register",
-        "/login"
+        "/auth/login"
     )
 
     @Bean

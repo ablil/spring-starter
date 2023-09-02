@@ -8,3 +8,6 @@ class TokenNotFound(s: String) : RuntimeException(s)
 
 @ResponseStatus(HttpStatus.CONFLICT)
 class UserAlreadyExists(username: String) : RuntimeException(username)
+
+@ResponseStatus(HttpStatus.FORBIDDEN)
+class InvalidCredentials(): RuntimeException()

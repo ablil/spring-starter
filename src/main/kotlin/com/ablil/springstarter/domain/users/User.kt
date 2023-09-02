@@ -20,7 +20,7 @@ data class User(
         @Enumerated(EnumType.STRING)
         val status: AccountStatus = AccountStatus.INACTIVE,
 
-        val token: String?,
+        val token: String? = null,
 )
 
 enum class AccountStatus {
