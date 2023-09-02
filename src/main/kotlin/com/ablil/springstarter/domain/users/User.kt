@@ -9,13 +9,18 @@ data class User(
         val id: Long?,
 
         @Column(updatable = false, nullable = false, unique = true)
-        val username: String, // TODO: add email field (used when sending registration confirmation)
+        val username: String,
+
+        @Column(updatable = false, nullable = false, unique = true)
+        val email: String,
 
         @Column(nullable = false)
         val password: String,
 
         @Enumerated(EnumType.STRING)
         val status: AccountStatus = AccountStatus.INACTIVE,
+
+        val token: String?,
 )
 
 enum class AccountStatus {
