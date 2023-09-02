@@ -6,7 +6,7 @@
 
 - [ ] account registration
   - [x] register new account with inactive status
-  - [ ] send confirmation email 
+  - [x] send confirmation email 
   - [x] confirm account registration
    
 - [ ] authentication
