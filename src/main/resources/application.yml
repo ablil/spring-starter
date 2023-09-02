@@ -4,6 +4,19 @@ spring:
   application:
     name: springstarter
 
+  mail:
+    protocol: smtp
+    host: sandbox.smtp.mailtrap.io
+    username: b9d60767eb31db
+    password: 2a9bc9427c08f0
+    port: 2525
+    properties:
+      mail:
+        smtp:
+          ssl: true
+          starttls:
+            enable: true
+
 server:
   port: ${PORT:8080}
 

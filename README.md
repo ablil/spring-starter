@@ -5,9 +5,9 @@
 # implementation
 
 - [ ] account registration
-  - [ ] register new account with inactive status
+  - [x] register new account with inactive status
   - [ ] send confirmation email 
-  - [ ] confirm account registration
+  - [x] confirm account registration
    
 - [ ] authentication
   - [ ] login with username and password

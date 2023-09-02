@@ -21,6 +21,7 @@ class Config(
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/swagger-ui.html",
+        "/auth/register/**",
         "/register",
         "/login"
     )
