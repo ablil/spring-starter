@@ -1,11 +1,9 @@
 package com.ablil.springstarter.security
 
-import com.ablil.springstarter.domain.accounts.AccountRepository
-import com.ablil.springstarter.utils.JwtUtil
+import com.ablil.springstarter.miscllaneous.JwtUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JWTTokenFilter(
+class BearerTokenFilter(
     private val userDetailsService: UserDetailsService
 ) : OncePerRequestFilter() {
 
@@ -43,7 +41,7 @@ class JWTTokenFilter(
                     SecurityContextHolder.setContext(emptyContext)
                 }
         } catch (e: UsernameNotFoundException) {
-            logger.warn("Failed to authenticate with token $token, user $username does NOT exists !")
+            logger.error("Failed to set security context for $username given $token")
         }
     }
 
