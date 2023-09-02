@@ -1,4 +1,4 @@
-package com.ablil.springstarter.utils
+package com.ablil.springstarter.security
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails

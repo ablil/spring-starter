@@ -1,11 +1,10 @@
-package com.ablil.springstarter.utils
+package com.ablil.springstarter.miscllaneous
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import java.time.Duration
 import java.time.Instant
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 

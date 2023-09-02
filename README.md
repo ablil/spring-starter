@@ -1,8 +1,29 @@
 # spring starter
 
 [![Build-Test](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
-## Get started
 
-1. clone project and reset git
-2. update app name on gradle, spring properties, dockerfile
-3. Happy coding :computer: 
+# implementation
+
+- [ ] account registration
+  - [ ] register new account with inactive status
+  - [ ] send confirmation email 
+  - [ ] confirm account registration
+   
+- [ ] authentication
+  - [ ] login with username and password
+  - [ ] generate token with validity of three hours
+
+- [ ] forget password 
+  - [ ] send email to reset password
+  - [ ] lock account when resetting password 
+
+- [ ] swagger
+  - [ ] allow token generations
+
+- [ ] CI / CD
+  - [ ] checkstyle (or community standard tool)
+  - [ ] docker
+  - [ ] Github action
+
+- Others
+  - [ ] auditing attributes
