@@ -4,6 +4,16 @@ spring:
   application:
     name: springstarter
 
+  datasource:
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
   mail:
     protocol: smtp
     host: sandbox.smtp.mailtrap.io
@@ -18,7 +28,7 @@ spring:
             enable: true
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:80}
 
 springdoc:
   default-produces-media-type: application/json

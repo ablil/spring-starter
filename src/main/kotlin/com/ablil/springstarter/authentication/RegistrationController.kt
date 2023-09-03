@@ -1,6 +1,7 @@
 package com.ablil.springstarter.authentication
 
-import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Size
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "Users registrations")
 @RestController
 @RequestMapping("/auth")
 class RegistrationController(
@@ -17,7 +19,6 @@ class RegistrationController(
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "register new account")
     fun register(@RequestBody @Valid body: RegistrationRequest) {
         registrationService.register(body)
     }
@@ -33,6 +34,7 @@ class RegistrationController(
 
 }
 
+@Schema(name = "registration request")
 data class RegistrationRequest(
     @Size(min = 6, message = "username must be at least 6 characters long")
     val username: String,
