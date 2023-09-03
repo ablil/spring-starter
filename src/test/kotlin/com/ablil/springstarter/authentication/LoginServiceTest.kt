@@ -1,9 +1,12 @@
 package com.ablil.springstarter.authentication
 
+import com.ablil.springstarter.domain.users.AccountStatus
 import com.ablil.springstarter.domain.users.User
 import com.ablil.springstarter.domain.users.UserRepository
+import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class LoginServiceTest(
     @Autowired val loginService: LoginService,
     @MockkBean(relaxed = true) @Autowired val userRepository: UserRepository,
+    @MockkBean(relaxed = true) @Autowired val emailClient: EmailClient,
     @Autowired val passwordEncoder: PasswordEncoder
 ) {
 
@@ -32,9 +36,33 @@ class LoginServiceTest(
         }
     }
 
+    @Test
+    fun `set reset password link and change user status`() {
+        every { userRepository.findByEmail(any()) } returns user
+        loginService.forgetPassword(user.email)
+        verify {
+            userRepository.updateTokenAndStatus(
+                withArg { assertNotNull(it) },
+                withArg { assertEquals(AccountStatus.PASSWORD_RESET_IN_PROGRESS, it) },
+                withArg { assertEquals(user.email, it) }
+            )
+            emailClient.sendEmail(user.email, "Reset password", withArg { assertNotNull(it) })
+        }
+    }
+
+    @Test
+    fun `reset password successfully`() {
+        every { userRepository.findByToken(any()) } returns user
+        loginService.resetPassword(ResetPassword("token", "supersecurepassword"))
+        verify {
+            userRepository.updateTokenAndStatus( null, AccountStatus.ACTIVE, user.email )
+            userRepository.resetPassword( withArg { assertNotEquals(user.password, it) }, user.email )
+        }
+    }
+
     companion object {
         val user = User(
-            id = null,
+            id = 1343,
             username = "joedoe",
             email = "joedoe@example.com",
             password = "supersecurepassword"

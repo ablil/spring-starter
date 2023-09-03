@@ -4,18 +4,18 @@
 
 # implementation
 
-- [ ] account registration
+- [x] account registration
   - [x] register new account with inactive status
   - [x] send confirmation email 
   - [x] confirm account registration
    
-- [ ] authentication
-  - [ ] login with username and password
-  - [ ] generate token with validity of three hours
+- [x] authentication
+  - [x] login with username and password
+  - [x] generate token with validity of three hours
 
-- [ ] forget password 
-  - [ ] send email to reset password
-  - [ ] lock account when resetting password 
+- [x] forget password 
+  - [x] send email to reset password
+  - [x] lock account when resetting password 
 
 - [ ] swagger
   - [ ] allow token generations
