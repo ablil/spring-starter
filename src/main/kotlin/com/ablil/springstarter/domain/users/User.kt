@@ -24,5 +24,5 @@ data class User(
 )
 
 enum class AccountStatus {
-    INACTIVE, ACTIVE
+    INACTIVE, ACTIVE, PASSWORD_RESET_IN_PROGRESS
 }

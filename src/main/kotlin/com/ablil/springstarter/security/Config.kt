@@ -22,7 +22,9 @@ class Config(
         "/swagger-ui/**",
         "/swagger-ui.html",
         "/auth/register/**",
-        "/auth/login"
+        "/auth/login",
+        "/auth/forget_password",
+        "/auth/reset_password",
     )
 
     @Bean
