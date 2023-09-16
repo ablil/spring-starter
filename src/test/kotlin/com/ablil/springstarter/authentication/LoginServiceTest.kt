@@ -7,7 +7,10 @@ import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -55,8 +58,8 @@ class LoginServiceTest(
         every { userRepository.findByToken(any()) } returns user
         loginService.resetPassword(ResetPassword("token", "supersecurepassword"))
         verify {
-            userRepository.updateTokenAndStatus( null, AccountStatus.ACTIVE, user.email )
-            userRepository.resetPassword( withArg { assertNotEquals(user.password, it) }, user.email )
+            userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
+            userRepository.resetPassword(withArg { assertNotEquals(user.password, it) }, user.email)
         }
     }
 

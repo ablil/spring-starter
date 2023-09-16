@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 class LoginControllerTest(
     @Autowired val mockMvc: MockMvc,
-    @Autowired @MockkBean(relaxed = true) val loginService: LoginService,
+    @Autowired
+    @MockkBean(relaxed = true)
+    val loginService: LoginService,
 ) {
     @Test
     fun `should return token given valid login credentials`() {
@@ -64,5 +66,4 @@ class LoginControllerTest(
             """.trimIndent()
         }.andExpect { status { isOk() } }
     }
-
 }

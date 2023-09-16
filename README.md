@@ -20,10 +20,10 @@
 - [x] swagger
   - [x] allow token generations
 
-- [ ] CI / CD
-  - [ ] checkstyle (or community standard tool)
-  - [ ] docker
-  - [ ] Github action
+- [x] CI / CD
+  - [x] checkstyle (or community standard tool)
+  - [x] docker
+  - [x] Github action
 
 - Others
   - [ ] auditing attributes

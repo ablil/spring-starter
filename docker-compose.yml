@@ -7,5 +7,15 @@ services:
     environment:
       POSTGRES_PASSWORD: supersecurepassword
 
+  app:
+    build:
+      context: .
+    depends_on:
+      - database
+    ports:
+      - 80:80
+    environment:
+      DB_HOST: database
+      DB_PASSWORD: supersecurepassword
 
 

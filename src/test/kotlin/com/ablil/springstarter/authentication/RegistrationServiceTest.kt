@@ -5,7 +5,12 @@ import com.ablil.springstarter.domain.users.UserRepository
 import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +31,8 @@ class RegistrationServiceTest(
     @Test
     fun `should register new account successfully`() {
         val user = registrationService.register(request)
-        assertAll("user registration",
+        assertAll(
+            "user registration",
             { assertNotNull(user) },
             { assertEquals(AccountStatus.INACTIVE, user.status) },
             { assertNotEquals(request.password, user.password) },
