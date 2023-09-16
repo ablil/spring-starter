@@ -8,18 +8,27 @@ import jakarta.validation.constraints.Size
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "Users registrations")
 @RestController
 @RequestMapping("/auth")
 class RegistrationController(
-    private val registrationService: RegistrationService
+    private val registrationService: RegistrationService,
 ) {
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@RequestBody @Valid body: RegistrationRequest) {
+    fun register(
+        @RequestBody @Valid
+        body: RegistrationRequest,
+    ) {
         registrationService.register(body)
     }
 
@@ -28,10 +37,9 @@ class RegistrationController(
         registrationService.confirmRegistration(token)
         return ResponseEntity(
             HttpHeaders().apply { add("Location", "/confirmed") },
-            HttpStatus.TEMPORARY_REDIRECT
+            HttpStatus.TEMPORARY_REDIRECT,
         )
     }
-
 }
 
 @Schema(name = "registration request")

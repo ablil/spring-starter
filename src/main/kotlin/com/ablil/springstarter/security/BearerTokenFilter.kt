@@ -44,5 +44,4 @@ class BearerTokenFilter(
             logger.error("Failed to set security context for $username given $token")
         }
     }
-
 }

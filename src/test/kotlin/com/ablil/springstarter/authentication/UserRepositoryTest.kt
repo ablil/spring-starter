@@ -3,30 +3,29 @@ package com.ablil.springstarter.authentication
 import com.ablil.springstarter.domain.users.AccountStatus
 import com.ablil.springstarter.domain.users.User
 import com.ablil.springstarter.domain.users.UserRepository
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 class UserRepositoryTest(
-    @Autowired val userRepository: UserRepository
+    @Autowired val userRepository: UserRepository,
 ) {
 
     @BeforeEach
-    fun setup(): Unit =  userRepository.deleteAll()
+    fun setup(): Unit = userRepository.deleteAll()
 
     @Test
     fun `find user by username or email`() {
         userRepository.save(user)
         assertAll(
             "fetch user from database",
-            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe", null))},
-            { assertNotNull(userRepository.findByUsernameOrEmail(null, "joedoe@example.com"))}
+            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe", null)) },
+            { assertNotNull(userRepository.findByUsernameOrEmail(null, "joedoe@example.com")) },
         )
     }
 
@@ -38,13 +37,13 @@ class UserRepositoryTest(
         val actual = userRepository.findByEmail(user.email)
         assertAll(
             { assertEquals("mytoken", actual?.token) },
-            { assertEquals(AccountStatus.ACTIVE, actual?.status) }
+            { assertEquals(AccountStatus.ACTIVE, actual?.status) },
         )
     }
 
     @Test
     fun `update password by email`() {
-       userRepository.save(user)
+        userRepository.save(user)
         userRepository.resetPassword("newsupersecurepassword", user.email)
 
         val actual = userRepository.findByEmail(user.email)
@@ -56,7 +55,7 @@ class UserRepositoryTest(
             id = null,
             username = "joedoe",
             email = "joedoe@example.com",
-            password = "supersecurepassword"
+            password = "supersecurepassword",
         )
     }
 }

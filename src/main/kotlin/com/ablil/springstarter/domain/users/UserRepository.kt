@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-interface UserRepository: CrudRepository<User, Long> {
+interface UserRepository : CrudRepository<User, Long> {
     fun findByUsername(username: String): User?
 
     fun findByEmail(email: String): User?

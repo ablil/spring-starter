@@ -11,11 +11,13 @@ class EmailClient(private val javaMailSender: JavaMailSender) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun sendEmail(to: String, subject: String, content: String) {
-        javaMailSender.send(SimpleMailMessage().apply {
-            setTo(to)
-            setSubject(subject)
-            text = content
-        })
+        javaMailSender.send(
+            SimpleMailMessage().apply {
+                setTo(to)
+                setSubject(subject)
+                text = content
+            }
+        )
         logger.info("Sent email to $to with subject $subject")
     }
 }

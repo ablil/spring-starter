@@ -10,7 +10,7 @@ class TokenNotFound(s: String) : RuntimeException(s)
 class UserAlreadyExists(username: String) : RuntimeException(username)
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-class InvalidCredentials(): RuntimeException()
+class InvalidCredentials() : RuntimeException()
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-class ResetPasswordError(msg: String): RuntimeException(msg)
+class ResetPasswordError(msg: String) : RuntimeException(msg)

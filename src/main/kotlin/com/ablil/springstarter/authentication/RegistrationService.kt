@@ -19,7 +19,7 @@ class RegistrationService(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun register(request: RegistrationRequest): User {
-        if ( userRepository.findByUsername(request.username) != null ) {
+        if (userRepository.findByUsername(request.username) != null) {
             throw UserAlreadyExists(request.username)
         }
         val user = User(
@@ -36,7 +36,7 @@ class RegistrationService(
         }
     }
 
-    fun confirmRegistration(token: String)  {
+    fun confirmRegistration(token: String) {
         userRepository.findByToken(token)?.also {
             userRepository.save(it.copy(token = null, status = AccountStatus.ACTIVE))
         } ?: throw TokenNotFound("token $token not found")
