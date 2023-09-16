@@ -17,8 +17,8 @@
   - [x] send email to reset password
   - [x] lock account when resetting password 
 
-- [ ] swagger
-  - [ ] allow token generations
+- [x] swagger
+  - [x] allow token generations
 
 - [ ] CI / CD
   - [ ] checkstyle (or community standard tool)
