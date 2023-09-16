@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @SpringBootApplication
 @OpenAPIDefinition(
@@ -14,6 +15,7 @@ import org.springframework.boot.runApplication
     security = [SecurityRequirement(name = "Authorization")],
 )
 @SecurityScheme(name = "Authorization", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
+@EnableJpaAuditing
 class Application
 
 fun main(args: Array<String>) {

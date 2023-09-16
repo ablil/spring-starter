@@ -20,6 +20,17 @@ class UserRepositoryTest(
     fun setup(): Unit = userRepository.deleteAll()
 
     @Test
+    fun `set created and updated date`() {
+        userRepository.save(user)
+        val actual = userRepository.findByUsername(user.username)
+        assertAll(
+            "Auditing attributs",
+            { assertNotNull(actual?.created) },
+            { assertNotNull(actual?.updated) },
+        )
+    }
+
+    @Test
     fun `find user by username or email`() {
         userRepository.save(user)
         assertAll(
