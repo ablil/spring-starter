@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Health indicators")
 class HealthWebservice {
 
-    // TODO: create test for all of these endpoints
-
     @GetMapping("/health")
     fun health() = "health"
 
