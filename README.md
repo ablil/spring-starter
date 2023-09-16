@@ -26,4 +26,4 @@
   - [x] Github action
 
 - Others
-  - [ ] auditing attributes
+  - [x] auditing attributes

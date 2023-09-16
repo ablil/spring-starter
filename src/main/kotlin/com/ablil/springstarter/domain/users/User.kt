@@ -29,7 +29,7 @@ data class User(
     val status: AccountStatus = AccountStatus.INACTIVE,
 
     val token: String? = null,
-)
+) : AuditingEntity()
 
 enum class AccountStatus {
     INACTIVE, ACTIVE, PASSWORD_RESET_IN_PROGRESS
