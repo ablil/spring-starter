@@ -27,7 +27,7 @@ class LoginService(
 
     @Transactional
     fun forgetPassword(email: String) {
-        val resetToken = RandomStringUtils.random(10)
+        val resetToken = RandomStringUtils.randomAlphanumeric(10)
         userRepository.findByEmail(email)?.let {
             userRepository.updateTokenAndStatus(resetToken, AccountStatus.PASSWORD_RESET_IN_PROGRESS, email)
         }?.also {

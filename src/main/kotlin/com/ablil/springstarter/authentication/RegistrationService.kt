@@ -26,8 +26,8 @@ class RegistrationService(
             id = null,
             username = request.username,
             password = passwordEncoder.encode(request.password),
-            token = RandomStringUtils.random(10),
-            email = request.email
+            token = RandomStringUtils.randomAlphanumeric(10),
+            email = request.email,
         )
 
         return userRepository.save(user).also {
