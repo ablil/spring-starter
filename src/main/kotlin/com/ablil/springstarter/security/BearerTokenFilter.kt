@@ -13,19 +13,21 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class BearerTokenFilter(
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
-        request.getHeader("Authorization")
-            ?.takeIf { it.startsWith("Bearer") }
-            ?.substring("Bearer ".length)
-            ?.takeIf(JwtUtil::isValid)
-            ?.also(::authenticate)
+        if (!Config.publicEndpoints.contains(request.servletPath)) {
+            request.getHeader("Authorization")
+                ?.takeIf { it.startsWith("Bearer") }
+                ?.substring("Bearer ".length)
+                ?.takeIf(JwtUtil::isValid)
+                ?.also(::authenticate)
+        }
 
         filterChain.doFilter(request, response)
     }

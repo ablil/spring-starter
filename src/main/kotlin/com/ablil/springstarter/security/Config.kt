@@ -12,20 +12,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class Config(
-    private val bearerTokenFilter: BearerTokenFilter
+    private val bearerTokenFilter: BearerTokenFilter,
+    private val requestLogger: RequestLogger,
 ) {
 
-    private val publicEndpoints = arrayOf(
-        "/health",
-        "/error",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/swagger-ui.html",
-        "/auth/register/**",
-        "/auth/login",
-        "/auth/forget_password",
-        "/auth/reset_password",
-    )
+    companion object {
+        val publicEndpoints = arrayOf(
+            "/health",
+            "/error",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/auth/register/**",
+            "/auth/login",
+            "/auth/forget_password",
+            "/auth/reset_password",
+        )
+    }
 
     @Bean
     fun getSecurityConfig(http: HttpSecurity): SecurityFilterChain {
@@ -37,6 +40,7 @@ class Config(
             csrf { disable() }
             httpBasic { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(requestLogger)
             addFilterBefore<UsernamePasswordAuthenticationFilter>(bearerTokenFilter)
         }
         http.formLogin { it.disable() }
