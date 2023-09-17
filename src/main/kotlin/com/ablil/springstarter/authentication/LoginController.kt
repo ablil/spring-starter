@@ -1,5 +1,6 @@
 package com.ablil.springstarter.authentication
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -11,25 +12,36 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "Authentication", description = "includes also reset password process")
+@Tag(name = "Authentication")
 @RestController
 @RequestMapping("/auth")
 class LoginController(
-    private val loginService: LoginService
+    private val loginService: LoginService,
 ) {
     @PostMapping("login")
-    fun login(@RequestBody @Valid credentials: LoginCredentials): Token {
+    fun login(
+        @RequestBody @Valid
+        credentials: LoginCredentials,
+    ): Token {
         val token = loginService.login(credentials)
         return Token(token)
     }
 
     @PostMapping("forget_password")
-    fun forgetPassword(@RequestBody @Valid body: EmailDto) {
+    @Operation(summary = "Trigger forget password process", description = "Send email with reset link")
+    fun forgetPassword(
+        @RequestBody @Valid
+        body: EmailDto,
+    ) {
         loginService.forgetPassword(body.email)
     }
 
     @PostMapping("reset_password")
-    fun resetPassword(@RequestBody @Valid body: ResetPassword) {
+    @Operation(summary = "reset password", description = "Given reset token, reset password")
+    fun resetPassword(
+        @RequestBody @Valid
+        body: ResetPassword,
+    ) {
         loginService.resetPassword(body)
     }
 }

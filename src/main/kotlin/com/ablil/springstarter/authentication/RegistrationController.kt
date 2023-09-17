@@ -1,5 +1,6 @@
 package com.ablil.springstarter.authentication
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -25,6 +26,7 @@ class RegistrationController(
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "register new user")
     fun register(
         @RequestBody @Valid
         body: RegistrationRequest,
@@ -33,6 +35,11 @@ class RegistrationController(
     }
 
     @GetMapping("register/confirm")
+    @Operation(
+        summary = "confirm user registration",
+        description = "Given valid token, redirect user after confirmation",
+    )
+    @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)
     fun confirmRegistration(@RequestParam("token") token: String): ResponseEntity<Unit> {
         registrationService.confirmRegistration(token)
         return ResponseEntity(
