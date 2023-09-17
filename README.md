@@ -1,8 +1,8 @@
 # Spring starter
 
-[![Build-Test](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
+[![CI](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
 
-This is a boilerplate implemenation for a general purpose API.
+This is a boilerplate implementation for a general purpose API.
 
 # Implementation
 
