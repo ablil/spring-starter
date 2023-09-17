@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val emailClient: EmailClient
+    private val emailClient: EmailClient,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)

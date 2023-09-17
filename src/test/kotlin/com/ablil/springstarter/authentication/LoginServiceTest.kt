@@ -60,6 +60,7 @@ class LoginServiceTest(
         verify {
             userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
             userRepository.resetPassword(withArg { assertNotEquals(user.password, it) }, user.email)
+            emailClient.sendEmail(user.email, "Password has been reset", "Your password has been reset")
         }
     }
 

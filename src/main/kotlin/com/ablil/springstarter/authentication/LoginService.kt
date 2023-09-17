@@ -40,5 +40,6 @@ class LoginService(
         val user = userRepository.findByToken(body.token) ?: throw ResetPasswordError("token ${body.token} not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         userRepository.resetPassword(passwordEncoder.encode(body.password), user.email)
+        emailClient.sendEmail(user.email, "Password has been reset", "Your password has been reset")
     }
 }
