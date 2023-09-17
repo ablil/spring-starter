@@ -13,21 +13,21 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val emailClient: EmailClient
+    private val emailClient: EmailClient,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun register(request: RegistrationRequest): User {
-        if (userRepository.findByUsername(request.username) != null) {
+        if (userRepository.findByUsernameOrEmail(request.username, request.email) != null) {
             throw UserAlreadyExists(request.username)
         }
         val user = User(
             id = null,
             username = request.username,
             password = passwordEncoder.encode(request.password),
-            token = RandomStringUtils.random(10),
-            email = request.email
+            token = RandomStringUtils.randomAlphanumeric(10),
+            email = request.email,
         )
 
         return userRepository.save(user).also {

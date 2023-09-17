@@ -1,4 +1,4 @@
-name: Build & Test
+name: CI
 
 on:
   push:
@@ -6,11 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -20,13 +18,11 @@ jobs:
           distribution: 'temurin'
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-      - name: Build with Gradle
+      - name: Build and test
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
-
-      - name: Test with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      - name: Archive build report
+        uses: actions/upload-artifact@v3
         with:
-          arguments: test
-#          TODO: in case tests have failed, is there a way to export the generated report ??
+          path: build/reports

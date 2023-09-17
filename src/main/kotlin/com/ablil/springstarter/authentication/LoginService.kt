@@ -27,7 +27,7 @@ class LoginService(
 
     @Transactional
     fun forgetPassword(email: String) {
-        val resetToken = RandomStringUtils.random(10)
+        val resetToken = RandomStringUtils.randomAlphanumeric(10)
         userRepository.findByEmail(email)?.let {
             userRepository.updateTokenAndStatus(resetToken, AccountStatus.PASSWORD_RESET_IN_PROGRESS, email)
         }?.also {
@@ -40,5 +40,6 @@ class LoginService(
         val user = userRepository.findByToken(body.token) ?: throw ResetPasswordError("token ${body.token} not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         userRepository.resetPassword(passwordEncoder.encode(body.password), user.email)
+        emailClient.sendEmail(user.email, "Password has been reset", "Your password has been reset")
     }
 }

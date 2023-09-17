@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     id("org.springframework.boot") version "3.0.4"
@@ -54,8 +53,4 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     systemProperty("spring.profiles.active", "test")
     useJUnitPlatform()
-}
-
-tasks.withType<BootRun> {
-    systemProperty("spring.profiles.active", "prod")
 }

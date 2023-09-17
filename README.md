@@ -1,29 +1,41 @@
-# spring starter
+# Spring starter
 
-[![Build-Test](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
+[![CI](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
 
-# implementation
+This is a boilerplate implementation for a general purpose API.
 
-- [x] account registration
-  - [x] register new account with inactive status
-  - [x] send confirmation email 
-  - [x] confirm account registration
-   
-- [x] authentication
-  - [x] login with username and password
-  - [x] generate token with validity of three hours
+# Implementation
 
-- [x] forget password 
-  - [x] send email to reset password
-  - [x] lock account when resetting password 
+The implementation includes:
 
-- [x] swagger
-  - [x] allow token generations
+* login with username/email and password
+* registration with email confirmation
+* reset and forget password
+* Authorization with JWT (json web token)
+* swagger / Open API specification
 
-- [x] CI / CD
-  - [x] checkstyle (or community standard tool)
-  - [x] docker
-  - [x] Github action
+# Get started
 
-- Others
-  - [x] auditing attributes
+## Run locally
+
+To run locally, start a postgres database `docker-compose up -d database` then run the app `./gradlew bootRun`.
+
+## Run with docker
+
+Update the password credentials and add environment variables to `docker-compose.yml`, then run the containers (database
+and app)
+`docker-compose up -d`.
+
+# Configuration
+
+## Email
+
+[ Mailtrap ]( https://mailtrap.io/ ) is configured as an email sandbox, set your credentials in **application.yml** or
+you
+your own email config
+your email config
+
+## Database
+
+Postgres is used as a default database with default credentials, set your credentials through env variables or
+check **application.yml**
