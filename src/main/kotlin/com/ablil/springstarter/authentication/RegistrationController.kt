@@ -43,7 +43,7 @@ class RegistrationController(
     fun confirmRegistration(@RequestParam("token") token: String): ResponseEntity<Unit> {
         registrationService.confirmRegistration(token)
         return ResponseEntity(
-            HttpHeaders().apply { add("Location", "/confirmed") },
+            HttpHeaders().apply { add("Location", "/register/confirm?confirmed=true") },
             HttpStatus.TEMPORARY_REDIRECT,
         )
     }

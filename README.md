@@ -11,7 +11,7 @@ The implementation includes:
 * login with username/email and password
 * registration with email confirmation
 * reset and forget password
-* Authorization with JWT (json web token)
+* Authorization with JWT/cookie (json web token)
 * swagger / Open API specification
 
 # Get started

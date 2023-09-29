@@ -31,7 +31,7 @@ class RegistrationControllerTest(
     fun `should redirect user given valid registration confirmation token`() {
         mockMvc.get("/auth/register/confirm?token=mytoken").andExpect {
             status { isTemporaryRedirect() }
-            header { string("Location", "/confirmed") }
+            header { string("Location", "/register/confirm?confirmed=true") }
         }
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class Config(
-    private val bearerTokenFilter: BearerTokenFilter,
+    private val authorizationCookieFilter: AuthorizationCookieFilter,
     private val requestLogger: RequestLogger,
 ) {
 
@@ -41,7 +41,7 @@ class Config(
             httpBasic { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(requestLogger)
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(bearerTokenFilter)
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(authorizationCookieFilter)
         }
         http.formLogin { it.disable() }
         return http.build()

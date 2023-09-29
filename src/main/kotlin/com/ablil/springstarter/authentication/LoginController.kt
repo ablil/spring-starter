@@ -1,12 +1,16 @@
 package com.ablil.springstarter.authentication
 
+import com.ablil.springstarter.miscllaneous.ConfigParams
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,9 +26,17 @@ class LoginController(
     fun login(
         @RequestBody @Valid
         credentials: LoginCredentials,
-    ): Token {
+        response: HttpServletResponse
+    ): ResponseEntity<Void> {
         val token = loginService.login(credentials)
-        return Token(token)
+        response.addCookie(
+            Cookie("jwt", token).apply {
+                path = "/"
+                maxAge = ConfigParams.MAX_TOKEN_AGE
+                secure = true
+            }
+        )
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping("forget_password")
