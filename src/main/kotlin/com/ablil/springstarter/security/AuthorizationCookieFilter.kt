@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class BearerTokenFilter(
+class AuthorizationCookieFilter(
     private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
 
@@ -22,11 +22,8 @@ class BearerTokenFilter(
         filterChain: FilterChain,
     ) {
         if (!Config.publicEndpoints.contains(request.servletPath)) {
-            request.getHeader("Authorization")
-                ?.takeIf { it.startsWith("Bearer") }
-                ?.substring("Bearer ".length)
-                ?.takeIf(JwtUtil::isValid)
-                ?.also(::authenticate)
+            request.cookies?.firstOrNull { it.name == "jwt" }?.takeIf { JwtUtil.isValid(it.value) }
+                ?.also { authenticate(it.value) }
         }
 
         filterChain.doFilter(request, response)

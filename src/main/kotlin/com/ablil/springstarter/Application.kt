@@ -1,6 +1,7 @@
 package com.ablil.springstarter
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -12,9 +13,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 @SpringBootApplication
 @OpenAPIDefinition(
     info = Info(title = "Spring boot API Starter", description = "API specification", version = "0.0.1"),
-    security = [SecurityRequirement(name = "Authorization")],
+    security = [SecurityRequirement(name = "jwt")],
 )
-@SecurityScheme(name = "Authorization", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
+@SecurityScheme(
+    name = "jwt",
+    `in` = SecuritySchemeIn.COOKIE,
+    type = SecuritySchemeType.APIKEY,
+    scheme = "bearer",
+)
 @EnableJpaAuditing
 class Application
 

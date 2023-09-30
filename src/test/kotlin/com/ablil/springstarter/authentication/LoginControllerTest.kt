@@ -19,7 +19,7 @@ class LoginControllerTest(
     val loginService: LoginService,
 ) {
     @Test
-    fun `should return token given valid login credentials`() {
+    fun `should return token in cookie given valid login credentials`() {
         every { loginService.login(any()) } returns "token"
 
         mockMvc.post("/auth/login") {
@@ -28,8 +28,8 @@ class LoginControllerTest(
                 {"usernameOrEmail": "joedoe", "password": "supersecurepassword"}
             """.trimIndent()
         }.andExpectAll {
-            status { isOk() }
-            content { jsonPath("$.token") { exists() } }
+            status { isNoContent() }
+            cookie { exists("jwt") }
         }
     }
 
