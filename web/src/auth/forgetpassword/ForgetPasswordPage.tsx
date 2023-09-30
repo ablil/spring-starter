@@ -6,7 +6,7 @@ import {RootAppState} from "../../redux/store.ts";
 
 export const ForgetPasswordPage = () => {
     const dispatch = useDispatch()
-    const {loading, resetPasswordLinkSent} = useSelector((app: RootAppState) => app.auth)
+    const {resetPasswordLinkSent} = useSelector((app: RootAppState) => app.auth)
 
     const formik = useFormik({
         initialValues: {
