@@ -1,0 +1,36 @@
+.cache_web: &cache_web
+  cache:
+    key:
+      files:
+        - web/yarn.lock
+    paths:
+      - web/node_modules
+
+.setup-web: &setup_web
+  - cd web
+
+build-kotlin:
+    image: gradle:7.2-jdk17
+    stage: build
+    script:
+      - ./gradlew build
+    artifacts:
+      paths:
+        - build/reports/*
+
+build-typescript:
+    image: node
+    stage: build
+    <<: *cache_web
+    script:
+      - *setup_web
+      - yarn
+      - yarn build
+
+test-typescript:
+    image: node
+    stage: test
+    <<: *cache_web
+    script:
+      - *setup_web
+      - yarn test
