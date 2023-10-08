@@ -17,14 +17,13 @@ The implementation includes:
 # Get started
 
 ## Run locally
-
-To run locally, start a postgres database `docker-compose up -d database` then run the app `./gradlew bootRun`.
+1. start the database: `docker-compose run -p 5432:5432 -d database`
+2. start the spring app: `./gradlew bootRun`
+3. start the web app: `cd web && yarn dev`
 
 ## Run with docker
 
-Update the password credentials and add environment variables to `docker-compose.yml`, then run the containers (database
-and app)
-`docker-compose up -d`.
+Run `docker-compose up -d` and it will run all services behind an Nginx proxy simulating prod environment.
 
 # Configuration
 
