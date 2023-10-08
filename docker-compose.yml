@@ -2,20 +2,31 @@ version: '3'
 services:
   database:
     image: postgres
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: supersecurepassword
-
   app:
     build:
       context: .
     depends_on:
       - database
-    ports:
-      - 80:80
     environment:
       DB_HOST: database
       DB_PASSWORD: supersecurepassword
+      SPRING_PROFILES_ACTIVE: prod
 
-
+  web:
+    build:
+      context: web
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - app
+  nginx:
+    image: nginx
+    depends_on:
+      - web
+      - app
+    volumes:
+      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
