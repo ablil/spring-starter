@@ -1,5 +1,6 @@
 package com.ablil.springstarter.persistence.repositories
 
+import com.ablil.springstarter.persistence.common.RepositoryTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.User
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,9 +9,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
-@DataJpaTest
+@RepositoryTest
 class UserRepositoryTest(
     @Autowired val userRepository: UserRepository,
 ) {

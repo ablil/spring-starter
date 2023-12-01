@@ -2,7 +2,6 @@ package com.ablil.springstarter.webapi
 
 import com.ablil.springstarter.common.InvalidCredentials
 import com.ablil.springstarter.service.LoginService
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,9 +19,8 @@ class LoginControllerTest(
     @MockBean @Autowired val loginService: LoginService,
 ) {
     @Test
-    @Disabled // TODO: maybe should be an intergration test
     fun `should return token in cookie given valid login credentials`() {
-        Mockito.`when`(loginService.login(Mockito.any())).thenReturn("token")
+        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "password"))).thenReturn("token")
 
         mockMvc.post("/auth/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -36,9 +34,9 @@ class LoginControllerTest(
     }
 
     @Test
-    @Disabled // TODO: should be an intergration test
     fun `should return 403 given invalid credentials`() {
-        Mockito.`when`(loginService.login(Mockito.any())).thenThrow(InvalidCredentials())
+        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
+            .thenThrow(InvalidCredentials())
 
         mockMvc.post("/auth/login") {
             contentType = MediaType.APPLICATION_JSON
