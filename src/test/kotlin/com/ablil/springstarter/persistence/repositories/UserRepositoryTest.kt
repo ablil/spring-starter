@@ -24,8 +24,8 @@ class UserRepositoryTest(
         val actual = userRepository.findByUsername(user.username)
         assertAll(
             "Auditing attributs",
-            { assertNotNull(actual?.created) },
-            { assertNotNull(actual?.updated) },
+            { assertNotNull(actual?.createdAt) },
+            { assertNotNull(actual?.updatedAt) },
         )
     }
 
