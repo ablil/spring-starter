@@ -1,7 +1,7 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.authentication.InvalidCredentials
-import com.ablil.springstarter.authentication.LoginService
+import com.ablil.springstarter.common.InvalidCredentials
+import com.ablil.springstarter.service.LoginService
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.post
 @WebMvcTest(LoginController::class)
 @AutoConfigureMockMvc(addFilters = false)
 class LoginControllerTest(
-        @Autowired val mockMvc: MockMvc,
-        @MockBean @Autowired val loginService: LoginService,
+    @Autowired val mockMvc: MockMvc,
+    @MockBean @Autowired val loginService: LoginService,
 ) {
     @Test
     @Disabled // TODO: maybe should be an intergration test

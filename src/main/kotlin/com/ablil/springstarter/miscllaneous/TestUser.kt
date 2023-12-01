@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Configuration
 @Profile("dev")
 class TestUser(
-        private val userRepository: UserRepository,
-        private val passwordEncoder: PasswordEncoder,
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 

@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
 @DataJpaTest
 class UserRepositoryTest(
-        @Autowired val userRepository: UserRepository,
+    @Autowired val userRepository: UserRepository,
 ) {
 
     @BeforeEach

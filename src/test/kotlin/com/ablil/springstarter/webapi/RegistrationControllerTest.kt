@@ -1,8 +1,7 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.authentication.RegistrationService
-import com.ablil.springstarter.miscllaneous.TestUser
 import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.service.RegistrationService
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -17,8 +16,8 @@ import org.springframework.test.web.servlet.post
 @WebMvcTest(RegistrationController::class)
 @Disabled // TODO: should be an integration test
 class RegistrationControllerTest(
-        @Autowired val mockMvc: MockMvc,
-        @MockBean @Autowired val registrationService: RegistrationService,
+    @Autowired val mockMvc: MockMvc,
+    @MockBean @Autowired val registrationService: RegistrationService,
 ) {
 
     @Test
@@ -43,10 +42,10 @@ class RegistrationControllerTest(
 
     companion object {
         val user = User(
-                id = null,
-                username = "joedoe",
-                email = "joedoe@example.com",
-                password = "supersecurepassword",
+            id = null,
+            username = "joedoe",
+            email = "joedoe@example.com",
+            password = "supersecurepassword",
         )
     }
 }

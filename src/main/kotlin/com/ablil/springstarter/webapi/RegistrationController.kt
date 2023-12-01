@@ -1,6 +1,6 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.authentication.RegistrationService
+import com.ablil.springstarter.service.RegistrationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/auth")
 class RegistrationController(
-        private val registrationService: RegistrationService,
+    private val registrationService: RegistrationService,
 ) {
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "register new user")
     fun register(
-            @RequestBody @Valid
+        @RequestBody @Valid
         body: RegistrationRequest,
     ) {
         registrationService.register(body)

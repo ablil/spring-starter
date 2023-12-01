@@ -1,9 +1,11 @@
-package com.ablil.springstarter.authentication
+package com.ablil.springstarter.service
 
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.common.InvalidCredentials
+import com.ablil.springstarter.common.ResetPasswordError
 import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.miscllaneous.JwtUtil
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.LoginCredentials
 import com.ablil.springstarter.webapi.ResetPassword
 import org.apache.commons.lang3.RandomStringUtils
@@ -13,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LoginService(
-        val userRepository: UserRepository,
-        val passwordEncoder: PasswordEncoder,
-        val emailClient: EmailClient,
+    val userRepository: UserRepository,
+    val passwordEncoder: PasswordEncoder,
+    val emailClient: EmailClient,
 ) {
 
     fun login(credentials: LoginCredentials): String {

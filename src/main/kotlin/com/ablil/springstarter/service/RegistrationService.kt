@@ -1,9 +1,11 @@
-package com.ablil.springstarter.authentication
+package com.ablil.springstarter.service
 
+import com.ablil.springstarter.common.TokenNotFound
+import com.ablil.springstarter.common.UserAlreadyExists
+import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.User
 import com.ablil.springstarter.persistence.repositories.UserRepository
-import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.webapi.RegistrationRequest
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.LoggerFactory
@@ -12,9 +14,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class RegistrationService(
-        private val userRepository: UserRepository,
-        private val passwordEncoder: PasswordEncoder,
-        private val emailClient: EmailClient,
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val emailClient: EmailClient,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
