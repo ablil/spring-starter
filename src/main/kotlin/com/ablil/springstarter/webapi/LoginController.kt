@@ -1,5 +1,6 @@
-package com.ablil.springstarter.authentication
+package com.ablil.springstarter.webapi
 
+import com.ablil.springstarter.authentication.LoginService
 import com.ablil.springstarter.miscllaneous.ConfigParams
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -20,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/auth")
 class LoginController(
-    private val loginService: LoginService,
+        private val loginService: LoginService,
 ) {
     @PostMapping("login")
     fun login(
-        @RequestBody @Valid
+            @RequestBody @Valid
         credentials: LoginCredentials,
-        response: HttpServletResponse
+            response: HttpServletResponse
     ): ResponseEntity<Void> {
         val token = loginService.login(credentials)
         response.addCookie(
@@ -42,7 +43,7 @@ class LoginController(
     @PostMapping("forget_password")
     @Operation(summary = "Trigger forget password process", description = "Send email with reset link")
     fun forgetPassword(
-        @RequestBody @Valid
+            @RequestBody @Valid
         body: EmailDto,
     ) {
         loginService.forgetPassword(body.email)
@@ -51,7 +52,7 @@ class LoginController(
     @PostMapping("reset_password")
     @Operation(summary = "reset password", description = "Given reset token, reset password")
     fun resetPassword(
-        @RequestBody @Valid
+            @RequestBody @Valid
         body: ResetPassword,
     ) {
         loginService.resetPassword(body)

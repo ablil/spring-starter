@@ -4,6 +4,8 @@ import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.User
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.miscllaneous.EmailClient
+import com.ablil.springstarter.webapi.LoginCredentials
+import com.ablil.springstarter.webapi.ResetPassword
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify

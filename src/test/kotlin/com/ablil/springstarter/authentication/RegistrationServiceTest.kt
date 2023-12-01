@@ -3,6 +3,7 @@ package com.ablil.springstarter.authentication
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.miscllaneous.EmailClient
+import com.ablil.springstarter.webapi.RegistrationRequest
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertAll

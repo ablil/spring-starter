@@ -21,7 +21,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
     type = SecuritySchemeType.APIKEY,
     scheme = "bearer",
 )
-@EnableJpaAuditing
 class Application
 
 fun main(args: Array<String>) {
