@@ -1,5 +1,6 @@
-package com.ablil.springstarter.domain.users
+package com.ablil.springstarter.persistence.entities
 
+import com.ablil.springstarter.persistence.common.AuditingEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -12,23 +13,23 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "users")
 data class User(
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long?,
 
-    @Column(updatable = false, nullable = false, unique = true)
+        @Column(updatable = false, nullable = false, unique = true)
     val username: String,
 
-    @Column(updatable = false, nullable = false, unique = true)
+        @Column(updatable = false, nullable = false, unique = true)
     val email: String,
 
-    @Column(nullable = false)
+        @Column(nullable = false)
     val password: String,
 
-    @Enumerated(EnumType.STRING)
+        @Enumerated(EnumType.STRING)
     val status: AccountStatus = AccountStatus.INACTIVE,
 
-    val token: String? = null,
+        val token: String? = null,
 ) : AuditingEntity()
 
 enum class AccountStatus {

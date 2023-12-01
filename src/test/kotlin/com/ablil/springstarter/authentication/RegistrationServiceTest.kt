@@ -1,7 +1,7 @@
 package com.ablil.springstarter.authentication
 
-import com.ablil.springstarter.domain.users.AccountStatus
-import com.ablil.springstarter.domain.users.UserRepository
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
@@ -18,9 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class RegistrationServiceTest(
-    @Autowired private val userRepository: UserRepository,
-    @Autowired private val registrationService: RegistrationService,
-    @MockkBean(relaxed = true) @Autowired private val emailClient: EmailClient
+        @Autowired private val userRepository: UserRepository,
+        @Autowired private val registrationService: RegistrationService,
+        @MockkBean(relaxed = true) @Autowired private val emailClient: EmailClient
 ) {
 
     @BeforeEach

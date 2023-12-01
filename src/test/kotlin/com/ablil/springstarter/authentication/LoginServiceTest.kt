@@ -1,8 +1,8 @@
 package com.ablil.springstarter.authentication
 
-import com.ablil.springstarter.domain.users.AccountStatus
-import com.ablil.springstarter.domain.users.User
-import com.ablil.springstarter.domain.users.UserRepository
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -18,10 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @SpringBootTest
 class LoginServiceTest(
-    @Autowired val loginService: LoginService,
-    @MockkBean(relaxed = true) @Autowired val userRepository: UserRepository,
-    @MockkBean(relaxed = true) @Autowired val emailClient: EmailClient,
-    @Autowired val passwordEncoder: PasswordEncoder
+        @Autowired val loginService: LoginService,
+        @MockkBean(relaxed = true) @Autowired val userRepository: UserRepository,
+        @MockkBean(relaxed = true) @Autowired val emailClient: EmailClient,
+        @Autowired val passwordEncoder: PasswordEncoder
 ) {
 
     @Test

@@ -1,19 +1,18 @@
-package com.ablil.springstarter.authentication
+package com.ablil.springstarter.persistence.repositories
 
-import com.ablil.springstarter.domain.users.AccountStatus
-import com.ablil.springstarter.domain.users.User
-import com.ablil.springstarter.domain.users.UserRepository
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.entities.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
-@SpringBootTest
+@DataJpaTest
 class UserRepositoryTest(
-    @Autowired val userRepository: UserRepository,
+        @Autowired val userRepository: UserRepository,
 ) {
 
     @BeforeEach
@@ -55,10 +54,8 @@ class UserRepositoryTest(
     @Test
     fun `update password by email`() {
         userRepository.save(user)
-        userRepository.resetPassword("newsupersecurepassword", user.email)
-
-        val actual = userRepository.findByEmail(user.email)
-        assertEquals("newsupersecurepassword", actual?.password)
+        val updated = userRepository.resetPassword("newsupersecurepassword", user.email)
+        assertEquals(1, updated)
     }
 
     companion object {

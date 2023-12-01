@@ -1,5 +1,7 @@
-package com.ablil.springstarter.domain.users
+package com.ablil.springstarter.persistence.repositories
 
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.entities.User
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
