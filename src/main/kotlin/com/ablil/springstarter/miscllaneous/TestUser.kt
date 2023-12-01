@@ -1,8 +1,8 @@
 package com.ablil.springstarter.miscllaneous
 
-import com.ablil.springstarter.domain.users.AccountStatus
-import com.ablil.springstarter.domain.users.User
-import com.ablil.springstarter.domain.users.UserRepository
+import com.ablil.springstarter.persistence.entities.AccountStatus
+import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration

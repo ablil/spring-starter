@@ -1,6 +1,6 @@
 spring:
   config:
-    import: application.yml
+    import: classpath:application.yml
   datasource:
     password: supersecurepassword
   jpa:

@@ -1,6 +1,7 @@
-package com.ablil.springstarter.authentication
+package com.ablil.springstarter.webapi
 
 import com.ablil.springstarter.miscllaneous.ConfigParams
+import com.ablil.springstarter.service.LoginService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag

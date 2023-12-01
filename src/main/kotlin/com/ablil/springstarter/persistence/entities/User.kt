@@ -1,5 +1,6 @@
-package com.ablil.springstarter.domain.users
+package com.ablil.springstarter.persistence.entities
 
+import com.ablil.springstarter.persistence.common.AuditingEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
