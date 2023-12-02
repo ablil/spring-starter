@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 class LoginService(
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
-    val emailClient: EmailClient,
+    val emailClient: EmailClient?,
 ) {
 
     fun login(credentials: LoginCredentials): String {
@@ -34,7 +34,7 @@ class LoginService(
         userRepository.findByEmail(email)?.let {
             userRepository.updateTokenAndStatus(resetToken, AccountStatus.PASSWORD_RESET_IN_PROGRESS, email)
         }?.also {
-            emailClient.sendEmail(email, "Reset password", resetToken)
+            emailClient?.sendEmail(email, "Reset password", resetToken)
         }
     }
 
@@ -43,6 +43,6 @@ class LoginService(
         val user = userRepository.findByToken(token) ?: throw ResetPasswordError("token $token not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         userRepository.resetPassword(passwordEncoder.encode(password), user.email)
-        emailClient.sendEmail(user.email, "Password has been reset", "Your password has been reset")
+        emailClient?.sendEmail(user.email, "Password has been reset", "Your password has been reset")
     }
 }

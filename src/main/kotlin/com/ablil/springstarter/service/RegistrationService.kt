@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val emailClient: EmailClient,
+    private val emailClient: EmailClient?,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -35,7 +35,7 @@ class RegistrationService(
 
         return userRepository.save(user).also {
             logger.info("created new account for ${request.username}")
-            emailClient.sendEmail(user.email, "Confirm registration", requireNotNull(user.token))
+            emailClient?.sendEmail(user.email, "Confirm registration", requireNotNull(user.token))
         }
     }
 
