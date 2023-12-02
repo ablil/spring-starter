@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: springstarter
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  default-produces-media-type: application/json

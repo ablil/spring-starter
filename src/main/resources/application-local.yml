@@ -1,19 +1,15 @@
 spring:
-  profiles:
-    default: dev
-  application:
-    name: springstarter
-
+  config:
+    import: classpath:application-common.yml
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD}
+    username: postgres
+    password: supersecurepassword
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
-
+    url: jdbc:postgresql://localhost:5432/postgres
   jpa:
     hibernate:
       ddl-auto: update
-
+    show-sql: true
   mail:
     protocol: smtp
     host: sandbox.smtp.mailtrap.io
@@ -28,7 +24,4 @@ spring:
             enable: true
 
 server:
-  port: ${PORT:80}
-
-springdoc:
-  default-produces-media-type: application/json
+  port: 8080

@@ -14,10 +14,8 @@ The implementation includes:
 * Authorization with JWT/cookie (json web token)
 * swagger / Open API specification
 
-# Get started
-
-## Run locally
-1. start the database: `docker-compose run -p 5432:5432 -d database`
+# Run locally
+1. start the database: `docker-compose up -d database`
 2. start the spring app: `./gradlew bootRun`
 
 

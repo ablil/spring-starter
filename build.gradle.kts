@@ -25,13 +25,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-
     implementation("com.auth0:java-jwt:4.3.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     runtimeOnly("com.h2database:h2")
@@ -104,4 +101,8 @@ jib {
     container {
         ports = listOf("8080")
     }
+}
+
+tasks.bootRun {
+    args = listOf("--spring.profiles.active=local")
 }
