@@ -19,11 +19,25 @@ The implementation includes:
 ## Run locally
 1. start the database: `docker-compose run -p 5432:5432 -d database`
 2. start the spring app: `./gradlew bootRun`
-3. start the web app: `cd web && yarn dev`
 
-## Run with docker
 
-Run `docker-compose up -d` and it will run all services behind an Nginx proxy simulating prod environment.
+# API specification / code generation
+
+API-first approach is adopted in this project to generate the API code from the OpenAPI specification.
+
+The specification is located in the `resources/specs` folder and the code is generated using
+the [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
+which already has a [Gradle plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin).
+
+Run `./gradlew openApiGenerate` to generate the code. The generated code is located in the `build/generated` folder.
+
+# Docker
+
+The [jib](https://github.com/GoogleContainerTools/jib/blob/master/jib-gradle-plugin/README.md) plugin is used to build
+the docker image.
+
+You just have to run `./gradlew jibDockerBuild` to build the image.
+
 
 # Configuration
 
