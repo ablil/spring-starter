@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  version: '1.0.0'
+  title: Login and Password reset API
+tags:
+  - name: login
+    description: Login
+paths:
+  /auth/login:
+    post:
+      tags:
+        - login
+      summary: login
+      description: "Login with username and password and return jwt token in cookie"
+      requestBody:
+        description: 'credentials'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        204:
+          description: "logged in successfully"
+        403:
+          description: "invalid credentials"
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        usernameOrEmail:
+          type: string
+        password:
+          type: string
+      required:
+        - usernameOrEmail
+        - password

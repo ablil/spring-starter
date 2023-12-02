@@ -21,7 +21,7 @@ class RegistrationControllerTest(
 ) {
 
     @Test
-    fun `should return 200 given valid registration request`() {
+    fun `should return 201 given valid registration request`() {
         Mockito.`when`(
             registrationService.register(
                 RegistrationRequest(

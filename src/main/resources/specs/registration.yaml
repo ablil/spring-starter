@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  title: Registration
+  description: Registration
+  version: 1.0.0
+tags:
+  - name: Registration
+    description: Registration
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Registration
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+      responses:
+        '201':
+          description: OK
+  /auth/register/confirm:
+    get:
+      tags:
+        - Registration
+      operationId: confirmRegistration
+      summary: Confirm registration
+      description: Confirm registration given valid token and redirect user after confirmation
+      parameters:
+        - name: token
+          in: query
+          description: Token to confirm registration
+          required: true
+          schema:
+            type: string
+      responses:
+        '307':
+          description: Temporary Redirect
+
+
+components:
+  schemas:
+    RegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 10
+        username:
+          type: string
+          minLength: 6
+      required:
+        - username
+        - password
+        - email
