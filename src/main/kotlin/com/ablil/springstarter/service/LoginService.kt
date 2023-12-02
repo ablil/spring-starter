@@ -7,7 +7,6 @@ import com.ablil.springstarter.miscllaneous.JwtUtil
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.LoginCredentials
-import com.ablil.springstarter.webapi.ResetPassword
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -40,10 +39,10 @@ class LoginService(
     }
 
     @Transactional
-    fun resetPassword(body: ResetPassword) {
-        val user = userRepository.findByToken(body.token) ?: throw ResetPasswordError("token ${body.token} not found")
+    fun resetPassword(token: String, password: String) {
+        val user = userRepository.findByToken(token) ?: throw ResetPasswordError("token $token not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
-        userRepository.resetPassword(passwordEncoder.encode(body.password), user.email)
+        userRepository.resetPassword(passwordEncoder.encode(password), user.email)
         emailClient.sendEmail(user.email, "Password has been reset", "Your password has been reset")
     }
 }

@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.openapi.generator") version "7.1.0"
 }
 
 group = "com.ablil"
@@ -46,9 +47,53 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
+    dependsOn("openApiGenerate")
 }
 
 tasks.withType<Test> {
     systemProperty("spring.profiles.active", "test")
     useJUnitPlatform()
 }
+
+openApiGenerate {
+    // more config here: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+    val pkgName = "com.ablil.springstarter.webapi"
+    val outDir = "$buildDir/generated/openapi"
+    val specsDir = "$projectDir/src/main/resources/specs"
+
+    generatorName.set("kotlin-spring")
+    inputSpecRootDirectory.set(specsDir)
+    modelPackage.set("$pkgName.model")
+    apiPackage.set("$pkgName.api")
+    packageName.set(pkgName)
+    outputDir.set(outDir)
+
+    configOptions.putAll(
+        mapOf(
+            Pair("useSpringBoot3", "true"), // In order to use jakarta.validation instead of javax.validation
+            Pair("interfaceOnly", "true"),
+            Pair("skipDefaultInterface", "true"), // Do not generate a default implementation for interface methods
+            Pair("useTags", "true")
+        )
+    )
+
+    cleanupOutput.set(true)
+    generateApiTests.set(false)
+}
+
+sourceSets {
+    main {
+        kotlin {
+            // include generated sources from openapi generator in the main source set
+            srcDir("$buildDir/generated/openapi/src/main/kotlin")
+        }
+    }
+}
+
+ktlint {
+    filter {
+        exclude { it.file.path.contains("$buildDir/generated") }
+    }
+}
+
+// TODO: fix validate api task not working

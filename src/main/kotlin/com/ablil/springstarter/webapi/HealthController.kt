@@ -1,15 +1,12 @@
 package com.ablil.springstarter.webapi
 
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.web.bind.annotation.GetMapping
+import com.ablil.springstarter.webapi.api.HealthApi
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Tag(name = "Health indicators")
-class HealthController {
-
-    @GetMapping("/health")
-    @Operation(summary = "Check app health")
-    fun health() = "OK"
+class HealthController : HealthApi {
+    override fun healthGet(): ResponseEntity<String> {
+        return ResponseEntity.ok("OK")
+    }
 }

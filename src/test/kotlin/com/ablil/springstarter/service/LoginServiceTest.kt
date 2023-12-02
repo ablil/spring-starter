@@ -6,7 +6,6 @@ import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.User
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.LoginCredentials
-import com.ablil.springstarter.webapi.ResetPassword
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -54,7 +53,7 @@ class LoginServiceTest {
         Mockito.`when`(userRepository.findByToken("token")).thenReturn(user)
         Mockito.`when`(passwordEncoder.encode(Mockito.any())).thenReturn("supersecurepassword")
 
-        loginService.resetPassword(ResetPassword("token", "supersecurepassword"))
+        loginService.resetPassword("token", "supersecurepassword")
 
         Mockito.verify(userRepository, Mockito.times(1)).updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         Mockito.verify(userRepository, Mockito.times(1)).resetPassword("supersecurepassword", user.email)
