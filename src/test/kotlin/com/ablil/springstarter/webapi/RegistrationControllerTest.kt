@@ -1,6 +1,6 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.service.RegistrationService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -30,7 +30,7 @@ class RegistrationControllerTest(
                     email = "joedoe@example.com"
                 )
             )
-        ).thenReturn(user)
+        ).thenReturn(userEntity)
         mockMvc.post("/auth/register") {
             contentType = MediaType.APPLICATION_JSON
             content = """
@@ -48,7 +48,7 @@ class RegistrationControllerTest(
     }
 
     companion object {
-        val user = User(
+        val userEntity = UserEntity(
             id = null,
             username = "joedoe",
             email = "joedoe@example.com",

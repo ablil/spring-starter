@@ -1,6 +1,7 @@
-package com.ablil.springstarter.security
+package com.ablil.springstarter.security.filters
 
 import com.ablil.springstarter.miscllaneous.JwtUtil
+import com.ablil.springstarter.security.SecurityConfig
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,6 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
+/**
+ * Extracts JWT from cookie and sets security context
+ */
 @Component
 class AuthorizationCookieFilter(
     private val userDetailsService: UserDetailsService,
@@ -21,12 +25,13 @@ class AuthorizationCookieFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        if (!Config.publicEndpoints.contains(request.servletPath)) {
-            request.cookies?.firstOrNull { it.name == "jwt" }?.takeIf { JwtUtil.isValid(it.value) }
-                ?.also { authenticate(it.value) }
-        }
-
+        request.cookies?.firstOrNull { it.name == "jwt" }?.takeIf { JwtUtil.isValid(it.value) }
+            ?.also { authenticate(it.value) }
         filterChain.doFilter(request, response)
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return SecurityConfig.publicEndpoints.contains(request.servletPath)
     }
 
     private fun authenticate(token: String) {

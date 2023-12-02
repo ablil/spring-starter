@@ -1,7 +1,7 @@
 package com.ablil.springstarter.miscllaneous
 
 import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
@@ -20,7 +20,7 @@ class TestUser(
     @PostConstruct
     fun createTestUser() {
         userRepository.save(
-            User(
+            UserEntity(
                 id = null,
                 username = "joedoe",
                 email = "joedoe@example.com",

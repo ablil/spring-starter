@@ -14,12 +14,10 @@ The implementation includes:
 * Authorization with JWT/cookie (json web token)
 * swagger / Open API specification
 
-# Get started
+# Run locally
 
-## Run locally
-1. start the database: `docker-compose run -p 5432:5432 -d database`
+1. start the database: `docker-compose up -d database`
 2. start the spring app: `./gradlew bootRun`
-
 
 # API specification / code generation
 
@@ -27,7 +25,8 @@ API-first approach is adopted in this project to generate the API code from the 
 
 The specification is located in the `resources/specs` folder and the code is generated using
 the [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
-which already has a [Gradle plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin).
+which already has
+a [Gradle plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin).
 
 Run `./gradlew openApiGenerate` to generate the code. The generated code is located in the `build/generated` folder.
 
@@ -38,6 +37,12 @@ the docker image.
 
 You just have to run `./gradlew jibDockerBuild` to build the image.
 
+# Security
+
+Except for the public endpoints which are defined in `SecurityConfig`, all the other endpoints are secured with JWT
+through cookies.
+
+Every authenticated request expects a cookie with the name `jwt` which contains the JWT token.
 
 # Configuration
 

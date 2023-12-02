@@ -4,3 +4,5 @@ services:
     image: postgres
     environment:
       POSTGRES_PASSWORD: supersecurepassword
+    ports:
+      - 5432:5432
