@@ -2,7 +2,7 @@ package com.ablil.springstarter.service
 
 import com.ablil.springstarter.common.UserAlreadyExists
 import com.ablil.springstarter.miscllaneous.EmailClient
-import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.RegistrationRequest
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -31,7 +31,7 @@ class RegistrationServiceTest {
 
     @Test
     fun `should throw exception when registering an existing user`() {
-        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(user)
+        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(userEntity)
         assertThrows(UserAlreadyExists::class.java) {
             registrationService.register(request)
         }
@@ -43,7 +43,7 @@ class RegistrationServiceTest {
             email = "joedoe@example.com",
             password = "supersecurepassword"
         )
-        val user = User(
+        val userEntity = UserEntity(
             id = 1343,
             username = "joedoe",
             email = "joedoe@example.com",

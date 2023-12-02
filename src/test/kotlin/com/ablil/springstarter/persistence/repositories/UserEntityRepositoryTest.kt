@@ -2,7 +2,7 @@ package com.ablil.springstarter.persistence.repositories
 
 import com.ablil.springstarter.persistence.common.RepositoryTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.entities.UserEntity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
 
 @RepositoryTest
-class UserRepositoryTest(
+class UserEntityRepositoryTest(
     @Autowired val userRepository: UserRepository,
 ) {
 
@@ -20,8 +20,8 @@ class UserRepositoryTest(
 
     @Test
     fun `set created and updated date`() {
-        userRepository.save(user)
-        val actual = userRepository.findByUsername(user.username)
+        userRepository.save(userEntity)
+        val actual = userRepository.findByUsername(userEntity.username)
         assertAll(
             "Auditing attributs",
             { assertNotNull(actual?.createdAt) },
@@ -31,7 +31,7 @@ class UserRepositoryTest(
 
     @Test
     fun `find user by username or email`() {
-        userRepository.save(user)
+        userRepository.save(userEntity)
         assertAll(
             "fetch user from database",
             { assertNotNull(userRepository.findByUsernameOrEmail("joedoe", null)) },
@@ -41,10 +41,10 @@ class UserRepositoryTest(
 
     @Test
     fun `update status and token by email`() {
-        userRepository.save(user)
-        userRepository.updateTokenAndStatus("mytoken", AccountStatus.ACTIVE, user.email)
+        userRepository.save(userEntity)
+        userRepository.updateTokenAndStatus("mytoken", AccountStatus.ACTIVE, userEntity.email)
 
-        val actual = userRepository.findByEmail(user.email)
+        val actual = userRepository.findByEmail(userEntity.email)
         assertAll(
             { assertEquals("mytoken", actual?.token) },
             { assertEquals(AccountStatus.ACTIVE, actual?.status) },
@@ -53,13 +53,13 @@ class UserRepositoryTest(
 
     @Test
     fun `update password by email`() {
-        userRepository.save(user)
-        val updated = userRepository.resetPassword("newsupersecurepassword", user.email)
+        userRepository.save(userEntity)
+        val updated = userRepository.resetPassword("newsupersecurepassword", userEntity.email)
         assertEquals(1, updated)
     }
 
     companion object {
-        val user = User(
+        val userEntity = UserEntity(
             id = null,
             username = "joedoe",
             email = "joedoe@example.com",

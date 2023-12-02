@@ -3,7 +3,7 @@ package com.ablil.springstarter.service
 import com.ablil.springstarter.common.InvalidCredentials
 import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.User
+import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.LoginCredentials
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -34,7 +34,7 @@ class LoginServiceTest {
     @Test
     fun `should generate jwt token given valid credentials`() {
         Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true)
-        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(user)
+        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(userEntity)
         val token = loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
         assertNotNull(token)
     }
@@ -42,7 +42,7 @@ class LoginServiceTest {
     @Test
     fun `should throw exception given invalid credentials`() {
         Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(false)
-        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(user)
+        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(userEntity)
         assertThrows(InvalidCredentials::class.java) {
             loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
         }
@@ -50,19 +50,19 @@ class LoginServiceTest {
 
     @Test
     fun `reset password successfully`() {
-        Mockito.`when`(userRepository.findByToken("token")).thenReturn(user)
+        Mockito.`when`(userRepository.findByToken("token")).thenReturn(userEntity)
         Mockito.`when`(passwordEncoder.encode(Mockito.any())).thenReturn("supersecurepassword")
 
         loginService.resetPassword("token", "supersecurepassword")
 
-        Mockito.verify(userRepository, Mockito.times(1)).updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
-        Mockito.verify(userRepository, Mockito.times(1)).resetPassword("supersecurepassword", user.email)
+        Mockito.verify(userRepository, Mockito.times(1)).updateTokenAndStatus(null, AccountStatus.ACTIVE, userEntity.email)
+        Mockito.verify(userRepository, Mockito.times(1)).resetPassword("supersecurepassword", userEntity.email)
         Mockito.verify(emailClient, Mockito.times(1))
-            .sendEmail(user.email, "Password has been reset", "Your password has been reset")
+            .sendEmail(userEntity.email, "Password has been reset", "Your password has been reset")
     }
 
     companion object {
-        val user = User(
+        val userEntity = UserEntity(
             id = 1343,
             username = "joedoe",
             email = "joedoe@example.com",
