@@ -1,7 +1,6 @@
 package com.ablil.springstarter.service
 
 import com.ablil.springstarter.common.UserAlreadyExists
-import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.RegistrationRequest
@@ -22,9 +21,6 @@ class RegistrationServiceTest {
 
     @InjectMocks
     lateinit var registrationService: RegistrationService
-
-    @Mock
-    lateinit var emailClient: EmailClient
 
     @Mock
     lateinit var passwordEncoder: PasswordEncoder

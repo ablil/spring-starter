@@ -2,7 +2,6 @@ package com.ablil.springstarter.service
 
 import com.ablil.springstarter.common.InvalidCredentials
 import com.ablil.springstarter.common.ResetPasswordError
-import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.miscllaneous.JwtUtil
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class LoginService(
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
-    val emailClient: EmailClient?,
+    val mailService: MailService?
 ) {
 
     fun login(credentials: LoginCredentials): String {
@@ -33,9 +32,7 @@ class LoginService(
         val resetToken = RandomStringUtils.randomAlphanumeric(10)
         userRepository.findByEmail(email)?.let {
             userRepository.updateTokenAndStatus(resetToken, AccountStatus.PASSWORD_RESET_IN_PROGRESS, email)
-        }?.also {
-            emailClient?.sendEmail(email, "Reset password", resetToken)
-        }
+        }?.also { mailService?.resetPassword(email, resetToken) }
     }
 
     @Transactional
@@ -43,6 +40,6 @@ class LoginService(
         val user = userRepository.findByToken(token) ?: throw ResetPasswordError("token $token not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         userRepository.resetPassword(passwordEncoder.encode(password), user.email)
-        emailClient?.sendEmail(user.email, "Password has been reset", "Your password has been reset")
+        mailService?.passwordHasBeenReset(user.email)
     }
 }
