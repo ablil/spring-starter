@@ -2,7 +2,6 @@ package com.ablil.springstarter.service
 
 import com.ablil.springstarter.common.TokenNotFound
 import com.ablil.springstarter.common.UserAlreadyExists
-import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val emailClient: EmailClient?,
+    private val mailService: MailService?
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -35,7 +34,7 @@ class RegistrationService(
 
         return userRepository.save(userEntity).also {
             logger.info("created new account for ${request.username}")
-            emailClient?.sendEmail(userEntity.email, "Confirm registration", requireNotNull(userEntity.token))
+            mailService?.confirmRegistration(userEntity.email, requireNotNull(userEntity.token))
         }
     }
 

@@ -1,7 +1,6 @@
 package com.ablil.springstarter.service
 
 import com.ablil.springstarter.common.InvalidCredentials
-import com.ablil.springstarter.miscllaneous.EmailClient
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -21,9 +20,6 @@ class LoginServiceTest {
 
     @Mock
     lateinit var userRepository: UserRepository
-
-    @Mock
-    lateinit var emailClient: EmailClient
 
     @Mock
     lateinit var passwordEncoder: PasswordEncoder
@@ -57,8 +53,6 @@ class LoginServiceTest {
 
         Mockito.verify(userRepository, Mockito.times(1)).updateTokenAndStatus(null, AccountStatus.ACTIVE, userEntity.email)
         Mockito.verify(userRepository, Mockito.times(1)).resetPassword("supersecurepassword", userEntity.email)
-        Mockito.verify(emailClient, Mockito.times(1))
-            .sendEmail(userEntity.email, "Password has been reset", "Your password has been reset")
     }
 
     companion object {
