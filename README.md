@@ -1,59 +1,46 @@
 # Spring starter
+This is a playground I used to test and discover new technologies or implement new concept I've learned at work or on my free time.
 
-[![CI](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ablil/spring-starter/actions/workflows/build-and-test.yml)
+It's a fully functionning rest API with unit tests and it's build primarly with [spring framework](spring.io) and [kotlin](kotlinlang.org).
 
-This is a boilerplate implementation for a general purpose API.
+# Get started
+### Run locally
+1. Start the database `docker-compose up -d database`
+2. Run the app `./gradlew bootRun`
 
-# Implementation
+**Important**: *make sure you fill the environment variable on **application-\*.yaml** files*
 
-The implementation includes:
+### Run with Docker / PROD
 
-* login with username/email and password
-* registration with email confirmation
-* reset and forget password
-* Authorization with JWT/cookie (json web token)
-* swagger / Open API specification
+*To be defined later*
 
-# Run locally
+# Development
 
-1. start the database: `docker-compose up -d database`
-2. start the spring app: `./gradlew bootRun`
+### API specs / code generation
 
-# API specification / code generation
+To make it easier and convinient to write code quickly, Kotlin code is generated from Open API specifications using [openapi generator](https://github.com/OpenAPITools/openapi-generator) plugin for Gradle.
 
-API-first approach is adopted in this project to generate the API code from the OpenAPI specification.
+Put your specs files in `resouces/specs` and run `./gradlew openApiGenerate` to generate Java interfaces annotated with @RestController and all necessary metadata.
 
-The specification is located in the `resources/specs` folder and the code is generated using
-the [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
-which already has
-a [Gradle plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin).
+The generated code is located in `build/generated` and can be imported into your code base.
 
-Run `./gradlew openApiGenerate` to generate the code. The generated code is located in the `build/generated` folder.
+The API code is generated from Open API sepecification files, which are located in `resources/specs`
 
-# Docker
 
-The [jib](https://github.com/GoogleContainerTools/jib/blob/master/jib-gradle-plugin/README.md) plugin is used to build
-the docker image.
+### Docker
 
-You just have to run `./gradlew jibDockerBuild` to build the image.
+To build a docker image, run `./gradlew jibDockerBuild`, this will build a an image with the name `spring-starter/latest`.
 
-# Security
+Under the hood the [jib](https://cloud.google.com/blog/products/application-development/introducing-jib-build-java-docker-images-better) plugin for gradlew is used, and it can be configured on **build.gradle.kts**
 
-Except for the public endpoints which are defined in `SecurityConfig`, all the other endpoints are secured with JWT
-through cookies.
+### Security
+
+Except for the public endpoints which are defined in `SecurityConfig`, all the other endpoints are secured with JWT token sent as a cookie.
 
 Every authenticated request expects a cookie with the name `jwt` which contains the JWT token.
 
-# Configuration
+### Email
 
-## Email
+If email properties are not set on `application-*.yaml` files, the application can run without them.
 
-[ Mailtrap ]( https://mailtrap.io/ ) is configured as an email sandbox, set your credentials in **application.yml** or
-you
-your own email config
-your email config
-
-## Database
-
-Postgres is used as a default database with default credentials, set your credentials through env variables or
-check **application.yml**
+For local environment, [mailtrap](mailtrap.io) is used a sandbox to capture all sent emails to debug and inspect them (do NOT forget to you update mail server credentials).
