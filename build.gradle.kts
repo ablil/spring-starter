@@ -1,4 +1,7 @@
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
     id("org.springframework.boot") version "3.0.4"
@@ -99,6 +102,7 @@ jib {
     }
     container {
         ports = listOf("8080")
+        creationTime.set(OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")))
     }
 }
 
