@@ -24,20 +24,28 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.m2/repository
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: Build
         run: ./gradlew build
       - name: Archive build reports
         uses: actions/upload-artifact@v3
         with:
           path: build/reports
-      - uses: actions/cache@v3
+
+      - name: Cache build directory
+        uses: actions/cache@v2
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          path: build
+          key: ${{ runner.os }}-build-${{ github.sha }}
 
   push-to-ghcr:
     needs: build
@@ -53,6 +61,20 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
+      - name: Restore build directory from cache
+        uses: actions/cache@v2
+        with:
+          path: build
+          key: ${{ runner.os }}-build-${{ github.sha }}
+      - name: Cache Docker layers
+        id: docker-cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            /var/lib/docker
+          key: docker-${{ runner.os }}
+          restore-keys: |
+            docker-${{ runner.os }}
       - name: login to ghcr
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITHUB_TOKEN }}
       - name: build docker image
