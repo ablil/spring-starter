@@ -66,15 +66,6 @@ jobs:
         with:
           path: build
           key: ${{ runner.os }}-build-${{ github.sha }}
-      - name: Cache Docker layers
-        id: docker-cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            /var/lib/docker
-          key: docker-${{ runner.os }}
-          restore-keys: |
-            docker-${{ runner.os }}
       - name: login to ghcr
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITHUB_TOKEN }}
       - name: build docker image
