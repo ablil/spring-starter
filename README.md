@@ -34,6 +34,9 @@ To build a docker image, run `./gradlew jibDockerBuild`, this will build a an im
 Docker images are built and pushed to [ghcr](https://github.com/ablil/spring-starter/pkgs/container/spring-starter) with the tag `latest` for main branch and `SHORT_SHA` for pull requests.
 
 *Under the hood the [jib](https://cloud.google.com/blog/products/application-development/introducing-jib-build-java-docker-images-better) plugin for gradlew is used, and it can be configured on **build.gradle.kts***
+
+*Old packages are being cleaned each month through a github workflow `.github/workflows/cleanup.yaml`*
+
 ### Security
 
 Except for the public endpoints which are defined in `SecurityConfig`, all the other endpoints are secured with JWT token sent as a cookie.
