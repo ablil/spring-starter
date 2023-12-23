@@ -48,6 +48,7 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "17"
     }
     dependsOn("openApiGenerate")
+    dependsOn("setupGithooks")
 }
 
 tasks.withType<Test> {
@@ -108,4 +109,13 @@ jib {
 
 tasks.bootRun {
     args = listOf("--spring.profiles.active=local")
+}
+
+tasks.register<Copy>("setupGithooks") {
+    destinationDir = projectDir.resolve(".git/hooks")
+    from(projectDir.resolve("local/githooks"))
+
+    doLast {
+        println("Copied Git hooks successfully")
+    }
 }
