@@ -19,8 +19,8 @@ class LoginControllerTest(
     @MockBean @Autowired val loginService: LoginService,
 ) {
     @Test
-    fun `should return token in cookie given valid login credentials`() {
-        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "password"))).thenReturn("token")
+    fun `should return jwt token given valid login credentials`() {
+        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword"))).thenReturn("token")
 
         mockMvc.post("/auth/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -28,8 +28,8 @@ class LoginControllerTest(
                 {"usernameOrEmail": "joedoe", "password": "supersecurepassword"}
             """.trimIndent()
         }.andExpectAll {
-            status { isNoContent() }
-            cookie { exists("jwt") }
+            status { isOk() }
+            jsonPath("$.token") { value("token") }
         }
     }
 
