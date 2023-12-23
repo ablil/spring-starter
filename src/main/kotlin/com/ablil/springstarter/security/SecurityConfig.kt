@@ -1,6 +1,6 @@
 package com.ablil.springstarter.security
 
-import com.ablil.springstarter.security.filters.AuthorizationCookieFilter
+import com.ablil.springstarter.security.filters.JsonWebTokenFilter
 import com.ablil.springstarter.security.filters.LogRequestsFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class SecurityConfig(
-    private val authorizationCookieFilter: AuthorizationCookieFilter,
+    private val jsonWebTokenFilter: JsonWebTokenFilter,
     private val logRequestsFilter: LogRequestsFilter,
 ) {
 
@@ -43,7 +43,7 @@ class SecurityConfig(
             httpBasic { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(logRequestsFilter)
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(authorizationCookieFilter)
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(jsonWebTokenFilter)
         }
         http.formLogin { it.disable() }
         return http.build()

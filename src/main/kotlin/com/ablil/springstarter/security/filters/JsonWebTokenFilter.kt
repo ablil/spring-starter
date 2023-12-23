@@ -13,20 +13,21 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 /**
- * Extracts JWT from cookie and sets security context
+ * Extracts JWT from Authorization header and validate it
+ * JWT
  */
 @Component
-class AuthorizationCookieFilter(
-    private val userDetailsService: UserDetailsService,
-) : OncePerRequestFilter() {
+class JsonWebTokenFilter(private val userDetailsService: UserDetailsService) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        request.cookies?.firstOrNull { it.name == "jwt" }?.takeIf { JwtUtil.isValid(it.value) }
-            ?.also { authenticate(it.value) }
+        request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }
+            ?.substring(7)
+            ?.takeIf { JwtUtil.isValid(it) }
+            ?.also { authenticate(it) }
         filterChain.doFilter(request, response)
     }
 
