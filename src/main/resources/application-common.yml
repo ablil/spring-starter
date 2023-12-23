@@ -1,6 +1,8 @@
 spring:
   application:
     name: springstarter
+  main:
+    banner-mode: off
 
 springdoc:
   swagger-ui:
