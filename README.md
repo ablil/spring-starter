@@ -1,7 +1,7 @@
 # Spring starter
 This is a playground I used to test and discover new technologies or implement new concept I've learned at work or on my free time.
 
-It's a fully functionning rest API with unit tests and it's build primarly with [spring framework](spring.io) and [kotlin](kotlinlang.org).
+It's a fully functioning rest API with unit tests and it's build primarly with [spring framework](spring.io) and [kotlin](kotlinlang.org).
 
 # Get started
 ### Run locally
@@ -12,19 +12,20 @@ It's a fully functionning rest API with unit tests and it's build primarly with 
 
 ### Run with Docker / PROD
 
-*To be defined later*
+1. Update environment variables or config on *docker-compose.yml* if necessary
+2. Run `docker-compose up -d`
 
 # Development
 
 ### API specs / code generation
 
-To make it easier and convinient to write code quickly, Kotlin code is generated from Open API specifications using [openapi generator](https://github.com/OpenAPITools/openapi-generator) plugin for Gradle.
+To make it easier and convenient to write code quickly, Kotlin code is generated from Open API specifications using [openapi generator](https://github.com/OpenAPITools/openapi-generator) plugin for Gradle.
 
 Put your specs files in `resouces/specs` and run `./gradlew openApiGenerate` to generate Java interfaces annotated with @RestController and all necessary metadata.
 
 The generated code is located in `build/generated` and can be imported into your code base.
 
-The API code is generated from Open API sepecification files, which are located in `resources/specs`
+The API code is generated from Open API specification files, which are located in `resources/specs`
 
 
 ### Docker

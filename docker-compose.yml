@@ -2,7 +2,20 @@ version: '3'
 services:
   database:
     image: postgres
+    container_name: springstarter_database
     environment:
       POSTGRES_PASSWORD: supersecurepassword
     ports:
       - 5432:5432
+  app:
+    image: ghcr.io/ablil/spring-starter:latest
+    container_name: springstarter_app
+    depends_on:
+      - database
+    ports:
+      - "8080:80"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_PASSWORD: supersecurepassword
+      DB_HOST: database
+      DOMAIN_NAME: http://localhost:8080
