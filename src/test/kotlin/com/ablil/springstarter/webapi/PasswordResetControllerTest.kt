@@ -19,7 +19,7 @@ class PasswordResetControllerTest(
 
     @Test
     fun `return 200 given valid reset password request`() {
-        mockMvc.post("/auth/reset_password") {
+        mockMvc.post("/api/auth/reset_password") {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 {"token": "token", "password": "supersecurepassword"}
@@ -29,7 +29,7 @@ class PasswordResetControllerTest(
 
     @Test
     fun `return 200 given forget password request`() {
-        mockMvc.post("/auth/forget_password") {
+        mockMvc.post("/api/auth/forget_password") {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 {"email": "joedoe@example.com"}

@@ -31,7 +31,7 @@ class RegistrationControllerTest(
                 )
             )
         ).thenReturn(userEntity)
-        mockMvc.post("/auth/register") {
+        mockMvc.post("/api/auth/register") {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 { "username": "joedoe", "password": "supersecurepassword", "email": "joedoe@example.com" }
@@ -41,7 +41,7 @@ class RegistrationControllerTest(
 
     @Test
     fun `should redirect user given valid registration confirmation token`() {
-        mockMvc.get("/auth/register/confirm?token=mytoken").andExpect {
+        mockMvc.get("/api/auth/register/confirm?token=mytoken").andExpect {
             status { isTemporaryRedirect() }
             header { string("Location", "/register/confirm?confirmed=true") }
         }
