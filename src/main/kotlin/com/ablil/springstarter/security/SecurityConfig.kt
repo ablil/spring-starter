@@ -25,10 +25,10 @@ class SecurityConfig(
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/auth/register/**",
-            "/auth/login",
-            "/auth/forget_password",
-            "/auth/reset_password",
+            "/api/auth/register/**",
+            "/api/auth/login",
+            "/api/auth/forget_password",
+            "/api/auth/reset_password",
         )
     }
 

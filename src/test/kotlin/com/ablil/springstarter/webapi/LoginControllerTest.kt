@@ -22,7 +22,7 @@ class LoginControllerTest(
     fun `should return jwt token given valid login credentials`() {
         Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword"))).thenReturn("token")
 
-        mockMvc.post("/auth/login") {
+        mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 {"usernameOrEmail": "joedoe", "password": "supersecurepassword"}
@@ -38,7 +38,7 @@ class LoginControllerTest(
         Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
             .thenThrow(InvalidCredentials())
 
-        mockMvc.post("/auth/login") {
+        mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 {"usernameOrEmail": "joedoe", "password": "supersecurepassword"}

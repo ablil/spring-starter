@@ -7,7 +7,7 @@ tags:
   - name: Registration
     description: Registration
 paths:
-  /auth/register:
+  /api/auth/register:
     post:
       tags:
         - Registration
@@ -22,7 +22,7 @@ paths:
       responses:
         '201':
           description: OK
-  /auth/register/confirm:
+  /api/auth/register/confirm:
     get:
       tags:
         - Registration

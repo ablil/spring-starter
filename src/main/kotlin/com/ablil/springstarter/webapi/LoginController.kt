@@ -15,7 +15,7 @@ class LoginController(
     private val loginService: LoginService,
     private val response: HttpServletResponse
 ) : LoginApi {
-    override fun authLoginPost(loginRequest: LoginRequest): ResponseEntity<Token> {
+    override fun login(loginRequest: LoginRequest): ResponseEntity<Token> {
         val token = loginService.login(
             LoginCredentials(
                 usernameOrEmail = loginRequest.usernameOrEmail,

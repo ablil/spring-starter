@@ -6,8 +6,9 @@ tags:
   - name: login
     description: Login
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
+      operationId: login
       tags:
         - login
       summary: login
