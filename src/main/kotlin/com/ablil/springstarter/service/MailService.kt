@@ -1,6 +1,6 @@
 package com.ablil.springstarter.service
 
-import com.ablil.springstarter.common.AppProperties
+import com.ablil.springstarter.common.ApplicationProperties
 import com.ablil.springstarter.common.MailConfig
 import com.ablil.springstarter.miscllaneous.EmailClient
 import org.springframework.stereotype.Service
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service
 @Service
 @MailConfig
 class MailService(
-    val appProperties: AppProperties,
+    val applicationProperties: ApplicationProperties,
     val emailClient: EmailClient?
 ) {
 
     fun resetPassword(to: String, token: String) {
         // This is a frontend endpoint that will be used to reset the password, the token should be sent from there to the backend
-        val link = "${appProperties.domainName}/reset-password?token=$token"
+        val link = "${applicationProperties.domainName}/reset-password?token=$token"
         emailClient?.sendEmail(to, "RESET PASSWORD", link)
     }
 
@@ -23,7 +23,7 @@ class MailService(
     }
 
     fun confirmRegistration(to: String, token: String) {
-        val link = "${appProperties.domainName}/auth/register/confirm?token=$token"
+        val link = "${applicationProperties.domainName}/auth/register/confirm?token=$token"
         emailClient?.sendEmail(to, "CONFIRM REGISTRATION", link)
     }
 }

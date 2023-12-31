@@ -2,6 +2,7 @@ package com.ablil.springstarter.security
 
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.repositories.UserRepository
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -19,7 +20,7 @@ class DefaultUserDetailsService(
                 .disabled(it.status == AccountStatus.INACTIVE)
                 .accountLocked(false)
                 .accountExpired(false)
-                .authorities(emptyList())
+                .authorities(SimpleGrantedAuthority(it.role.name))
                 .build()
         } ?: throw UsernameNotFoundException("user $username not found")
     }

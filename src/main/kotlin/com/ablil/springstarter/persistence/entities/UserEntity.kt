@@ -30,8 +30,15 @@ data class UserEntity(
     val status: AccountStatus = AccountStatus.INACTIVE,
 
     val token: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    val role: UserRole = UserRole.USER,
 ) : AuditingEntity()
 
 enum class AccountStatus {
     INACTIVE, ACTIVE, PASSWORD_RESET_IN_PROGRESS
+}
+
+enum class UserRole {
+    ADMIN, USER
 }

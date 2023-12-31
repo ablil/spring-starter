@@ -14,3 +14,8 @@ server:
   error:
     whitelabel:
       enabled: false
+
+# my custom app properties
+ablil:
+  domain-name: ${DOMAIN_NAME:localhost}
+  admin-password: ${ADMIN_PASSWORD:admin}
