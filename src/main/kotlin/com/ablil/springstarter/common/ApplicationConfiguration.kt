@@ -6,15 +6,14 @@ import com.ablil.springstarter.persistence.entities.UserRole
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
-import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@EnableConfigurationProperties(ApplicationProperties::class)
-class ApplicationConfiguration(
-    val userRepository: UserRepository,
-    val applicationProperties: ApplicationProperties
-) {
+class ApplicationConfiguration(val userRepository: UserRepository) {
+
+    @Value("\${app.audit.password}")
+    private lateinit var password: String
 
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java)
@@ -26,7 +25,7 @@ class ApplicationConfiguration(
             UserEntity(
                 id = null,
                 username = "admin",
-                password = applicationProperties.adminPassword,
+                password = password,
                 email = "admin@app.com",
                 role = UserRole.ADMIN,
                 status = AccountStatus.ACTIVE

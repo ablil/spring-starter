@@ -6,12 +6,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.validation.annotation.Validated
 
 @Configuration
-@ConfigurationProperties(prefix = "ablil", ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = "app")
 @Validated
 class ApplicationProperties {
     @NotBlank
-    lateinit var domainName: String
-
-    @NotBlank
-    lateinit var adminPassword: String
+    lateinit var url: String
 }

@@ -1,0 +1,39 @@
+app:
+  host: localhost
+  port: 8080
+  url: http://localhost:8080
+  db:
+    user: postgres
+    password: supersecurepassword
+    name: postgres
+    host: localhost
+    port: 5432
+  audit:
+    password: admin
+
+spring:
+  application:
+    name: springstarter
+  main:
+    banner-mode: off
+  datasource:
+    username: ${app.db.user}
+    password: ${app.db.password}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${app.db.host}:${app.db.port}/${app.db.name}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  default-produces-media-type: application/json
+
+
+server:
+  port: ${app.port}
+  error:
+    whitelabel:
+      enabled: false

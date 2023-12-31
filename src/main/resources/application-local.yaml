@@ -1,15 +1,4 @@
 spring:
-  config:
-    import: classpath:application-common.yml
-  datasource:
-    username: postgres
-    password: supersecurepassword
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
   mail:
     protocol: smtp
     host: sandbox.smtp.mailtrap.io
@@ -23,13 +12,8 @@ spring:
           starttls:
             enable: true
 
-server:
-  port: 8080
-
 logging:
   pattern:
     console: "%clr(${LOG_LEVEL_PATTERN:%p}) %clr(%logger){cyan} %clr([%M]){magenta}  %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
   level:
     com.ablil: DEBUG
-
-#debug: true
