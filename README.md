@@ -49,3 +49,10 @@ Every authenticated request expects a cookie with the name `jwt` which contains 
 If email properties are not set on `application-*.yaml` files, the application can run without them.
 
 For local environment, [mailtrap](mailtrap.io) is used a sandbox to capture all sent emails to debug and inspect them (do NOT forget to you update mail server credentials).
+
+### Actuator
+
+Spring actuator is accessible only for admin user, and it is secured with basic authentication, make sure to change the default password through configuration property
+**app.audit.password**
+
+`/actuator/health` is public and can be accessed without authentication.
