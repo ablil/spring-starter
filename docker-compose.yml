@@ -18,4 +18,5 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       DB_PASSWORD: supersecurepassword
       DB_HOST: database
-      DOMAIN_NAME: http://localhost:8080
+      host: localhost
+      URL: http://localhost

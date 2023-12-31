@@ -1,0 +1,14 @@
+app:
+  host: ${HOST}
+  port: 80
+  url: ${URL}
+  db:
+    password: ${DB_PASSWORD}
+    host: ${DB_HOST}
+  audit:
+    password: ${AUDIT_PASSWORD:admin}
+
+spring:
+  profiles:
+    group:
+      prod: prod,default
