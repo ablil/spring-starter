@@ -8,8 +8,7 @@ import java.util.Optional
 
 @Configuration
 @EnableJpaAuditing
-class JPAConfiguration {
-
+class JPAConfiguration() {
     @Bean
     fun auditorProvider(): AuditorAware<String> = AuditorAware<String> {
         // TODO: get principal from security context

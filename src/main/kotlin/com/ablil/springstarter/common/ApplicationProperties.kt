@@ -8,7 +8,10 @@ import org.springframework.validation.annotation.Validated
 @Configuration
 @ConfigurationProperties(prefix = "ablil", ignoreUnknownFields = false)
 @Validated
-class AppProperties {
+class ApplicationProperties {
     @NotBlank
     lateinit var domainName: String
+
+    @NotBlank
+    lateinit var adminPassword: String
 }
