@@ -18,7 +18,6 @@ class SecurityConfig(
     private val jsonWebTokenFilter: JsonWebTokenFilter,
     private val logRequestsFilter: LogRequestsFilter,
 ) {
-
     companion object {
         val publicEndpoints = arrayOf(
             "/health",
@@ -44,7 +43,11 @@ class SecurityConfig(
         http.invoke {
             securityMatcher("/api/**")
             authorizeRequests {
-                publicEndpoints.filter { it.startsWith("/api") }.forEach { authorize(it, permitAll) }
+                publicEndpoints.filter {
+                    it.startsWith(
+                        "/api",
+                    )
+                }.forEach { authorize(it, permitAll) }
                 authorize(anyRequest, authenticated)
             }
             csrf { disable() }
@@ -91,5 +94,6 @@ class SecurityConfig(
     }
 
     @Bean
-    fun getPasswordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    fun getPasswordEncoder(): PasswordEncoder =
+        PasswordEncoderFactories.createDelegatingPasswordEncoder()
 }

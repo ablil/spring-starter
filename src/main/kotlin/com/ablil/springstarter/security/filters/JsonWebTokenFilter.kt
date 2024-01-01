@@ -17,8 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter
  * JWT
  */
 @Component
-class JsonWebTokenFilter(private val userDetailsService: UserDetailsService) : OncePerRequestFilter() {
-
+class JsonWebTokenFilter(
+    private val userDetailsService: UserDetailsService,
+) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -41,10 +42,8 @@ class JsonWebTokenFilter(private val userDetailsService: UserDetailsService) : O
             userDetailsService.loadUserByUsername(username)
                 ?.takeIf { it.isEnabled }
                 ?.let { UsernamePasswordAuthenticationToken(it, token, emptyList()) }
-                ?.also {
-                    val emptyContext = SecurityContextHolder.createEmptyContext().apply { authentication = it }
-                    SecurityContextHolder.setContext(emptyContext)
-                }
+                ?.let { SecurityContextHolder.getContext().apply { authentication = it } }
+                ?.also { SecurityContextHolder.setContext(it) }
         } catch (e: UsernameNotFoundException) {
             logger.error("Failed to set security context for $username given $token")
         }

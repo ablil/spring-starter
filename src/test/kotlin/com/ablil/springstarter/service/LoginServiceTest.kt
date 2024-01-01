@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockitoExtension::class)
 class LoginServiceTest {
-
     @Mock
     lateinit var userRepository: UserRepository
 
@@ -30,7 +29,9 @@ class LoginServiceTest {
     @Test
     fun `should generate jwt token given valid credentials`() {
         Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true)
-        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(userEntity)
+        Mockito.`when`(
+            userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any()),
+        ).thenReturn(userEntity)
         val token = loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
         assertNotNull(token)
     }
@@ -38,7 +39,9 @@ class LoginServiceTest {
     @Test
     fun `should throw exception given invalid credentials`() {
         Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(false)
-        Mockito.`when`(userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any())).thenReturn(userEntity)
+        Mockito.`when`(
+            userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any()),
+        ).thenReturn(userEntity)
         assertThrows(InvalidCredentials::class.java) {
             loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
         }
@@ -51,8 +54,14 @@ class LoginServiceTest {
 
         loginService.resetPassword("token", "supersecurepassword")
 
-        Mockito.verify(userRepository, Mockito.times(1)).updateTokenAndStatus(null, AccountStatus.ACTIVE, userEntity.email)
-        Mockito.verify(userRepository, Mockito.times(1)).resetPassword("supersecurepassword", userEntity.email)
+        Mockito.verify(
+            userRepository,
+            Mockito.times(1),
+        ).updateTokenAndStatus(null, AccountStatus.ACTIVE, userEntity.email)
+        Mockito.verify(
+            userRepository,
+            Mockito.times(1),
+        ).resetPassword("supersecurepassword", userEntity.email)
     }
 
     companion object {
@@ -60,7 +69,7 @@ class LoginServiceTest {
             id = 1343,
             username = "joedoe",
             email = "joedoe@example.com",
-            password = "supersecurepassword"
+            password = "supersecurepassword",
         )
     }
 }

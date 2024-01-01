@@ -11,17 +11,20 @@ import org.springframework.web.filter.OncePerRequestFilter
  */
 @Component
 class LogRequestsFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
         try {
-            val headers = request.headerNames.toList().joinToString(", ") { "$it=${request.getHeader(it)}" }
+            val headers = request.headerNames.toList().joinToString(
+                ", ",
+            ) { "$it=${request.getHeader(it)}" }
             val params = request.parameterMap.map { "${it.key}: ${it.value}" }.joinToString(", ")
 
-            logger.info("Incoming ${request.method} to ${request.servletPath} from ${request.remoteHost}")
+            logger.info(
+                "Incoming ${request.method} to ${request.servletPath} from ${request.remoteHost}",
+            )
             logger.debug("Header: $headers")
             logger.debug("Params: ${params.takeIf { it.isNotBlank() } ?: "none"}")
         } catch (ex: Exception) {

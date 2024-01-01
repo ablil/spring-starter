@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class LoginController(
     private val loginService: LoginService,
-    private val response: HttpServletResponse
+    private val response: HttpServletResponse,
 ) : LoginApi {
     override fun login(loginRequest: LoginRequest): ResponseEntity<Token> {
         val token = loginService.login(
             LoginCredentials(
                 usernameOrEmail = loginRequest.usernameOrEmail,
-                password = loginRequest.password
-            )
+                password = loginRequest.password,
+            ),
         )
 
         return ResponseEntity.ok(Token(token))
@@ -28,4 +28,7 @@ class LoginController(
 }
 
 @Schema(name = "login credentials")
-data class LoginCredentials(@NotBlank val usernameOrEmail: String, @NotBlank val password: String)
+data class LoginCredentials(
+    @NotBlank val usernameOrEmail: String,
+    @NotBlank val password: String,
+)

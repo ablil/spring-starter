@@ -20,7 +20,9 @@ class LoginControllerTest(
 ) {
     @Test
     fun `should return jwt token given valid login credentials`() {
-        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword"))).thenReturn("token")
+        Mockito.`when`(
+            loginService.login(LoginCredentials("joedoe", "supersecurepassword")),
+        ).thenReturn("token")
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
