@@ -5,7 +5,7 @@ import com.ablil.springstarter.common.UserAlreadyExists
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
-import com.ablil.springstarter.webapi.RegistrationRequest
+import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -15,9 +15,8 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val mailService: MailService?
+    private val mailService: MailService?,
 ) {
-
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun register(request: RegistrationRequest): UserEntity {

@@ -11,7 +11,11 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @OpenAPIDefinition(
-    info = Info(title = "Spring boot API Starter", description = "API specification", version = "0.0.1"),
+    info = Info(
+        title = "Spring boot API Starter",
+        description = "API specification",
+        version = "0.0.1",
+    ),
     security = [SecurityRequirement(name = "jwt")],
 )
 @SecurityScheme(

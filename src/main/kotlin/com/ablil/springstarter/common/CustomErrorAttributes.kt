@@ -10,7 +10,10 @@ import org.springframework.web.context.request.WebRequest
  */
 @Component
 class CustomErrorAttributes : DefaultErrorAttributes() {
-    override fun getErrorAttributes(webRequest: WebRequest?, options: ErrorAttributeOptions?): MutableMap<String, Any> {
+    override fun getErrorAttributes(
+        webRequest: WebRequest?,
+        options: ErrorAttributeOptions?,
+    ): MutableMap<String, Any> {
         val exception = getError(webRequest)
 
         return super.getErrorAttributes(webRequest, options).also {

@@ -15,9 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 class LoginService(
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
-    val mailService: MailService?
+    val mailService: MailService?,
 ) {
-
     fun login(credentials: LoginCredentials): String {
         val (identifier, password) = credentials
         val user = userRepository.findByUsernameOrEmail(identifier, identifier)?.takeIf {
@@ -31,13 +30,18 @@ class LoginService(
     fun forgetPassword(email: String) {
         val resetToken = RandomStringUtils.randomAlphanumeric(10)
         userRepository.findByEmail(email)?.let {
-            userRepository.updateTokenAndStatus(resetToken, AccountStatus.PASSWORD_RESET_IN_PROGRESS, email)
+            userRepository.updateTokenAndStatus(
+                resetToken,
+                AccountStatus.PASSWORD_RESET_IN_PROGRESS,
+                email,
+            )
         }?.also { mailService?.resetPassword(email, resetToken) }
     }
 
     @Transactional
     fun resetPassword(token: String, password: String) {
-        val user = userRepository.findByToken(token) ?: throw ResetPasswordError("token $token not found")
+        val user = userRepository.findByToken(token)
+            ?: throw ResetPasswordError("token $token not found")
         userRepository.updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
         userRepository.resetPassword(passwordEncoder.encode(password), user.email)
         mailService?.passwordHasBeenReset(user.email)

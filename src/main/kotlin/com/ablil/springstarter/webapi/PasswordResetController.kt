@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class PasswordResetController(
-    private val loginService: LoginService
+    private val loginService: LoginService,
 ) : PasswordApi {
-    override fun forgetPassword(forgetPasswordRequest: ForgetPasswordRequest): ResponseEntity<Unit> {
+    override fun forgetPassword(
+        forgetPasswordRequest: ForgetPasswordRequest,
+    ): ResponseEntity<Unit> {
         loginService.forgetPassword(forgetPasswordRequest.email)
         return ResponseEntity.ok().build()
     }

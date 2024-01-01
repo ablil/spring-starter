@@ -16,7 +16,6 @@ class PasswordResetControllerTest(
     @Autowired val mockMvc: MockMvc,
     @MockBean @Autowired val loginService: LoginService,
 ) {
-
     @Test
     fun `return 200 given valid reset password request`() {
         mockMvc.post("/api/auth/reset_password") {

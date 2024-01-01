@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class ApplicationConfiguration(val userRepository: UserRepository) {
-
     @Value("\${app.audit.password}")
     private lateinit var password: String
 
@@ -28,8 +27,8 @@ class ApplicationConfiguration(val userRepository: UserRepository) {
                 password = password,
                 email = "admin@app.com",
                 role = UserRole.ADMIN,
-                status = AccountStatus.ACTIVE
-            )
+                status = AccountStatus.ACTIVE,
+            ),
         ).also {
             logger.info("Admin user created")
         }

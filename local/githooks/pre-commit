@@ -9,10 +9,10 @@ set -e
         exit 0
     fi;
 
-    echo "Running ktlint over these files:"
+    echo "Running ktlintCheck over these files:"
     echo "$CHANGED_FILES"
 
-    ./gradlew --quiet ktlintFormat -PinternalKtlintGitFilter="$CHANGED_FILES"
+    ./gradlew --quiet ktlintCheck -PinternalKtlintGitFilter="$CHANGED_FILES"
 
     echo "Completed ktlint run."
     echo "$CHANGED_FILES" | while read -r file; do

@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.get
 class HealthControllerTest(
     @Autowired val mockMvc: MockMvc,
 ) {
-
     @Test
     fun `should be healthy`() {
         mockMvc.get("/health").andExpectAll {

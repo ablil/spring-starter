@@ -17,7 +17,9 @@ class JwtUtil {
         @JvmStatic
         fun generate(principal: String): String = JWT.create()
             .withIssuer(ISSUER)
-            .withExpiresAt(Instant.now().plus(Duration.ofSeconds(ConfigParams.MAX_TOKEN_AGE.toLong())))
+            .withExpiresAt(
+                Instant.now().plus(Duration.ofSeconds(ConfigParams.MAX_TOKEN_AGE.toLong())),
+            )
             .withClaim("principal", principal)
             .sign(ALGORITHM)
 

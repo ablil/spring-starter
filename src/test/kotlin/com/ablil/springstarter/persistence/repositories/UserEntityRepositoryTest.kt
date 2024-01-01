@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 class UserEntityRepositoryTest(
     @Autowired val userRepository: UserRepository,
 ) {
-
     @BeforeEach
     fun setup(): Unit = userRepository.deleteAll()
 

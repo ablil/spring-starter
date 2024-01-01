@@ -6,10 +6,10 @@ import java.time.format.DateTimeFormatter
 plugins {
     id("org.springframework.boot") version "3.0.4"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.7.22"
+    kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
-    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.0.2"
     id("org.openapi.generator") version "7.1.0"
     id("com.google.cloud.tools.jib") version "3.4.0"
 }
@@ -74,8 +74,8 @@ openApiGenerate {
             Pair("useSpringBoot3", "true"), // In order to use jakarta.validation instead of javax.validation
             Pair("interfaceOnly", "true"),
             Pair("skipDefaultInterface", "true"), // Do not generate a default implementation for interface methods
-            Pair("useTags", "true")
-        )
+            Pair("useTags", "true"),
+        ),
     )
 
     cleanupOutput.set(true)
@@ -92,8 +92,18 @@ sourceSets {
 }
 
 ktlint {
+    debug.set(true)
+    verbose.set(true)
+
+    additionalEditorconfig.set(mapOf(
+        "max_line_length" to "100",
+        "ktlint_standard_function-signature" to "disabled",
+        "ktlint_standard_multiline-expression-wrapping" to "disabled",
+        "ktlint_standard_string-template-indent" to "disabled",
+    ))
     filter {
-        exclude { it.file.path.contains("$buildDir/generated") }
+        exclude("**/*.gradle.kts")
+        exclude { it.file.path.contains("build/generated") }
     }
 }
 

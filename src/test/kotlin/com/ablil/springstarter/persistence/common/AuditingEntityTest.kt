@@ -13,9 +13,8 @@ import org.springframework.stereotype.Repository
 
 @RepositoryTest
 class AuditingEntityTest(
-    @Autowired val testEntityRepository: TestEntityRepository
+    @Autowired val testEntityRepository: TestEntityRepository,
 ) {
-
     @Test
     fun `fill auditing attributes`() {
         val entity = testEntityRepository.save(TestEntity())
@@ -32,7 +31,7 @@ class AuditingEntityTest(
 class TestEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    var id: Long? = null,
 ) : AuditingEntity()
 
 @Repository
