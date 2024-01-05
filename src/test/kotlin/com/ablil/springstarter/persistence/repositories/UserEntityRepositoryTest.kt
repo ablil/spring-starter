@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithMockUser
 
 @RepositoryTest
 class UserEntityRepositoryTest(
@@ -55,6 +56,18 @@ class UserEntityRepositoryTest(
         userRepository.save(userEntity)
         val updated = userRepository.resetPassword("newsupersecurepassword", userEntity.email)
         assertEquals(1, updated)
+    }
+
+    @Test
+    @WithMockUser(username = "johndoe", roles = ["USER"])
+    fun `should set created by and updated by attributes`() {
+        userRepository.save(userEntity)
+        val actual = userRepository.findByUsername(userEntity.username)
+        assertAll(
+            "Auditing attributes",
+            { assertEquals("johndoe", actual?.createdBy) },
+            { assertEquals("johndoe", actual?.updatedBy) },
+        )
     }
 
     companion object {
