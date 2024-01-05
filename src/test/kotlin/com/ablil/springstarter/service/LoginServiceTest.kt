@@ -64,6 +64,18 @@ class LoginServiceTest {
         ).resetPassword("supersecurepassword", userEntity.email)
     }
 
+    @Test
+    fun `deny login for inactive users`() {
+        Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true)
+        Mockito.`when`(
+            userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any()),
+        ).thenReturn(userEntity.copy(status = AccountStatus.INACTIVE))
+
+        assertThrows(InvalidCredentials::class.java) {
+            loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
+        }
+    }
+
     companion object {
         val userEntity = UserEntity(
             id = 1343,

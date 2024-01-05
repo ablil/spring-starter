@@ -19,9 +19,13 @@ class LoginService(
 ) {
     fun login(credentials: LoginCredentials): String {
         val (identifier, password) = credentials
-        val user = userRepository.findByUsernameOrEmail(identifier, identifier)?.takeIf {
-            passwordEncoder.matches(password, it.password)
-        } ?: throw InvalidCredentials()
+        val user = userRepository.findByUsernameOrEmail(identifier, identifier)
+            ?: throw InvalidCredentials()
+
+        when {
+            !passwordEncoder.matches(password, user.password) -> throw InvalidCredentials()
+            user.status != AccountStatus.ACTIVE -> throw InvalidCredentials()
+        }
 
         return JwtUtil.generate(user.username)
     }
