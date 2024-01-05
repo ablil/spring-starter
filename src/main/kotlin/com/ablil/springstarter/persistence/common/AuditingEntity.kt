@@ -3,7 +3,9 @@ package com.ablil.springstarter.persistence.common
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
@@ -15,7 +17,7 @@ abstract class AuditingEntity {
     @Column(updatable = false, nullable = false)
     lateinit var createdAt: Instant
 
-    @CreatedDate
+    @CreatedBy
     @Column(updatable = false, nullable = false)
     lateinit var createdBy: String
 
@@ -23,7 +25,7 @@ abstract class AuditingEntity {
     @Column(nullable = false)
     lateinit var updatedAt: Instant
 
-    @LastModifiedDate
+    @LastModifiedBy
     @Column(nullable = false)
     lateinit var updatedBy: String
 }
