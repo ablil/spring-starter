@@ -47,6 +47,11 @@ jobs:
           path: build
           key: ${{ runner.os }}-build-${{ github.sha }}
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Build
+          path: build
+
   push-to-ghcr:
     needs: build
     runs-on: ubuntu-latest
