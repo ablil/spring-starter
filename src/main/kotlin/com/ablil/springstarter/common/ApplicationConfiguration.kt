@@ -8,9 +8,13 @@ import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class ApplicationConfiguration(val userRepository: UserRepository) {
+class ApplicationConfiguration(
+    val userRepository: UserRepository,
+    val passwordEncoder: PasswordEncoder,
+) {
     @Value("\${app.audit.password}")
     private lateinit var password: String
 
@@ -24,7 +28,7 @@ class ApplicationConfiguration(val userRepository: UserRepository) {
             UserEntity(
                 id = null,
                 username = "admin",
-                password = password,
+                password = passwordEncoder.encode(password),
                 email = "admin@app.com",
                 role = UserRole.ADMIN,
                 status = AccountStatus.ACTIVE,
