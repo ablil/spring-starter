@@ -31,7 +31,7 @@ class LoginServiceTest {
         Mockito.`when`(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true)
         Mockito.`when`(
             userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any()),
-        ).thenReturn(userEntity)
+        ).thenReturn(userEntity.copy(status = AccountStatus.ACTIVE))
         val token = loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
         assertNotNull(token)
     }
