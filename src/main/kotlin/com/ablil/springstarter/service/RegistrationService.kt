@@ -20,9 +20,10 @@ class RegistrationService(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun register(request: RegistrationRequest): UserEntity {
-        if (userRepository.findByUsernameOrEmail(request.username, request.email) != null) {
-            throw UserAlreadyExists(request.username)
-        }
+        val existingUser = userRepository.findByUsernameOrEmail(request.username)
+            ?: userRepository.findByUsernameOrEmail(request.email)
+        if (existingUser != null) throw UserAlreadyExists(request.username)
+
         val savedUser = userRepository.save(
             UserEntity(
                 id = null,

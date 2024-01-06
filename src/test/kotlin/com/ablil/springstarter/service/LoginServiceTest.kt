@@ -32,7 +32,7 @@ class LoginServiceTest {
     @Test
     fun `should generate jwt token given valid credentials`() {
         whenever(passwordEncoder.matches(any(), any())).thenReturn(true)
-        whenever(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(
+        whenever(userRepository.findByUsernameOrEmail(any())).thenReturn(
             userEntity.copy(
                 status = AccountStatus.ACTIVE,
             ),
@@ -44,7 +44,7 @@ class LoginServiceTest {
     @Test
     fun `should throw exception given invalid credentials`() {
         whenever(passwordEncoder.matches(any(), any())).thenReturn(false)
-        whenever(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(userEntity)
+        whenever(userRepository.findByUsernameOrEmail(any())).thenReturn(userEntity)
 
         assertThrows(InvalidCredentials::class.java) {
             loginService.login(LoginCredentials("joedoe", "supersecurepassword"))
@@ -67,7 +67,7 @@ class LoginServiceTest {
     @Test
     fun `deny login for inactive users`() {
         whenever(passwordEncoder.matches(any(), any())).thenReturn(true)
-        whenever(userRepository.findByUsernameOrEmail(any(), any()))
+        whenever(userRepository.findByUsernameOrEmail(any()))
             .thenReturn(userEntity.copy(status = AccountStatus.INACTIVE))
 
         assertThrows(InvalidCredentials::class.java) {

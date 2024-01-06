@@ -15,8 +15,8 @@ interface UserRepository : CrudRepository<UserEntity, Long> {
 
     fun findByEmail(email: String): UserEntity?
 
-    // TODO: make this function take only one argument
-    fun findByUsernameOrEmail(username: String?, email: String?): UserEntity?
+    @Query("select u from UserEntity u where u.username = :username or u.email = :username")
+    fun findByUsernameOrEmail(username: String): UserEntity?
 
     fun findByToken(token: String): UserEntity?
 

@@ -27,7 +27,7 @@ class RegistrationServiceTest {
 
     @Test
     fun `should throw exception when registering an existing user`() {
-        whenever(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(userEntity)
+        whenever(userRepository.findByUsernameOrEmail(any())).thenReturn(userEntity)
 
         assertThrows(UserAlreadyExists::class.java) { registrationService.register(request) }
     }

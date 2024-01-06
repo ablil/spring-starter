@@ -19,7 +19,7 @@ class LoginService(
 ) {
     fun login(credentials: LoginCredentials): String {
         val (identifier, password) = credentials
-        val user = userRepository.findByUsernameOrEmail(identifier, identifier)
+        val user = userRepository.findByUsernameOrEmail(identifier)
             ?: throw InvalidCredentials()
 
         when {

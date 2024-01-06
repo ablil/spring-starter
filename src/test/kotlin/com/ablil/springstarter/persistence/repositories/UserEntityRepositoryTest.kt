@@ -35,8 +35,8 @@ class UserEntityRepositoryTest(
     fun `find user by username or email`() {
         userRepository.save(userEntity)
         assertAll(
-            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe", null)) },
-            { assertNotNull(userRepository.findByUsernameOrEmail(null, "joedoe@example.com")) },
+            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe")) },
+            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe@example.com")) },
         )
     }
 
