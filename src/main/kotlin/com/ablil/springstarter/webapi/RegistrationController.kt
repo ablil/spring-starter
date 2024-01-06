@@ -20,13 +20,7 @@ class RegistrationController(
     }
 
     override fun registerUser(registrationRequest: RegistrationRequest): ResponseEntity<Unit> {
-        registrationService.register(
-            RegistrationRequest(
-                username = registrationRequest.username,
-                password = registrationRequest.password,
-                email = registrationRequest.email,
-            ),
-        )
+        registrationService.register(registrationRequest)
         return ResponseEntity.created(URI("/")).build()
     }
 }

@@ -12,7 +12,8 @@ class MailService(
     val emailClient: EmailClient?,
 ) {
     fun resetPassword(to: String, token: String) {
-        // This is a frontend endpoint that will be used to reset the password, the token should be sent from there to the backend
+        // This is a frontend endpoint that will be used to reset the password
+        // The token should be sent from there to the backend
         val link = "${applicationProperties.url}/reset-password?token=$token"
         emailClient?.sendEmail(to, "RESET PASSWORD", link)
     }

@@ -15,6 +15,7 @@ interface UserRepository : CrudRepository<UserEntity, Long> {
 
     fun findByEmail(email: String): UserEntity?
 
+    // TODO: make this function take only one argument
     fun findByUsernameOrEmail(username: String?, email: String?): UserEntity?
 
     fun findByToken(token: String): UserEntity?

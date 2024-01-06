@@ -25,10 +25,12 @@ class JsonWebTokenFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }
+        request.getHeader("Authorization")
+            ?.takeIf { it.startsWith("Bearer ") }
             ?.substring(7)
             ?.takeIf { JwtUtil.isValid(it) }
-            ?.also { authenticate(it) }
+            ?.let { authenticate(it) }
+
         filterChain.doFilter(request, response)
     }
 

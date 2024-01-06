@@ -13,13 +13,14 @@ class JwtUtil {
         private const val ISSUER = "myapp"
         private val ALGORITHM = Algorithm.HMAC256(ISSUER)
         private val verifier = JWT.require(ALGORITHM).withIssuer(ISSUER).build()
+        private val tokenDuration = Instant.now().plus(
+            Duration.ofSeconds(ConfigParams.MAX_TOKEN_AGE.toLong()),
+        )
 
         @JvmStatic
         fun generate(principal: String): String = JWT.create()
             .withIssuer(ISSUER)
-            .withExpiresAt(
-                Instant.now().plus(Duration.ofSeconds(ConfigParams.MAX_TOKEN_AGE.toLong())),
-            )
+            .withExpiresAt(tokenDuration)
             .withClaim("principal", principal)
             .sign(ALGORITHM)
 
