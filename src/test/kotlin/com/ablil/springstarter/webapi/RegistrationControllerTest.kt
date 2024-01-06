@@ -4,7 +4,7 @@ import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.service.RegistrationService
 import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -22,7 +22,7 @@ class RegistrationControllerTest(
 ) {
     @Test
     fun `should return 201 given valid registration request`() {
-        Mockito.`when`(
+        whenever(
             registrationService.register(
                 RegistrationRequest(
                     username = "joedoe",
@@ -31,6 +31,7 @@ class RegistrationControllerTest(
                 ),
             ),
         ).thenReturn(userEntity)
+
         mockMvc.post("/api/auth/register") {
             contentType = MediaType.APPLICATION_JSON
             content = """
