@@ -18,23 +18,23 @@ class ApplicationConfiguration(
     @Value("\${app.audit.password}")
     private lateinit var password: String
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java)
-    }
-
     @PostConstruct
     fun createAdminUser() {
-        userRepository.findByUsername("admin") ?: userRepository.save(
-            UserEntity(
-                id = null,
-                username = "admin",
-                password = passwordEncoder.encode(password),
-                email = "admin@app.com",
-                role = UserRole.ADMIN,
-                status = AccountStatus.ACTIVE,
-            ),
-        ).also {
-            logger.info("Admin user created")
+        with(userRepository) {
+            findByUsername("admin") ?: save(
+                UserEntity(
+                    id = null,
+                    username = "admin",
+                    password = passwordEncoder.encode(password),
+                    email = "admin@app.com",
+                    role = UserRole.ADMIN,
+                    status = AccountStatus.ACTIVE,
+                ),
+            ).also { logger.info("Admin user created") }
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java)
     }
 }

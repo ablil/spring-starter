@@ -9,8 +9,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockitoExtension::class)
@@ -26,12 +27,9 @@ class RegistrationServiceTest {
 
     @Test
     fun `should throw exception when registering an existing user`() {
-        Mockito.`when`(
-            userRepository.findByUsernameOrEmail(Mockito.any(), Mockito.any()),
-        ).thenReturn(userEntity)
-        assertThrows(UserAlreadyExists::class.java) {
-            registrationService.register(request)
-        }
+        whenever(userRepository.findByUsernameOrEmail(any())).thenReturn(userEntity)
+
+        assertThrows(UserAlreadyExists::class.java) { registrationService.register(request) }
     }
 
     companion object {

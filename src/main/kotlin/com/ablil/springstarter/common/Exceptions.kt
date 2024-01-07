@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 abstract class DefaultBusinessError(
     val code: String,
     override val message: String,
-) :
-    RuntimeException(
-            message,
-        )
+) : RuntimeException(message)
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class TokenNotFound(s: String) :

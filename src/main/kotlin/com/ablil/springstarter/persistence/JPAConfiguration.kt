@@ -13,8 +13,7 @@ import java.util.Optional
 class JPAConfiguration() {
     @Bean
     fun auditorProvider(): AuditorAware<String> = AuditorAware<String> {
-        val principal = SecurityContextHolder.getContext().authentication?.principal
-        when (principal) {
+        when (val principal = SecurityContextHolder.getContext().authentication?.principal) {
             is UserDetails -> Optional.of(principal.username.toString())
             is String -> Optional.ofNullable(principal)
             else -> Optional.ofNullable("SYSTEM")

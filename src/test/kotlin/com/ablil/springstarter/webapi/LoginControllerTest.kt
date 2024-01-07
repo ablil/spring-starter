@@ -3,7 +3,7 @@ package com.ablil.springstarter.webapi
 import com.ablil.springstarter.common.InvalidCredentials
 import com.ablil.springstarter.service.LoginService
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -20,9 +20,8 @@ class LoginControllerTest(
 ) {
     @Test
     fun `should return jwt token given valid login credentials`() {
-        Mockito.`when`(
-            loginService.login(LoginCredentials("joedoe", "supersecurepassword")),
-        ).thenReturn("token")
+        whenever(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
+            .thenReturn("token")
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -37,7 +36,7 @@ class LoginControllerTest(
 
     @Test
     fun `should return 403 given invalid credentials`() {
-        Mockito.`when`(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
+        whenever(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
             .thenThrow(InvalidCredentials())
 
         mockMvc.post("/api/auth/login") {

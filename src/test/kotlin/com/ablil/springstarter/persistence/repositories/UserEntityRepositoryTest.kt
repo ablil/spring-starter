@@ -19,11 +19,13 @@ class UserEntityRepositoryTest(
     fun setup(): Unit = userRepository.deleteAll()
 
     @Test
-    fun `set created and updated date`() {
-        userRepository.save(userEntity)
-        val actual = userRepository.findByUsername(userEntity.username)
+    fun `createdBy and updatedBy attributes are set`() {
+        val actual = with(userRepository) {
+            save(userEntity)
+            findByUsername(userEntity.username)
+        }
+
         assertAll(
-            "Auditing attributs",
             { assertNotNull(actual?.createdAt) },
             { assertNotNull(actual?.updatedAt) },
         )
@@ -33,18 +35,19 @@ class UserEntityRepositoryTest(
     fun `find user by username or email`() {
         userRepository.save(userEntity)
         assertAll(
-            "fetch user from database",
-            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe", null)) },
-            { assertNotNull(userRepository.findByUsernameOrEmail(null, "joedoe@example.com")) },
+            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe")) },
+            { assertNotNull(userRepository.findByUsernameOrEmail("joedoe@example.com")) },
         )
     }
 
     @Test
     fun `update status and token by email`() {
-        userRepository.save(userEntity)
-        userRepository.updateTokenAndStatus("mytoken", AccountStatus.ACTIVE, userEntity.email)
+        val actual = with(userRepository) {
+            save(userEntity)
+            updateTokenAndStatus("mytoken", AccountStatus.ACTIVE, userEntity.email)
+            findByEmail(userEntity.email)
+        }
 
-        val actual = userRepository.findByEmail(userEntity.email)
         assertAll(
             { assertEquals("mytoken", actual?.token) },
             { assertEquals(AccountStatus.ACTIVE, actual?.status) },
@@ -53,18 +56,22 @@ class UserEntityRepositoryTest(
 
     @Test
     fun `update password by email`() {
-        userRepository.save(userEntity)
-        val updated = userRepository.resetPassword("newsupersecurepassword", userEntity.email)
-        assertEquals(1, updated)
+        val updatedEntries = with(userRepository) {
+            save(userEntity)
+            resetPassword("newsupersecurepassword", userEntity.email)
+        }
+        assertEquals(1, updatedEntries)
     }
 
     @Test
     @WithMockUser(username = "johndoe", roles = ["USER"])
     fun `should set created by and updated by attributes`() {
-        userRepository.save(userEntity)
-        val actual = userRepository.findByUsername(userEntity.username)
+        val actual = with(userRepository) {
+            save(userEntity)
+            findByUsername(userEntity.username)
+        }
+
         assertAll(
-            "Auditing attributes",
             { assertEquals("johndoe", actual?.createdBy) },
             { assertEquals("johndoe", actual?.updatedBy) },
         )
