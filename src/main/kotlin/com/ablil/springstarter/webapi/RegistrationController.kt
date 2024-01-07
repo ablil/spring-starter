@@ -20,7 +20,7 @@ class RegistrationController(
     }
 
     override fun registerUser(registrationRequest: RegistrationRequest): ResponseEntity<Unit> {
-        registrationService.register(registrationRequest)
-        return ResponseEntity.created(URI("/")).build()
+        val registeredUser = registrationService.register(registrationRequest)
+        return ResponseEntity.created(URI("/api/users/${registeredUser.id}")).build()
     }
 }

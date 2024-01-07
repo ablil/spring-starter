@@ -77,6 +77,7 @@ openApiGenerate {
             Pair("interfaceOnly", "true"),
             Pair("skipDefaultInterface", "true"), // Do not generate a default implementation for interface methods
             Pair("useTags", "true"),
+            Pair("enumPropertyNaming", "UPPERCASE")
         ),
     )
 
