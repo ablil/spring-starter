@@ -34,20 +34,19 @@ class SecurityConfig(
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
+            "/api/users/**",
         )
     }
 
     @Bean
-    @Order(1)
+    @Order(2)
     fun createAPISecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.invoke {
             securityMatcher("/api/**")
             authorizeRequests {
-                publicEndpoints.filter {
-                    it.startsWith(
-                        "/api",
-                    )
-                }.forEach { authorize(it, permitAll) }
+                publicEndpoints
+                    .filter { it.startsWith("/api") }
+                    .forEach { authorize(it, permitAll) }
                 authorize(anyRequest, authenticated)
             }
             csrf { disable() }
@@ -61,7 +60,7 @@ class SecurityConfig(
     }
 
     @Bean
-    @Order(2)
+    @Order(1)
     fun createAdminSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.invoke {
             securityMatcher(*privateEndpoints)

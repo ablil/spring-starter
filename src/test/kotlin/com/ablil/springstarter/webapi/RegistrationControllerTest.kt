@@ -37,7 +37,10 @@ class RegistrationControllerTest(
             content = """
                 { "username": "joedoe", "password": "supersecurepassword", "email": "joedoe@example.com" }
             """.trimIndent()
-        }.andExpect { status { isCreated() } }
+        }.andExpectAll {
+            status { isCreated() }
+            header { string("Location", "/api/users/${userEntity.id}") }
+        }
     }
 
     @Test
