@@ -54,7 +54,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
-    systemProperty("spring.profiles.active", "test")
+    systemProperty("spring.profiles.active", "integration,test")
     useJUnitPlatform()
 }
 

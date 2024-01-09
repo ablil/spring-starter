@@ -1,6 +1,6 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.integration
 
-import com.ablil.springstarter.persistence.common.IntegrationTest
+import com.ablil.springstarter.persistence.common.BaseIntegrationTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserRole
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class RegistrationIntegrationTest : IntegrationTest() {
+class RegistrationIntegrationTest : BaseIntegrationTest() {
 
     @Autowired
     lateinit var userRepository: UserRepository
@@ -54,7 +54,7 @@ class RegistrationIntegrationTest : IntegrationTest() {
         testRestTemplate.postForEntity<Any>("/api/auth/register", request, null)
         val registeredUserToken = userRepository.findByUsername("testuser")?.token
 
-        val resposne = testRestTemplate.getForEntity(
+        testRestTemplate.getForEntity(
             "/api/auth/register/confirm?token=${registeredUserToken}",
             Void::class.java
         )
