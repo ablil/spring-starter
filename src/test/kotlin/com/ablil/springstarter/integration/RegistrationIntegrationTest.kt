@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
 class RegistrationIntegrationTest : BaseIntegrationTest() {
-
     @Autowired
     lateinit var userRepository: UserRepository
 
@@ -55,22 +54,20 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
         val registeredUserToken = userRepository.findByUsername("testuser")?.token
 
         testRestTemplate.getForEntity(
-            "/api/auth/register/confirm?token=${registeredUserToken}",
-            Void::class.java
+            "/api/auth/register/confirm?token=$registeredUserToken",
+            Void::class.java,
         )
 
         val registeredUser = userRepository.findByUsername("testuser")
         assertAll(
             { Assertions.assertNull(registeredUser?.token) },
-            { Assertions.assertEquals(AccountStatus.ACTIVE, registeredUser?.status) }
+            { Assertions.assertEquals(AccountStatus.ACTIVE, registeredUser?.status) },
         )
     }
-
 
     companion object {
         private val registrationRequest = """
             {"username": "testuser", "email": "testuser@example.com", "password": "supersecurepassword"}
         """.trimIndent()
-
     }
 }

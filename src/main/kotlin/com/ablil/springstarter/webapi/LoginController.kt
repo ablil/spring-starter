@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class LoginController(val loginService: LoginService) : LoginApi {
     override fun login(loginRequest: LoginRequest): ResponseEntity<Token> {
-        val credentials = LoginCredentials(loginRequest.usernameOrEmail, loginRequest.password)
+        val credentials = LoginCredentials(loginRequest.username, loginRequest.password)
         val token = loginService.login(credentials).let(::Token)
         return ResponseEntity.ok(token)
     }

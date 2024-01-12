@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 
-class LoginIntegrationTest: BaseIntegrationTest() {
-
+class LoginIntegrationTest : BaseIntegrationTest() {
     @Autowired
     lateinit var userRepository: UserRepository
 
@@ -31,8 +30,8 @@ class LoginIntegrationTest: BaseIntegrationTest() {
         val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
 
         assertAll(
-                { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
-                { Assertions.assertNotNull(response.body?.token) }
+            { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
+            { Assertions.assertNotNull(response.body?.token) },
         )
     }
 
@@ -44,16 +43,15 @@ class LoginIntegrationTest: BaseIntegrationTest() {
         val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
 
         assertAll(
-                { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
-                { Assertions.assertNotNull(response.body?.token) }
+            { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
+            { Assertions.assertNotNull(response.body?.token) },
         )
-
     }
 
     @Test
     fun `deny login for non-existing user`() {
         val request = createLoginRequest("nonexistinguser@example.com", "supersecurepassword")
-        val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
+        val response = testRestTemplate.postForEntity("/api/auth/login", request, Void::class.java)
 
         Assertions.assertNotEquals(HttpStatus.OK, response.statusCode)
     }
@@ -63,25 +61,28 @@ class LoginIntegrationTest: BaseIntegrationTest() {
         val user = registerTestUser()
 
         val request = createLoginRequest(user.username, "invalidpassword")
-        val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
+        val response = testRestTemplate.postForEntity("/api/auth/login", request, Void::class.java)
 
         Assertions.assertNotEquals(HttpStatus.OK, response.statusCode)
-
     }
 
     private fun createLoginRequest(username: String, password: String): HttpEntity<String> {
-        return createRequestWithJsonBody("""
+        return createRequestWithJsonBody(
+            """
             { "username": "$username", "password": "$password" }
-        """.trimIndent())
+            """.trimIndent(),
+        )
     }
 
     private fun registerTestUser(): UserEntity {
-        return userRepository.save(UserEntity(
+        return userRepository.save(
+            UserEntity(
                 id = null,
                 username = "testuser",
                 email = "example@exmaple.com",
                 password = "{noop}supersecurepassword",
-                status = AccountStatus.ACTIVE
-        ))
+                status = AccountStatus.ACTIVE,
+            ),
+        )
     }
 }

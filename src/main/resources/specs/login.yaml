@@ -43,10 +43,10 @@ components:
     LoginRequest:
       type: object
       properties:
-        usernameOrEmail:
+        username:
           type: string
         password:
           type: string
       required:
-        - usernameOrEmail
+        - username
         - password

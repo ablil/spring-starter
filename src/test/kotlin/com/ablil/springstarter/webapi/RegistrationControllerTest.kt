@@ -42,6 +42,7 @@ class RegistrationControllerTest(
             header { string("Location", "/api/users/${userEntity.id}") }
         }
     }
+
     @Test
     fun `should redirect user given valid registration confirmation token`() {
         mockMvc.get("/api/auth/register/confirm?token=mytoken").andExpect {
