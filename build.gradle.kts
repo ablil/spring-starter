@@ -42,6 +42,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation( "org.testcontainers:postgresql:1.19.3")
 }
 
 tasks.withType<KotlinCompile> {
