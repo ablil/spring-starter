@@ -1,4 +1,4 @@
-package com.ablil.springstarter.persistence.common
+package com.ablil.springstarter.integration.common
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -6,6 +6,7 @@ import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -15,8 +16,9 @@ import org.testcontainers.containers.PostgreSQLContainer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledIf(value = "#{environment.getActiveProfiles()[0] == 'integration'}", loadContext = true)
-@ContextConfiguration(initializers = [BaseIntegrationTest.Initializer::class])
 // TODO: check how verify integration profile is included wih contains, it does not need to be first
+@ContextConfiguration(initializers = [BaseIntegrationTest.Initializer::class])
+@Profile("integration")
 abstract class BaseIntegrationTest {
     @Autowired
     lateinit var testRestTemplate: TestRestTemplate

@@ -12,11 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
 @RepositoryTest
-class UserEntityRepositoryTest(
+class UserRepositoryTest(
     @Autowired val userRepository: UserRepository,
 ) {
     @BeforeEach
-    fun setup(): Unit = userRepository.deleteAll()
+    fun setup(): Unit = userRepository.truncate()
+
+    @Test
+    fun `truncate table`() {
+        userRepository.save(userEntity)
+        userRepository.truncate()
+        assertEquals(0, userRepository.count())
+    }
 
     @Test
     fun `createdBy and updatedBy attributes are set`() {

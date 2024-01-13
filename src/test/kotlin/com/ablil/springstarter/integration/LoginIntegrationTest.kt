@@ -1,11 +1,13 @@
 package com.ablil.springstarter.integration
 
-import com.ablil.springstarter.persistence.common.BaseIntegrationTest
+import com.ablil.springstarter.integration.common.BaseIntegrationTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
 import com.ablil.springstarter.webapi.model.Token
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -18,38 +20,36 @@ class LoginIntegrationTest : BaseIntegrationTest() {
     lateinit var userRepository: UserRepository
 
     @BeforeEach
-    fun beforeEach() {
-        userRepository.deleteAll()
-    }
+    fun beforeEach(): Unit = userRepository.truncate()
 
     @Test
-    fun `login successfully with username and password`() {
+    fun `login with username and password`() {
         val user = registerTestUser()
 
         val request = createLoginRequest(user.username, "supersecurepassword")
         val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
 
         assertAll(
-            { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
-            { Assertions.assertNotNull(response.body?.token) },
+            { assertEquals(HttpStatus.OK, response.statusCode) },
+            { assertNotNull(response.body?.token) },
         )
     }
 
     @Test
-    fun `login successfully with email and password`() {
+    fun `login  with email and password`() {
         val user = registerTestUser()
 
         val request = createLoginRequest(user.email, "supersecurepassword")
         val response = testRestTemplate.postForEntity("/api/auth/login", request, Token::class.java)
 
         assertAll(
-            { Assertions.assertEquals(HttpStatus.OK, response.statusCode) },
-            { Assertions.assertNotNull(response.body?.token) },
+            { assertEquals(HttpStatus.OK, response.statusCode) },
+            { assertNotNull(response.body?.token) },
         )
     }
 
     @Test
-    fun `deny login for non-existing user`() {
+    fun `deny login given non-existing user`() {
         val request = createLoginRequest("nonexistinguser@example.com", "supersecurepassword")
         val response = testRestTemplate.postForEntity("/api/auth/login", request, Void::class.java)
 
@@ -57,7 +57,7 @@ class LoginIntegrationTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun `deny login for invalid credentials`() {
+    fun `deny login given invalid credentials`() {
         val user = registerTestUser()
 
         val request = createLoginRequest(user.username, "invalidpassword")

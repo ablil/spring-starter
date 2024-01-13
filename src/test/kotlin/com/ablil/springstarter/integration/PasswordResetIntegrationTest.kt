@@ -1,6 +1,6 @@
 package com.ablil.springstarter.integration
 
-import com.ablil.springstarter.persistence.common.BaseIntegrationTest
+import com.ablil.springstarter.integration.common.BaseIntegrationTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -15,12 +15,10 @@ class PasswordResetIntegrationTest(
     @Autowired val userRepository: UserRepository,
 ) : BaseIntegrationTest() {
     @BeforeEach
-    fun beforeEach() {
-        userRepository.deleteAll()
-    }
+    fun beforeEach(): Unit = userRepository.truncate()
 
     @Test
-    fun `should reset password`() {
+    fun `reset password`() {
         registerTestUser()
 
         val request =

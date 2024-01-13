@@ -1,6 +1,6 @@
 package com.ablil.springstarter.integration
 
-import com.ablil.springstarter.persistence.common.BaseIntegrationTest
+import com.ablil.springstarter.integration.common.BaseIntegrationTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserRole
 import com.ablil.springstarter.persistence.repositories.UserRepository
@@ -16,9 +16,7 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
     lateinit var userRepository: UserRepository
 
     @BeforeEach
-    fun beforeEach() {
-        userRepository.deleteAll()
-    }
+    fun beforeEach(): Unit = userRepository.truncate()
 
     @Test
     fun `should register user successfully`() {

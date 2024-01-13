@@ -57,6 +57,9 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     systemProperty("spring.profiles.active", "integration,test")
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 openApiGenerate {
