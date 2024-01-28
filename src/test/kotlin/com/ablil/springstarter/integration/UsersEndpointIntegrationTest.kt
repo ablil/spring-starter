@@ -1,6 +1,7 @@
 package com.ablil.springstarter.integration
 
 import com.ablil.springstarter.integration.common.BaseIntegrationTest
+import com.ablil.springstarter.integration.common.IntegrationTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import com.ablil.springstarter.persistence.entities.UserRole
@@ -11,11 +12,16 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 
+@IntegrationTest
 class UsersEndpointIntegrationTest : BaseIntegrationTest() {
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var testRestTemplate: TestRestTemplate
 
     @BeforeEach
     fun beforeEach(): Unit = userRepository.truncate()

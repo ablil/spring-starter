@@ -1,12 +1,9 @@
 package com.ablil.springstarter.integration.common
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.util.TestPropertyValues
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -14,15 +11,14 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.EnabledIf
 import org.testcontainers.containers.PostgreSQLContainer
 
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EnabledIf(value = "#{environment.getActiveProfiles()[0] == 'integration'}", loadContext = true)
-// TODO: check how verify integration profile is included wih contains, it does not need to be first
 @ContextConfiguration(initializers = [BaseIntegrationTest.Initializer::class])
-@Profile("integration")
-abstract class BaseIntegrationTest {
-    @Autowired
-    lateinit var testRestTemplate: TestRestTemplate
+annotation class IntegrationTest
 
+@EnabledIf(expression = "#{systemProperties['spring.profiles.active'].contains('integration')}")
+abstract class BaseIntegrationTest {
     fun createRequestWithJsonBody(body: String): HttpEntity<String> {
         return HttpEntity<String>(
             body,
