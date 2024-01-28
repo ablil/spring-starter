@@ -1,5 +1,6 @@
 package com.ablil.springstarter.persistence.repositories
 
+import com.ablil.springstarter.persistence.common.BaseRepositoryTest
 import com.ablil.springstarter.persistence.entities.AccountStatus
 import com.ablil.springstarter.persistence.entities.UserEntity
 import org.springframework.data.jpa.repository.Modifying
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity, Long> {
+interface UserRepository : CrudRepository<UserEntity, Long>, BaseRepositoryTest {
     fun findByUsername(username: String): UserEntity?
 
     fun findByEmail(email: String): UserEntity?
@@ -32,4 +33,9 @@ interface UserRepository : CrudRepository<UserEntity, Long> {
         @Param("password") password: String,
         @Param("email") email: String,
     ): Int
+
+    @Transactional
+    @Modifying
+    @Query(value = "truncate table users", nativeQuery = true)
+    override fun truncate()
 }

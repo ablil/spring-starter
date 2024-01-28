@@ -14,6 +14,7 @@ class RegistrationController(
 ) : RegistrationApi {
     override fun confirmRegistration(token: String): ResponseEntity<Unit> {
         registrationService.confirmRegistration(token)
+        // TODO: think about this, maybe we shouldn't do a redirection, but instead return 2xx code
         return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).headers {
             it.add("Location", "/register/confirm?confirmed=true")
         }.build()

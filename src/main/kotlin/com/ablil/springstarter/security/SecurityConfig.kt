@@ -23,6 +23,7 @@ class SecurityConfig(
             "/health",
             "/error",
             "/actuator/health",
+            "/api/auth/register/confirm",
             "/api/auth/register/**",
             "/api/auth/login",
             "/api/auth/forget_password",

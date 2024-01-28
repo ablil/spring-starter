@@ -42,6 +42,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation( "org.testcontainers:postgresql:1.19.3")
 }
 
 tasks.withType<KotlinCompile> {
@@ -54,8 +55,11 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
-    systemProperty("spring.profiles.active", "test")
+    systemProperty("spring.profiles.active", "integration,test")
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 openApiGenerate {
