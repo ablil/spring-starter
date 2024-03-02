@@ -12,10 +12,11 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.0.2"
     id("org.openapi.generator") version "7.1.0"
     id("com.google.cloud.tools.jib") version "3.4.0"
+    id ( "com.gorylenko.gradle-git-properties" ) version "2.4.0"
 }
 
 group = "com.ablil"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 
@@ -135,4 +136,8 @@ tasks.register<Copy>("setupGithooks") {
     doLast {
         println("Copied Git hooks successfully")
     }
+}
+
+springBoot {
+    buildInfo()
 }
