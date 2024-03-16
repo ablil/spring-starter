@@ -46,5 +46,5 @@ components:
           type: string
         role:
           type: string
-          enum: [ 'ADMIN', 'USER' ]
+          enum: [ 'ADMIN', 'DEFAULT', 'TECHNICAL' ]
       required: [ 'id', 'email', 'username', 'lastName', 'status', 'role' ]
