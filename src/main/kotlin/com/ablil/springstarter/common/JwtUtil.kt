@@ -1,4 +1,4 @@
-package com.ablil.springstarter.miscllaneous
+package com.ablil.springstarter.common
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -15,7 +15,7 @@ class JwtUtil {
         private val ALGORITHM = Algorithm.HMAC256(ISSUER)
         private val verifier = JWT.require(ALGORITHM).withIssuer(ISSUER).build()
         private val tokenDuration = Instant.now().plus(
-            Duration.ofSeconds(ConfigParams.MAX_TOKEN_AGE.toLong()),
+            Duration.ofSeconds(3600 * 4),
         )
 
         @JvmStatic

@@ -1,7 +1,8 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.service.RegistrationService
+import com.ablil.springstarter.authentication.controllers.RegistrationController
+import com.ablil.springstarter.authentication.services.RegistrationService
+import com.ablil.springstarter.users.entities.UserEntity
 import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever

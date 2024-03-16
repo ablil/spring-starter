@@ -1,6 +1,6 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.users.controllers
 
-import com.ablil.springstarter.service.UserService
+import com.ablil.springstarter.users.services.UserService
 import com.ablil.springstarter.webapi.api.UserApi
 import com.ablil.springstarter.webapi.model.User
 import org.springframework.http.ResponseEntity

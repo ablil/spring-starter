@@ -1,13 +1,13 @@
-package com.ablil.springstarter.service
+package com.ablil.springstarter.authentication.services
 
-import com.ablil.springstarter.common.TokenNotFound
-import com.ablil.springstarter.common.UserAlreadyExists
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.TokenNotFound
+import com.ablil.springstarter.UserAlreadyExists
+import com.ablil.springstarter.mail.MailService
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.repositories.UserRepository
 import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.apache.commons.lang3.RandomStringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -15,10 +15,8 @@ import org.springframework.stereotype.Service
 class RegistrationService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val mailService: MailService?,
+    private val mailService: MailService,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     fun register(request: RegistrationRequest): UserEntity {
         val existingUser = userRepository.findByUsernameOrEmail(request.username)
             ?: userRepository.findByUsernameOrEmail(request.email)
@@ -33,14 +31,19 @@ class RegistrationService(
                 email = request.email,
             ),
         )
-        mailService?.confirmRegistration(savedUser.email, requireNotNull(savedUser.token))
+        mailService.confirmRegistration(savedUser.email, requireNotNull(savedUser.token))
         return savedUser
     }
 
     fun confirmRegistration(token: String) {
         with(userRepository) {
             val user = findByToken(token) ?: throw TokenNotFound("token $token not found")
-            save(user.copy(token = null, status = AccountStatus.ACTIVE))
+            save(
+                user.copy(
+                    token = null,
+                    status = com.ablil.springstarter.users.entities.AccountStatus.ACTIVE,
+                ),
+            )
         }
     }
 }

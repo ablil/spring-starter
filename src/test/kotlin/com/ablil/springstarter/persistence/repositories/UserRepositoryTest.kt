@@ -1,8 +1,9 @@
 package com.ablil.springstarter.persistence.repositories
 
 import com.ablil.springstarter.persistence.common.RepositoryTest
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.repositories.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -51,7 +52,11 @@ class UserRepositoryTest(
     fun `update status and token by email`() {
         val actual = with(userRepository) {
             save(userEntity)
-            updateTokenAndStatus("mytoken", AccountStatus.ACTIVE, userEntity.email)
+            updateTokenAndStatus(
+                "mytoken",
+                com.ablil.springstarter.users.entities.AccountStatus.ACTIVE,
+                userEntity.email,
+            )
             findByEmail(userEntity.email)
         }
 

@@ -1,10 +1,12 @@
 package com.ablil.springstarter.service
 
-import com.ablil.springstarter.common.InvalidCredentials
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.persistence.repositories.UserRepository
-import com.ablil.springstarter.webapi.LoginCredentials
+import com.ablil.springstarter.InvalidCredentials
+import com.ablil.springstarter.authentication.controllers.LoginCredentials
+import com.ablil.springstarter.authentication.services.LoginService
+import com.ablil.springstarter.mail.MailService
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.repositories.UserRepository
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -25,6 +27,9 @@ class LoginServiceTest {
 
     @Mock
     lateinit var passwordEncoder: PasswordEncoder
+
+    @Mock
+    lateinit var mailService: MailService
 
     @InjectMocks
     lateinit var loginService: LoginService

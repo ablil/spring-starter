@@ -1,6 +1,6 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.authentication.controllers
 
-import com.ablil.springstarter.service.LoginService
+import com.ablil.springstarter.authentication.services.LoginService
 import com.ablil.springstarter.webapi.api.LoginApi
 import com.ablil.springstarter.webapi.model.LoginRequest
 import com.ablil.springstarter.webapi.model.Token

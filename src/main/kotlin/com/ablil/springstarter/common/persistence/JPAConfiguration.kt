@@ -1,4 +1,4 @@
-package com.ablil.springstarter.persistence
+package com.ablil.springstarter.common.persistence
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

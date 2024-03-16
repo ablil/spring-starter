@@ -1,8 +1,9 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.service.UserService
+import com.ablil.springstarter.users.controllers.UserController
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.services.UserService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever

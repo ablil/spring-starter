@@ -1,5 +1,6 @@
 package com.ablil.springstarter.persistence.common
 
+import com.ablil.springstarter.common.persistence.AuditingEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType

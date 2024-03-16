@@ -1,6 +1,6 @@
 package com.ablil.springstarter.security
 
-import com.ablil.springstarter.miscllaneous.JwtUtil
+import com.ablil.springstarter.common.JwtUtil
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException

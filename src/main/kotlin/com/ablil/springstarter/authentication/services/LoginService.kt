@@ -1,11 +1,12 @@
-package com.ablil.springstarter.service
+package com.ablil.springstarter.authentication.services
 
-import com.ablil.springstarter.common.InvalidCredentials
-import com.ablil.springstarter.common.ResetPasswordError
-import com.ablil.springstarter.miscllaneous.JwtUtil
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.repositories.UserRepository
-import com.ablil.springstarter.webapi.LoginCredentials
+import com.ablil.springstarter.InvalidCredentials
+import com.ablil.springstarter.ResetPasswordError
+import com.ablil.springstarter.authentication.controllers.LoginCredentials
+import com.ablil.springstarter.common.JwtUtil
+import com.ablil.springstarter.mail.MailService
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.repositories.UserRepository
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 class LoginService(
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
-    val mailService: MailService?,
+    val mailService: MailService,
 ) {
     fun login(credentials: LoginCredentials): String {
         val (identifier, password) = credentials
@@ -37,10 +38,10 @@ class LoginService(
             findByEmail(email)?.let {
                 updateTokenAndStatus(
                     resetToken,
-                    AccountStatus.PASSWORD_RESET_IN_PROGRESS,
+                    com.ablil.springstarter.users.entities.AccountStatus.PASSWORD_RESET_IN_PROGRESS,
                     email,
                 )
-            }?.also { mailService?.resetPassword(email, resetToken) }
+            }?.also { mailService.resetPassword(email, resetToken) }
         }
     }
 
@@ -50,8 +51,12 @@ class LoginService(
             ?: throw ResetPasswordError("token $token not found")
 
         with(userRepository) {
-            updateTokenAndStatus(null, AccountStatus.ACTIVE, user.email)
+            updateTokenAndStatus(
+                null,
+                com.ablil.springstarter.users.entities.AccountStatus.ACTIVE,
+                user.email,
+            )
             resetPassword(passwordEncoder.encode(password), user.email)
-        }.also { mailService?.passwordHasBeenReset(user.email) }
+        }.also { mailService.passwordHasBeenReset(user.email) }
     }
 }

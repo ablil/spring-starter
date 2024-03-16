@@ -1,4 +1,4 @@
-package com.ablil.springstarter.persistence.common
+package com.ablil.springstarter.common.persistence
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

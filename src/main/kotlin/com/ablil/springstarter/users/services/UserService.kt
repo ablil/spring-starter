@@ -1,7 +1,7 @@
-package com.ablil.springstarter.service
+package com.ablil.springstarter.users.services
 
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.repositories.UserRepository
 import org.springframework.stereotype.Service
 
 @Service

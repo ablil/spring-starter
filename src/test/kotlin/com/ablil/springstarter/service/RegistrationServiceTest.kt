@@ -1,8 +1,10 @@
 package com.ablil.springstarter.service
 
-import com.ablil.springstarter.common.UserAlreadyExists
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.UserAlreadyExists
+import com.ablil.springstarter.authentication.services.RegistrationService
+import com.ablil.springstarter.mail.MailService
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.repositories.UserRepository
 import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -21,6 +23,9 @@ class RegistrationServiceTest {
 
     @InjectMocks
     lateinit var registrationService: RegistrationService
+
+    @Mock
+    lateinit var mailService: MailService
 
     @Mock
     lateinit var passwordEncoder: PasswordEncoder

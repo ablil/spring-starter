@@ -1,8 +1,8 @@
-package com.ablil.springstarter.persistence.repositories
+package com.ablil.springstarter.users.repositories
 
-import com.ablil.springstarter.persistence.common.BaseRepositoryTest
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
+import com.ablil.springstarter.common.persistence.BasRepository
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity, Long>, BaseRepositoryTest {
+interface UserRepository : CrudRepository<UserEntity, Long>, BasRepository {
     fun findByUsername(username: String): UserEntity?
 
     fun findByEmail(email: String): UserEntity?

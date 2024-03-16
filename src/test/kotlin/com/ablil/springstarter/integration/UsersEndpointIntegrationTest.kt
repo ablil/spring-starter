@@ -2,10 +2,10 @@ package com.ablil.springstarter.integration
 
 import com.ablil.springstarter.integration.common.BaseIntegrationTest
 import com.ablil.springstarter.integration.common.IntegrationTest
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.entities.UserEntity
-import com.ablil.springstarter.persistence.entities.UserRole
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.entities.UserEntity
+import com.ablil.springstarter.users.entities.UserRole
+import com.ablil.springstarter.users.repositories.UserRepository
 import com.ablil.springstarter.webapi.model.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

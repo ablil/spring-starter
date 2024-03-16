@@ -1,7 +1,9 @@
 package com.ablil.springstarter.webapi
 
-import com.ablil.springstarter.common.InvalidCredentials
-import com.ablil.springstarter.service.LoginService
+import com.ablil.springstarter.InvalidCredentials
+import com.ablil.springstarter.authentication.controllers.LoginController
+import com.ablil.springstarter.authentication.controllers.LoginCredentials
+import com.ablil.springstarter.authentication.services.LoginService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired

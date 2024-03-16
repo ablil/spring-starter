@@ -1,22 +1,22 @@
-package com.ablil.springstarter.miscllaneous
+package com.ablil.springstarter.mail
 
-import com.ablil.springstarter.common.MailConfig
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 
-@MailConfig
 @Component
+@ConditionalOnProperty(name = ["spring.mail.host", "spring.mail.username", "spring.mail.password"])
 class EmailClient(private val javaMailSender: JavaMailSender) {
-    fun sendEmail(to: String, subject: String, content: String) {
+    fun send(to: String, subject: String, content: String) {
         val mail = SimpleMailMessage().apply {
             setTo(to)
             setSubject(subject)
             text = content
         }
         javaMailSender.send(mail)
-        logger.info("Sent email to $to with subject $subject")
+        logger.debug("Email sent to $to with subject $subject")
     }
 
     companion object {
