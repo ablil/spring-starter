@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import org.slf4j.LoggerFactory
+import org.springframework.security.authentication.BadCredentialsException
 import java.time.Duration
 import java.time.Instant
 
@@ -34,7 +35,10 @@ class JwtUtil {
         }
 
         @JvmStatic
-        fun extractClaim(token: String, claim: String): String =
+        fun extractClaim(token: String, claim: String): String = try {
             verifier.verify(token).getClaim(claim).asString()
+        } catch (e: JWTVerificationException) {
+            throw BadCredentialsException("Could NOT extract claim $claim from token $token")
+        }
     }
 }

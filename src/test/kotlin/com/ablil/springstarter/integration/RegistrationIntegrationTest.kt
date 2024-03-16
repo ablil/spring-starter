@@ -35,7 +35,7 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
             { Assertions.assertEquals(HttpStatus.CREATED, response.statusCode) },
             { Assertions.assertEquals("testuser", savedUser?.username) },
             { Assertions.assertEquals("testuser@example.com", savedUser?.email) },
-            { Assertions.assertEquals(UserRole.USER, savedUser?.role) },
+            { Assertions.assertEquals(UserRole.DEFAULT, savedUser?.role) },
             { Assertions.assertEquals(AccountStatus.INACTIVE, savedUser?.status) },
             { Assertions.assertNotNull(savedUser?.token) },
         )

@@ -1,25 +1,70 @@
 package com.ablil.springstarter.security
 
-import com.ablil.springstarter.security.filters.JsonWebTokenFilter
-import com.ablil.springstarter.security.filters.LogRequestsFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.annotation.Order
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter
+import org.springframework.security.web.header.HeaderWriterFilter
 
 @Configuration
-class SecurityConfig(
-    private val jsonWebTokenFilter: JsonWebTokenFilter,
-    private val logRequestsFilter: LogRequestsFilter,
-) {
+class SecurityConfig {
+    @Bean
+    fun securityFilterChain(
+        http: HttpSecurity,
+        authenticationManager: AuthenticationManager,
+    ): SecurityFilterChain {
+        http.invoke {
+            authorizeRequests {
+                PUBLIC_ENDPOINTS.forEach { authorize(it, permitAll) }
+                TECHNICAL_ENDPOINTS.forEach { authorize(it, hasAnyAuthority("ADMIN", "TECHNICAL")) }
+                authorize(anyRequest, authenticated)
+            }
+            csrf { disable() }
+            httpBasic { }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            addFilterBefore<HeaderWriterFilter>(
+                requestHeaderAuthenticationFilter(
+                    authenticationManager,
+                ),
+            )
+        }
+        http.formLogin { it.disable() }
+        return http.build()
+    }
+
+    @Bean
+    fun authenticationManager(
+        authenticationTokenProvider: AuthenticationTokenProvider,
+        daoAuthenticationProvider: DaoAuthenticationProvider,
+    ) = ProviderManager(listOf(authenticationTokenProvider, daoAuthenticationProvider))
+
+    @Bean
+    fun daoAuthenticationProvider(userDetailsService: DefaultUserDetailsService) =
+        DaoAuthenticationProvider().apply {
+            setPasswordEncoder(passwordEncoder())
+            setUserDetailsService(userDetailsService)
+        }
+
+    @Bean
+    fun requestHeaderAuthenticationFilter(authenticationManager: AuthenticationManager) =
+        RequestHeaderAuthenticationFilter().apply {
+            setPrincipalRequestHeader("Authorization")
+            setExceptionIfHeaderMissing(false)
+            setAuthenticationManager(authenticationManager)
+        }
+
+    @Bean
+    fun passwordEncoder() = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
     companion object {
-        val publicEndpoints = arrayOf(
+        val PUBLIC_ENDPOINTS = arrayOf(
             "/health",
             "/error",
             "/actuator/health",
@@ -29,7 +74,7 @@ class SecurityConfig(
             "/api/auth/forget_password",
             "/api/auth/reset_password",
         )
-        val privateEndpoints = arrayOf(
+        val TECHNICAL_ENDPOINTS = arrayOf(
             "/admin",
             "/actuator/**",
             "/v3/api-docs/**",
@@ -38,62 +83,4 @@ class SecurityConfig(
             "/api/users/**",
         )
     }
-
-    @Bean
-    @Order(2)
-    fun createAPISecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.invoke {
-            securityMatcher("/api/**")
-            authorizeRequests {
-                publicEndpoints
-                    .filter { it.startsWith("/api") }
-                    .forEach { authorize(it, permitAll) }
-                authorize(anyRequest, authenticated)
-            }
-            csrf { disable() }
-            httpBasic { disable() }
-            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(logRequestsFilter)
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(jsonWebTokenFilter)
-        }
-        http.formLogin { it.disable() }
-        return http.build()
-    }
-
-    @Bean
-    @Order(1)
-    fun createAdminSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.invoke {
-            securityMatcher(*privateEndpoints)
-            authorizeRequests {
-                authorize("/actuator/health", permitAll)
-                authorize(anyRequest, hasAuthority("ADMIN"))
-            }
-            httpBasic {}
-        }
-        http.formLogin { it.disable() }
-        return http.build()
-    }
-
-    @Bean
-    @Order(3)
-    fun createFallbackSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.invoke {
-            authorizeRequests {
-                publicEndpoints.forEach { authorize(it, permitAll) }
-                authorize(anyRequest, denyAll)
-            }
-            csrf { disable() }
-            httpBasic { disable() }
-            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(logRequestsFilter)
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(jsonWebTokenFilter)
-        }
-        http.formLogin { it.disable() }
-        return http.build()
-    }
-
-    @Bean
-    fun getPasswordEncoder(): PasswordEncoder =
-        PasswordEncoderFactories.createDelegatingPasswordEncoder()
 }
