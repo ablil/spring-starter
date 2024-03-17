@@ -1,6 +1,5 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.authentication.controllers
 
-import com.ablil.springstarter.authentication.controllers.RegistrationController
 import com.ablil.springstarter.authentication.services.RegistrationService
 import com.ablil.springstarter.users.entities.UserEntity
 import com.ablil.springstarter.webapi.model.RegistrationRequest

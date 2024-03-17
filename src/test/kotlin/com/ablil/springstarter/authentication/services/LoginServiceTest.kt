@@ -1,8 +1,7 @@
-package com.ablil.springstarter.service
+package com.ablil.springstarter.authentication.services
 
 import com.ablil.springstarter.InvalidCredentials
 import com.ablil.springstarter.authentication.controllers.LoginCredentials
-import com.ablil.springstarter.authentication.services.LoginService
 import com.ablil.springstarter.mail.MailService
 import com.ablil.springstarter.users.entities.AccountStatus
 import com.ablil.springstarter.users.entities.UserEntity

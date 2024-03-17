@@ -1,6 +1,5 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.authentication.controllers
 
-import com.ablil.springstarter.authentication.controllers.PasswordResetController
 import com.ablil.springstarter.authentication.services.LoginService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,7 +1,7 @@
-package com.ablil.springstarter.integration
+package com.ablil.springstarter.authentication.integration
 
-import com.ablil.springstarter.integration.common.BaseIntegrationTest
-import com.ablil.springstarter.integration.common.IntegrationTest
+import com.ablil.springstarter.common.BaseIntegrationTest
+import com.ablil.springstarter.common.IntegrationTest
 import com.ablil.springstarter.users.entities.AccountStatus
 import com.ablil.springstarter.users.entities.UserRole
 import com.ablil.springstarter.users.repositories.UserRepository

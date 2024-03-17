@@ -1,8 +1,6 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.authentication.controllers
 
 import com.ablil.springstarter.InvalidCredentials
-import com.ablil.springstarter.authentication.controllers.LoginController
-import com.ablil.springstarter.authentication.controllers.LoginCredentials
 import com.ablil.springstarter.authentication.services.LoginService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -21,7 +19,7 @@ class LoginControllerTest(
     @MockBean @Autowired val loginService: LoginService,
 ) {
     @Test
-    fun `should return jwt token given valid login credentials`() {
+    fun `return jwt token given valid login credentials`() {
         whenever(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
             .thenReturn("token")
 

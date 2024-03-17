@@ -1,4 +1,4 @@
-package com.ablil.springstarter.webapi
+package com.ablil.springstarter.authentication.controllers
 
 import com.ablil.springstarter.users.controllers.UserController
 import com.ablil.springstarter.users.entities.AccountStatus

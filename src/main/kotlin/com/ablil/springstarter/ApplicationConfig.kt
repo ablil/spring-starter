@@ -12,6 +12,7 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.context.request.WebRequest
 
@@ -21,6 +22,7 @@ class ApplicationConfig {
     private lateinit var password: String
 
     @Bean
+    @Profile("local")
     fun init(userRepository: UserRepository, passwordEncoder: PasswordEncoder) = CommandLineRunner {
         val admin = userRepository.findByUsername("admin")
         if (admin == null) {

@@ -1,7 +1,6 @@
-package com.ablil.springstarter.service
+package com.ablil.springstarter.authentication.services
 
 import com.ablil.springstarter.UserAlreadyExists
-import com.ablil.springstarter.authentication.services.RegistrationService
 import com.ablil.springstarter.mail.MailService
 import com.ablil.springstarter.users.entities.UserEntity
 import com.ablil.springstarter.users.repositories.UserRepository
