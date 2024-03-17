@@ -1,7 +1,7 @@
 package com.ablil.springstarter.security
 
-import com.ablil.springstarter.persistence.entities.AccountStatus
-import com.ablil.springstarter.persistence.repositories.UserRepository
+import com.ablil.springstarter.users.entities.AccountStatus
+import com.ablil.springstarter.users.repositories.UserRepository
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
