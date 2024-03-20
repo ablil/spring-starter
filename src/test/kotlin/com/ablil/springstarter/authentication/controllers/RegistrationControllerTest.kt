@@ -34,9 +34,10 @@ class RegistrationControllerTest(
 
         mockMvc.post("/api/auth/register") {
             contentType = MediaType.APPLICATION_JSON
-            content = """
+            content =
+                """
                 { "username": "joedoe", "password": "supersecurepassword", "email": "joedoe@example.com" }
-            """.trimIndent()
+                """.trimIndent()
         }.andExpectAll {
             status { isCreated() }
             header { string("Location", "/api/users/${userEntity.id}") }

@@ -100,14 +100,16 @@ sourceSets {
 }
 
 ktlint {
+    version.set("1.2.0")
     debug.set(true)
     verbose.set(true)
 
     additionalEditorconfig.set(mapOf(
-        "max_line_length" to "100",
+        "max_line_length" to "120",
+        "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
+        "ktlint_standard_multine-expression-wrapping" to  "disabled",
         "ktlint_standard_function-signature" to "disabled",
         "ktlint_standard_multiline-expression-wrapping" to "disabled",
-        "ktlint_standard_string-template-indent" to "disabled",
     ))
     filter {
         exclude("**/*.gradle.kts")

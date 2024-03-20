@@ -31,7 +31,7 @@ class PasswordResetIntegrationTest : BaseIntegrationTest() {
         val request =
             createRequestWithJsonBody(
                 """
-            {"email": "johndoe@example.com"}
+                {"email": "johndoe@example.com"}
                 """.trimIndent(),
             )
         val response = testRestTemplate.postForEntity(
@@ -60,7 +60,7 @@ class PasswordResetIntegrationTest : BaseIntegrationTest() {
         val request =
             createRequestWithJsonBody(
                 """
-            {"token": "testtoken", "password": "mynewsupersecurepassword"}
+                {"token": "testtoken", "password": "mynewsupersecurepassword"}
                 """.trimIndent(),
             )
         val response = testRestTemplate.postForEntity(
@@ -84,7 +84,7 @@ class PasswordResetIntegrationTest : BaseIntegrationTest() {
         val request =
             createRequestWithJsonBody(
                 """
-            {"token": "invalidtoken", "password": "mynewsupersecurepassword"}
+                {"token": "invalidtoken", "password": "mynewsupersecurepassword"}
                 """.trimIndent(),
             )
         val response = testRestTemplate.postForEntity(

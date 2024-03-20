@@ -25,9 +25,10 @@ class LoginControllerTest(
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
-            content = """
+            content =
+                """
                 {"username": "joedoe", "password": "supersecurepassword"}
-            """.trimIndent()
+                """.trimIndent()
         }.andExpectAll {
             status { isOk() }
             jsonPath("$.token") { value("token") }
@@ -41,9 +42,10 @@ class LoginControllerTest(
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
-            content = """
+            content =
+                """
                 {"username": "joedoe", "password": "supersecurepassword"}
-            """.trimIndent()
+                """.trimIndent()
         }.andExpectAll {
             status { isForbidden() }
         }

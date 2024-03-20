@@ -70,8 +70,9 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
     }
 
     companion object {
-        private val registrationRequest = """
+        private val registrationRequest =
+            """
             {"username": "testuser", "email": "testuser@example.com", "password": "supersecurepassword"}
-        """.trimIndent()
+            """.trimIndent()
     }
 }
