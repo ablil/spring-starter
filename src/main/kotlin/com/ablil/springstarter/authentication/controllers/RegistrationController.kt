@@ -3,12 +3,14 @@ package com.ablil.springstarter.authentication.controllers
 import com.ablil.springstarter.authentication.services.RegistrationService
 import com.ablil.springstarter.webapi.api.RegistrationApi
 import com.ablil.springstarter.webapi.model.RegistrationRequest
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 @RestController
+@Tag(name = "Registration")
 class RegistrationController(
     private val registrationService: RegistrationService,
 ) : RegistrationApi {

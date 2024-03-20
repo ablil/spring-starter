@@ -56,3 +56,8 @@ Spring actuator is accessible only for admin user, and it is secured with basic 
 **app.audit.password**
 
 `/actuator/health` is public and can be accessed without authentication.
+
+# Known issues
+
+* `kotlin-spring` generator from [OpenAPI generator](https://openapi-generator.tech/) does not yet support
+`@Tag` annotation (check [#17211](https://github.com/OpenAPITools/openapi-generator/issues/17211)).

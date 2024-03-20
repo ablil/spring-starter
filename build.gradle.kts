@@ -81,7 +81,7 @@ openApiGenerate {
             Pair("useSpringBoot3", "true"), // In order to use jakarta.validation instead of javax.validation
             Pair("interfaceOnly", "true"),
             Pair("skipDefaultInterface", "true"), // Do not generate a default implementation for interface methods
-            Pair("useTags", "true"),
+            Pair("useTags", "true"), // generate a controller for each tag
             Pair("enumPropertyNaming", "UPPERCASE")
         ),
     )

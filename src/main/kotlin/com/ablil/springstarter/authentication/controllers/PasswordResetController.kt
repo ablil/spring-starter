@@ -4,10 +4,12 @@ import com.ablil.springstarter.authentication.services.LoginService
 import com.ablil.springstarter.webapi.api.PasswordApi
 import com.ablil.springstarter.webapi.model.ForgetPasswordRequest
 import com.ablil.springstarter.webapi.model.ResetPasswordRequest
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@Tag(name = "Registration")
 class PasswordResetController(
     private val loginService: LoginService,
 ) : PasswordApi {
