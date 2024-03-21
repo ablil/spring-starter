@@ -105,7 +105,7 @@ ktlint {
     verbose.set(true)
 
     additionalEditorconfig.set(mapOf(
-        "max_line_length" to "120",
+        "max_line_length" to "100",
         "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
         "ktlint_standard_multine-expression-wrapping" to  "disabled",
         "ktlint_standard_function-signature" to "disabled",

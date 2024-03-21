@@ -1,8 +1,7 @@
 package com.ablil.springstarter.authentication.controllers
 
+import com.ablil.springstarter.UserAlreadyExists
 import com.ablil.springstarter.authentication.services.RegistrationService
-import com.ablil.springstarter.users.entities.UserEntity
-import com.ablil.springstarter.webapi.model.RegistrationRequest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,22 +15,15 @@ import org.springframework.test.web.servlet.post
 
 @WebMvcTest(RegistrationController::class)
 @AutoConfigureMockMvc(addFilters = false)
-class RegistrationControllerTest(
-    @Autowired val mockMvc: MockMvc,
-    @MockBean @Autowired val registrationService: RegistrationService,
-) {
-    @Test
-    fun `should return 201 given valid registration request`() {
-        whenever(
-            registrationService.register(
-                RegistrationRequest(
-                    username = "joedoe",
-                    password = "supersecurepassword",
-                    email = "joedoe@example.com",
-                ),
-            ),
-        ).thenReturn(userEntity)
+class RegistrationControllerTest {
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
+    @MockBean
+    lateinit var registrationService: RegistrationService
+
+    @Test
+    fun `return 201 given valid registration request`() {
         mockMvc.post("/api/auth/register") {
             contentType = MediaType.APPLICATION_JSON
             content =
@@ -40,8 +32,52 @@ class RegistrationControllerTest(
                 """.trimIndent()
         }.andExpectAll {
             status { isCreated() }
-            header { string("Location", "/api/users/${userEntity.id}") }
         }
+    }
+
+    @Test
+    fun `return 409 given an existing registered user`() {
+        whenever(
+            registrationService.registerNewUser(
+                RegistrationDto(
+                    "joedoe",
+                    "joedoe@example.com",
+                    "supersecurepassword",
+                ),
+            ),
+        ).thenThrow(UserAlreadyExists("joedoe"))
+
+        mockMvc.post("/api/auth/register") {
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                { "username": "joedoe", "password": "supersecurepassword", "email": "joedoe@example.com" }
+                """.trimIndent()
+        }.andExpectAll {
+            status { isConflict() }
+        }
+    }
+
+    @Test
+    fun `return 201 given valid password reset request`() {
+        mockMvc.post("/api/auth/reset_password") {
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {"token": "token", "password": "supersecurepassword"}
+                """.trimIndent()
+        }.andExpect { status { isNoContent() } }
+    }
+
+    @Test
+    fun `return 201 given forget password request`() {
+        mockMvc.post("/api/auth/forget_password") {
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {"email": "joedoe@example.com"}
+                """.trimIndent()
+        }.andExpect { status { isNoContent() } }
     }
 
     @Test
@@ -50,14 +86,5 @@ class RegistrationControllerTest(
             status { isTemporaryRedirect() }
             header { string("Location", "/register/confirm?confirmed=true") }
         }
-    }
-
-    companion object {
-        val userEntity = UserEntity(
-            id = null,
-            username = "joedoe",
-            email = "joedoe@example.com",
-            password = "supersecurepassword",
-        )
     }
 }

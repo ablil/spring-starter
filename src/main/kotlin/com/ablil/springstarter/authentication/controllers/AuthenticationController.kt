@@ -1,10 +1,9 @@
 package com.ablil.springstarter.authentication.controllers
 
-import com.ablil.springstarter.authentication.services.LoginService
+import com.ablil.springstarter.authentication.services.AuthenticationService
 import com.ablil.springstarter.webapi.api.LoginApi
 import com.ablil.springstarter.webapi.model.LoginRequest
 import com.ablil.springstarter.webapi.model.Token
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.ResponseEntity
@@ -12,16 +11,15 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Authentication")
-class LoginController(val loginService: LoginService) : LoginApi {
+class AuthenticationController(val authenticationService: AuthenticationService) : LoginApi {
     override fun login(loginRequest: LoginRequest): ResponseEntity<Token> {
-        val credentials = LoginCredentials(loginRequest.username, loginRequest.password)
-        val token = loginService.login(credentials).let(::Token)
-        return ResponseEntity.ok(token)
+        val credentials = Credentials(loginRequest.username, loginRequest.password)
+        val token = authenticationService.validateCredentialsAndGenerateToken(credentials)
+        return ResponseEntity.ok(Token(token))
     }
 }
 
-@Schema(name = "login credentials")
-data class LoginCredentials(
-    @NotBlank val usernameOrEmail: String,
+data class Credentials(
+    @NotBlank val username: String,
     @NotBlank val password: String,
 )

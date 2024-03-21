@@ -17,8 +17,8 @@ class UserAlreadyExists(
     username: String,
 ) : DefaultBusinessError("auth-002", "user $username already exists")
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
-class InvalidCredentials() : DefaultBusinessError("auth-003", "invalid credentials")
-
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
+class InvalidCredentials(override val message: String) : DefaultBusinessError("auth-003", message)
+
+@ResponseStatus(HttpStatus.FORBIDDEN)
 class ResetPasswordError(msg: String) : DefaultBusinessError("auth-004", msg)

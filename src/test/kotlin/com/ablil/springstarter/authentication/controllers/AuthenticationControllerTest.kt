@@ -1,7 +1,7 @@
 package com.ablil.springstarter.authentication.controllers
 
 import com.ablil.springstarter.InvalidCredentials
-import com.ablil.springstarter.authentication.services.LoginService
+import com.ablil.springstarter.authentication.services.AuthenticationService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,16 +12,25 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 
-@WebMvcTest(LoginController::class)
+@WebMvcTest(AuthenticationController::class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoginControllerTest(
-    @Autowired val mockMvc: MockMvc,
-    @MockBean @Autowired val loginService: LoginService,
-) {
+class AuthenticationControllerTest {
+    @Autowired
+    lateinit var mockMvc: MockMvc
+
+    @MockBean
+    lateinit var authenticationService: AuthenticationService
+
     @Test
-    fun `return jwt token given valid login credentials`() {
-        whenever(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
-            .thenReturn("token")
+    fun `return bearer token given valid login credentials`() {
+        whenever(
+            authenticationService.validateCredentialsAndGenerateToken(
+                Credentials(
+                    "joedoe",
+                    "supersecurepassword",
+                ),
+            ),
+        ).thenReturn("token")
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -36,9 +45,15 @@ class LoginControllerTest(
     }
 
     @Test
-    fun `should return 403 given invalid credentials`() {
-        whenever(loginService.login(LoginCredentials("joedoe", "supersecurepassword")))
-            .thenThrow(InvalidCredentials())
+    fun `return 401 given invalid credentials`() {
+        whenever(
+            authenticationService.validateCredentialsAndGenerateToken(
+                Credentials(
+                    "joedoe",
+                    "supersecurepassword",
+                ),
+            ),
+        ).thenThrow(InvalidCredentials("invalid credentials"))
 
         mockMvc.post("/api/auth/login") {
             contentType = MediaType.APPLICATION_JSON
@@ -47,7 +62,7 @@ class LoginControllerTest(
                 {"username": "joedoe", "password": "supersecurepassword"}
                 """.trimIndent()
         }.andExpectAll {
-            status { isForbidden() }
+            status { isUnauthorized() }
         }
     }
 }

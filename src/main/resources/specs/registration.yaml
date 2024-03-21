@@ -12,7 +12,7 @@ paths:
       tags:
         - Registration
       summary: Register a new user
-      operationId: registerUser
+      operationId: registerNewUser
       requestBody:
         required: true
         content:
@@ -40,6 +40,40 @@ paths:
         '307':
           description: Temporary Redirect
 
+  /api/auth/forget_password:
+    post:
+      operationId: sendPasswordResetLink
+      tags:
+        - Registration
+      summary: "Send password reset link"
+      description: "Send password reset link via email, if account does not exist, do nothing"
+      requestBody:
+        required: true
+        description: 'email'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgetPasswordRequest'
+      responses:
+        200:
+          description: "reset password link sent via email successfully"
+
+  /api/auth/reset_password:
+    post:
+      operationId: updateUserPassword
+      tags:
+        - Registration
+      summary: "Update or reset user password"
+      description: "A reset token is required to reset password, token is sent via email"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        200:
+          description: "password reset successfully"
 
 components:
   schemas:
@@ -58,3 +92,17 @@ components:
         - username
         - password
         - email
+    ResetPasswordRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+      required: ['token', 'password']
+    ForgetPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+      required: ['email']
