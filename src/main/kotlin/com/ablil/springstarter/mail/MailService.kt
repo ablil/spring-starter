@@ -8,12 +8,12 @@ class MailService(
     @Value("\${app.url}") val host: String,
     val client: EmailClient?,
 ) {
-    fun resetPassword(to: String, token: String) {
+    fun sendResetPasswordLink(to: String, token: String) {
         val link = "$host/reset-password?token=$token"
         client?.send(to, "RESET PASSWORD", link)
     }
 
-    fun passwordHasBeenReset(to: String) {
+    fun notifyUserWithPasswordChange(to: String) {
         client?.send(to, "PASSWORD RESET", "Your password has been reset")
     }
 

@@ -81,7 +81,7 @@ openApiGenerate {
             Pair("useSpringBoot3", "true"), // In order to use jakarta.validation instead of javax.validation
             Pair("interfaceOnly", "true"),
             Pair("skipDefaultInterface", "true"), // Do not generate a default implementation for interface methods
-            Pair("useTags", "true"),
+            Pair("useTags", "true"), // generate a controller for each tag
             Pair("enumPropertyNaming", "UPPERCASE")
         ),
     )
@@ -100,14 +100,16 @@ sourceSets {
 }
 
 ktlint {
+    version.set("1.2.0")
     debug.set(true)
     verbose.set(true)
 
     additionalEditorconfig.set(mapOf(
         "max_line_length" to "100",
+        "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
+        "ktlint_standard_multine-expression-wrapping" to  "disabled",
         "ktlint_standard_function-signature" to "disabled",
         "ktlint_standard_multiline-expression-wrapping" to "disabled",
-        "ktlint_standard_string-template-indent" to "disabled",
     ))
     filter {
         exclude("**/*.gradle.kts")
