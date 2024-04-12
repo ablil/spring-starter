@@ -11,6 +11,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 
 @EnabledIf(expression = "#{systemProperties['spring.profiles.active'].contains('integration')}")
 abstract class BaseIntegrationTest {
+    // TODO: migrate to use MockMvc instead of TestRestTemplate
     fun createRequestWithJsonBody(body: String): HttpEntity<String> {
         return HttpEntity<String>(
             body,
