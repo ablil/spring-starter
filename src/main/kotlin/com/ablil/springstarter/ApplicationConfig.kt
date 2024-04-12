@@ -48,9 +48,9 @@ class ApplicationConfig {
         ): MutableMap<String, Any> {
             val exception = getError(webRequest)
             return super.getErrorAttributes(webRequest, options).also {
-                arrayOf("timestamp", "status", "errors", "path").forEach { attr -> it.remove(attr) }
-                it["message"] =
-                    if (exception is DefaultBusinessError) exception.code else "error-000"
+                arrayOf("timestamp", "status", "path").forEach { attr -> it.remove(attr) }
+                it["message"] = exception?.message ?: "Unexpected error"
+                it["code"] = if (exception is DefaultBusinessError) exception.code else "error-000"
             }
         }
     }

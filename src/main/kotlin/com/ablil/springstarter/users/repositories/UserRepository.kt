@@ -1,6 +1,6 @@
 package com.ablil.springstarter.users.repositories
 
-import com.ablil.springstarter.common.persistence.BasRepository
+import com.ablil.springstarter.common.persistence.BaseRepository
 import com.ablil.springstarter.users.entities.AccountStatus
 import com.ablil.springstarter.users.entities.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-interface UserRepository : JpaRepository<UserEntity, Long>, BasRepository {
+interface UserRepository : JpaRepository<UserEntity, Long>, BaseRepository {
     fun findByUsername(username: String): UserEntity?
 
     fun findByEmail(email: String): UserEntity?

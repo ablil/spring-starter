@@ -8,10 +8,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter
 import org.springframework.security.web.header.HeaderWriterFilter
+import org.springframework.web.context.annotation.RequestScope
 
 @Configuration
 class SecurityConfig {
@@ -62,6 +65,14 @@ class SecurityConfig {
 
     @Bean
     fun passwordEncoder() = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
+    @Bean
+    @RequestScope
+    fun authenticatedUser(): UserDetails {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.principal is UserDetails) return authentication.principal as UserDetails
+        error("User not authenticated or unknown principal type")
+    }
 
     companion object {
         val PUBLIC_ENDPOINTS = arrayOf(

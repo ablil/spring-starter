@@ -1,5 +1,5 @@
 package com.ablil.springstarter.common.persistence
 
-interface BasRepository {
+interface BaseRepository {
     fun truncate()
 }

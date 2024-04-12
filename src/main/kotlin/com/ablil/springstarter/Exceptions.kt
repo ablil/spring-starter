@@ -12,6 +12,18 @@ abstract class DefaultBusinessError(
 class TokenNotFound(s: String) :
     DefaultBusinessError("auth-001", "token not found: $s")
 
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class ResourceNotFound(resource: String, id: String) : DefaultBusinessError(
+    "business-001",
+    "resource '$resource' with identifier '$id' not found",
+)
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class PageNotFound(page: Int) : DefaultBusinessError(
+    "business-002",
+    "page $page returned empty result",
+)
+
 @ResponseStatus(HttpStatus.CONFLICT)
 class UserAlreadyExists(
     username: String,
