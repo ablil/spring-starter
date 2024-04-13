@@ -27,7 +27,9 @@ class SecurityConfig {
             authorizeRequests {
                 PUBLIC_ENDPOINTS.forEach { authorize(it, permitAll) }
                 TECHNICAL_ENDPOINTS.forEach { authorize(it, hasAnyAuthority("ADMIN", "TECHNICAL")) }
-                authorize(anyRequest, authenticated)
+                // TODO: create separate security filter chain for technical endpoints with basic
+                //  auth only
+                authorize(anyRequest, hasAuthority("DEFAULT"))
             }
             csrf { disable() }
             httpBasic { }
@@ -79,7 +81,6 @@ class SecurityConfig {
             "/health",
             "/error",
             "/actuator/health",
-            "/api/auth/register/confirm",
             "/api/auth/register/**",
             "/api/auth/login",
             "/api/auth/forget_password",

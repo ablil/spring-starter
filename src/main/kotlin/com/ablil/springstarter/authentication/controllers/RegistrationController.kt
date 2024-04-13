@@ -5,6 +5,7 @@ import com.ablil.springstarter.webapi.api.RegistrationApi
 import com.ablil.springstarter.webapi.model.ForgetPasswordRequest
 import com.ablil.springstarter.webapi.model.RegistrationRequest
 import com.ablil.springstarter.webapi.model.ResetPasswordRequest
+import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.HttpStatus
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Registration")
+@SecurityRequirements
 class RegistrationController(val registrationService: RegistrationService) : RegistrationApi {
     override fun confirmRegistration(token: String): ResponseEntity<Unit> {
         registrationService.confirmUserRegistration(token)

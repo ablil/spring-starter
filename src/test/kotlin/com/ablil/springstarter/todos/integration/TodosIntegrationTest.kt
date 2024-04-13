@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.put
 
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser("johndoe")
+@WithMockUser("johndoe", authorities = arrayOf("DEFAULT"))
 class TodosIntegrationTest : BaseIntegrationTest() {
     @Autowired
     lateinit var todoRepository: TodoRepository

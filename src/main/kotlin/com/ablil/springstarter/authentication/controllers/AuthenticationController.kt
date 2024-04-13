@@ -4,6 +4,7 @@ import com.ablil.springstarter.authentication.services.AuthenticationService
 import com.ablil.springstarter.webapi.api.LoginApi
 import com.ablil.springstarter.webapi.model.LoginRequest
 import com.ablil.springstarter.webapi.model.Token
+import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.ResponseEntity
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Tag(name = "Authentication")
 class AuthenticationController(val authenticationService: AuthenticationService) : LoginApi {
+    @SecurityRequirements
     override fun login(loginRequest: LoginRequest): ResponseEntity<Token> {
         val credentials = Credentials(loginRequest.username, loginRequest.password)
         val token = authenticationService.validateCredentialsAndGenerateToken(credentials)

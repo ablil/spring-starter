@@ -40,9 +40,11 @@ Docker images are built and pushed to [ghcr](https://github.com/ablil/spring-sta
 
 ### Security
 
-Except for the public endpoints which are defined in `SecurityConfig`, all the other endpoints are secured with JWT token sent as a cookie.
+**Public endpoints** does NOT require any authentication credentials.
 
-Every authenticated request expects a cookie with the name `jwt` which contains the JWT token.
+**Technical endpoints** requires basic authentication.
+
+**API endpoints** and the rest requires bearer token (json web token)
 
 ### Email
 

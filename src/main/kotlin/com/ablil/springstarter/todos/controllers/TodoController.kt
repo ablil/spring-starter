@@ -9,6 +9,7 @@ import com.ablil.springstarter.webapi.model.CreateTodoRequest
 import com.ablil.springstarter.webapi.model.FullTodo
 import com.ablil.springstarter.webapi.model.GetAllTodos200Response
 import com.ablil.springstarter.webapi.model.Todo
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -17,6 +18,7 @@ import java.time.OffsetDateTime
 
 @RestController
 @Tag(name = "Todo", description = "Everything about managing todos")
+@SecurityRequirement(name = "bearerAuth")
 class TodoController(val service: TodoService) : TodoApi {
     override fun createTodo(createTodoRequest: CreateTodoRequest): ResponseEntity<FullTodo> {
         val createTodo = service.createTodo(createTodoRequest.content)
