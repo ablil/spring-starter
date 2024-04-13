@@ -12,7 +12,7 @@ paths:
       tags:
         - login
       summary: login
-      description: "Login with username and password and return jwt token in cookie"
+      description: "Login with username and password and return json web token"
       requestBody:
         description: 'credentials'
         required: true

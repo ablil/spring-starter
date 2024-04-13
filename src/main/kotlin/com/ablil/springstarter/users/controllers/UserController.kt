@@ -3,6 +3,7 @@ package com.ablil.springstarter.users.controllers
 import com.ablil.springstarter.users.services.UserService
 import com.ablil.springstarter.webapi.api.UserApi
 import com.ablil.springstarter.webapi.model.User
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -10,6 +11,7 @@ import java.math.BigDecimal
 
 @RestController
 @Tag(name = "Users")
+@SecurityRequirement(name = "basicAuth")
 class UserController(private val userService: UserService) : UserApi {
     override fun getUser(userId: BigDecimal): ResponseEntity<User> {
         return userService.findById(userId.toLong())?.let {
