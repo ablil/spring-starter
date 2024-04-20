@@ -12,9 +12,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 
 @IntegrationTest
 class RegistrationIntegrationTest : BaseIntegrationTest() {
@@ -22,7 +23,7 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var testRestTemplate: TestRestTemplate
+    lateinit var mockMvc: MockMvc
 
     @BeforeEach
     fun beforeEach(): Unit = userRepository.truncate()
@@ -31,55 +32,59 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
     inner class NewUserRegistrationTest {
         @Test
         fun `should register user successfully`() {
-            val response = attemptToRegisterUser(
-                RegistrationDto(
-                    "johndoe",
-                    "johndoe@example.com",
-                    "supersecurepassword",
-                ),
-            )
-
-            assertEquals(HttpStatus.CREATED, response.statusCode)
+            mockMvc.post("/api/auth/register") {
+                contentType = MediaType.APPLICATION_JSON
+                content = buildRegistrationRequest(
+                    RegistrationDto(
+                        "johndoe",
+                        "johndoe@example.com",
+                        "supersecurepassword",
+                    ),
+                )
+            }.andExpect { status { isCreated() } }
         }
 
         @Test
         fun `should NOT register an existing user`() {
-            val firstTimeResponse = attemptToRegisterUser(
-                RegistrationDto(
-                    "johndoe",
-                    "johndoe@example.com",
-                    "supersecurepassword",
-                ),
-            )
+            mockMvc.post("/api/auth/register") {
+                contentType = MediaType.APPLICATION_JSON
+                content = buildRegistrationRequest(
+                    RegistrationDto(
+                        "johndoe",
+                        "johndoe@example.com",
+                        "supersecurepassword",
+                    ),
+                )
+            }.andExpect { status { isCreated() } }
 
-            val secondTimeResponse = attemptToRegisterUser(
-                RegistrationDto(
-                    "johndoe",
-                    "johndoe@example.com",
-                    "supersecurepassword",
-                ),
-            )
-
-            assertEquals(HttpStatus.CREATED, firstTimeResponse.statusCode)
-            assertEquals(HttpStatus.CONFLICT, secondTimeResponse.statusCode)
+            mockMvc.post("/api/auth/register") {
+                contentType = MediaType.APPLICATION_JSON
+                content = buildRegistrationRequest(
+                    RegistrationDto(
+                        "johndoe",
+                        "johndoe@example.com",
+                        "supersecurepassword",
+                    ),
+                )
+            }.andExpect { status { isConflict() } }
         }
 
         @Test
         fun `should confirm user registration given valid token`() {
-            attemptToRegisterUser(
-                RegistrationDto(
-                    "johndoe",
-                    "johndoe@example.com",
-                    "supersecurepassword",
-                ),
-            )
+            mockMvc.post("/api/auth/register") {
+                contentType = MediaType.APPLICATION_JSON
+                content = buildRegistrationRequest(
+                    RegistrationDto(
+                        "johndoe",
+                        "johndoe@example.com",
+                        "supersecurepassword",
+                    ),
+                )
+            }
             val token = userRepository.findByUsername("johndoe")?.token
                 ?: IllegalStateException("User not found")
 
-            testRestTemplate.getForEntity(
-                "/api/auth/register/confirm?token=$token",
-                Void::class.java,
-            )
+            mockMvc.get("/api/auth/register/confirm?token=$token")
 
             val actualUser = userRepository.findByUsername("johndoe")
             assertEquals(AccountStatus.ACTIVE, actualUser?.status)
@@ -103,51 +108,37 @@ class RegistrationIntegrationTest : BaseIntegrationTest() {
 
         @Test
         fun `trigger password reset process`() {
-            val request = createRequestWithJsonBody(
-                """
-                {"email": "johndoe@example.com"}
-                """.trimIndent(),
-            )
-
-            val response = testRestTemplate.postForEntity(
-                "/api/auth/forget_password",
-                request,
-                Void::class.java,
-            )
+            mockMvc.post("/api/auth/forget_password") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {"email": "johndoe@example.com"}
+                    """.trimIndent()
+            }.andExpect { status { isNoContent() } }
             val actualUser = userRepository.findByEmail("johndoe@example.com")
 
-            assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
             assertEquals(AccountStatus.PASSWORD_RESET_IN_PROGRESS, actualUser?.status)
             Assertions.assertNotNull(actualUser?.token)
         }
 
         @Test
         fun `update user password given valid token`() {
-            val request =
-                createRequestWithJsonBody(
+            mockMvc.post("/api/auth/reset_password") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
                     """
                     {"token": "token", "password": "mynewsupersecurepassword"}
-                    """.trimIndent(),
-                )
-            val response = testRestTemplate.postForEntity(
-                "/api/auth/reset_password",
-                request,
-                Void::class.java,
-            )
+                    """.trimIndent()
+            }.andExpect { status { isNoContent() } }
             val actualUser = userRepository.findByEmail("johndoe@example.com")
 
-            Assertions.assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
             Assertions.assertEquals(AccountStatus.ACTIVE, actualUser?.status)
         }
     }
 
-    private fun attemptToRegisterUser(dto: RegistrationDto): ResponseEntity<Void> {
-        val request = createRequestWithJsonBody(
-            """
+    private fun buildRegistrationRequest(dto: RegistrationDto): String {
+        return """
             {"username": "${dto.username}", "email": "$dto.email", "password": "${dto.password}"}
-            """.trimIndent(),
-        )
-
-        return testRestTemplate.postForEntity("/api/auth/register", request, Void::class.java)
+            """.trimIndent()
     }
 }
