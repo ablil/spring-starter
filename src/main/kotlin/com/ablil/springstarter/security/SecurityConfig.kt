@@ -27,9 +27,7 @@ class SecurityConfig {
             authorizeRequests {
                 PUBLIC_ENDPOINTS.forEach { authorize(it, permitAll) }
                 TECHNICAL_ENDPOINTS.forEach { authorize(it, hasAnyAuthority("ADMIN", "TECHNICAL")) }
-                // TODO: create separate security filter chain for technical endpoints with basic
-                //  auth only
-                authorize(anyRequest, hasAuthority("DEFAULT"))
+                authorize(anyRequest, authenticated)
             }
             csrf { disable() }
             httpBasic { }

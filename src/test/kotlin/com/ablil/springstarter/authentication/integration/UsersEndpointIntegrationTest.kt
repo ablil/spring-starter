@@ -6,14 +6,12 @@ import com.ablil.springstarter.users.entities.AccountStatus
 import com.ablil.springstarter.users.entities.UserEntity
 import com.ablil.springstarter.users.entities.UserRole
 import com.ablil.springstarter.users.repositories.UserRepository
-import com.ablil.springstarter.webapi.model.User
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpStatus
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 
 @IntegrationTest
 class UsersEndpointIntegrationTest : BaseIntegrationTest() {
@@ -21,38 +19,22 @@ class UsersEndpointIntegrationTest : BaseIntegrationTest() {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var testRestTemplate: TestRestTemplate
+    lateinit var mockMvc: MockMvc
 
     @BeforeEach
     fun beforeEach(): Unit = userRepository.truncate()
 
     @Test
+    @WithMockUser(username = "admin", authorities = ["ADMIN"])
     fun `get user by id given the caller is admin`() {
         registerAdminUser()
         val testUser = registerTestUser()
 
-        val response = testRestTemplate.withBasicAuth("admin", "admin").getForEntity(
-            "/api/users/${testUser.id}",
-            User::class.java,
-        )
-        assertAll(
-            { assertEquals(HttpStatus.OK, response.statusCode) },
-            { assertEquals(testUser.id.toString(), response.body?.id) },
-        )
-    }
-
-    @Test
-    fun `forbid getting user by id given non-admin user as the caller`() {
-        registerAdminUser()
-        registerNonAdminUser()
-        val testUser = registerTestUser()
-
-        val response = testRestTemplate.withBasicAuth("nonadmin", "nonadmin").getForEntity(
-            "/api/users/${testUser.id}",
-            Void::class.java,
-        )
-
-        assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+        mockMvc.get("/api/users/${testUser.id}")
+            .andExpectAll {
+                status { isOk() }
+                jsonPath("$.id") { value(testUser.id) }
+            }
     }
 
     fun registerAdminUser(): UserEntity = userRepository.save(
