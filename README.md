@@ -48,9 +48,9 @@ Docker images are built and pushed to [ghcr](https://github.com/ablil/spring-sta
 
 ### Email
 
-If email properties are not set on `application-*.yaml` files, the application can run without them.
+Any email related features is ignored if the property `spring.mail.host` is missing (check `EmailClient` class).
 
-For local environment, [mailtrap](mailtrap.io) is used a sandbox to capture all sent emails to debug and inspect them (do NOT forget to you update mail server credentials).
+For local development, a fake SMTP server is provided through a docker image and can be accessible from *http://localhost:8025*.
 
 ### Actuator
 

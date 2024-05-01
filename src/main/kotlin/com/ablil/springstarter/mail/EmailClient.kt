@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnProperty(name = ["spring.mail.host", "spring.mail.username", "spring.mail.password"])
+@ConditionalOnProperty(name = ["spring.mail.host"])
 class EmailClient(private val javaMailSender: JavaMailSender) {
     fun send(to: String, subject: String, content: String) {
         val mail = SimpleMailMessage().apply {

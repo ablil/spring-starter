@@ -7,11 +7,18 @@ services:
       POSTGRES_PASSWORD: supersecurepassword
     ports:
       - 5432:5432
+  smtp-server:
+    image: mailhog/mailhog
+    container_name: fake-smtp
+    ports:
+      - 1025:1025
+      - 8025:8025
   app:
     image: ghcr.io/ablil/spring-starter:latest
     container_name: springstarter_app
     depends_on:
       - database
+      - smtp-server
     ports:
       - "8080:80"
     environment:
