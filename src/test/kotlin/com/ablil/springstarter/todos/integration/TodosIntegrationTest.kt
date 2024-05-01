@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 
 @IntegrationTest
-@WithMockUser("johndoe")
+@WithMockUser("johndoe", authorities = ["DEFAULT"])
 class TodosIntegrationTest : BaseIntegrationTest() {
     @Autowired
     lateinit var todoRepository: TodoRepository

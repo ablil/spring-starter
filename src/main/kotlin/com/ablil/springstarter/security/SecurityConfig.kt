@@ -25,8 +25,18 @@ class SecurityConfig {
     ): SecurityFilterChain {
         http.invoke {
             authorizeRequests {
-                PUBLIC_ENDPOINTS.forEach { authorize(it, permitAll) }
-                TECHNICAL_ENDPOINTS.forEach { authorize(it, hasAnyAuthority("ADMIN", "TECHNICAL")) }
+                authorize("/error", permitAll)
+
+                authorize("/api/auth/**", permitAll)
+                authorize("/api/todos/**", hasAuthority("DEFAULT"))
+                authorize("/api/users/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
+
+                authorize("/swagger-ui/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
+                authorize("/v3/api-docs/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
+
+                authorize("/actuator/health/**", permitAll)
+                authorize("/actuator/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
+
                 authorize(anyRequest, authenticated)
             }
             csrf { disable() }
@@ -72,25 +82,5 @@ class SecurityConfig {
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication.principal is UserDetails) return authentication.principal as UserDetails
         error("User not authenticated or unknown principal type")
-    }
-
-    companion object {
-        val PUBLIC_ENDPOINTS = arrayOf(
-            "/health",
-            "/error",
-            "/actuator/health",
-            "/api/auth/register/**",
-            "/api/auth/login",
-            "/api/auth/forget_password",
-            "/api/auth/reset_password",
-        )
-        val TECHNICAL_ENDPOINTS = arrayOf(
-            "/admin",
-            "/actuator/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/api/users/**",
-        )
     }
 }
