@@ -25,6 +25,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  output:
+    ansi:
+      enabled: always
 
 springdoc:
   swagger-ui:

@@ -40,6 +40,18 @@ Docker images are built and pushed to [ghcr](https://github.com/ablil/spring-sta
 
 ### Security
 
+By default, most endpoints are protected with bearer token, except some technical endpoints which are accessible with Basic authentication.
+
+To issue a bearer token, request it from Keycloak authorization server (run container locally)
+```shell
+curl --location 'http://localhost:8081/realms/{realm}/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id={client_id}' \
+--data-urlencode 'username={username} \
+--data-urlencode 'password={password}' \
+--data-urlencode 'grant_type=password'
+```
+
 **Public endpoints** does NOT require any authentication credentials.
 
 **Technical endpoints** requires basic authentication.

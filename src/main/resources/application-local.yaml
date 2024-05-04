@@ -1,11 +1,13 @@
 spring:
-  mail:
-    protocol: smtp
-    host: 0.0.0.0
-    port: 1025
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://0.0.0.0:8081/realms/springstarter
 
 logging:
   pattern:
     console: "%clr(${LOG_LEVEL_PATTERN:%p}) %clr(%logger){cyan} %clr([%M]){magenta}  %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
   level:
     com.ablil: DEBUG
+    org.springframework.security: TRACE

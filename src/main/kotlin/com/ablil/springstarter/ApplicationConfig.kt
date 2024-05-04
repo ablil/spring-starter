@@ -13,7 +13,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorAttributes
@@ -86,22 +85,6 @@ class ApplicationConfig {
         }
     }
 
-    @Profile("local")
-    @Bean
-    fun getApiInfoForLocal(): Info = Info().title("API Specification").version("0.0.1")
-        .description(
-            """
-            A test account has been created automatically with the following details
-            <br />
-            username=<b>johndoe</b>
-            <br />
-            email=<b>johndoe@example.com</b>
-            <br />
-            password=<b>supersecurepassword</b>
-            """.trimIndent(),
-        )
-
-    @ConditionalOnMissingBean
     @Bean
     fun getApiInfo(): Info = Info().title("API Specification").version("0.0.1")
 
