@@ -1,75 +1,20 @@
 package com.ablil.springstarter
 
-import com.ablil.springstarter.users.entities.AccountStatus
-import com.ablil.springstarter.users.entities.UserEntity
-import com.ablil.springstarter.users.entities.UserRole
-import com.ablil.springstarter.users.repositories.UserRepository
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.ExternalDocumentation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.context.request.WebRequest
 
 @Configuration
 class ApplicationConfig {
-    @Value("\${app.audit.password}")
-    private lateinit var password: String
-
-    @Bean
-    @Profile("local")
-    fun createAdminAccount(userRepository: UserRepository, passwordEncoder: PasswordEncoder) =
-        CommandLineRunner {
-            val admin = userRepository.findByUsername("admin")
-            if (admin == null) {
-                userRepository.save(
-                    UserEntity(
-                        id = null,
-                        username = "admin",
-                        password = passwordEncoder.encode(password),
-                        email = "admin@app.com",
-                        role = UserRole.ADMIN,
-                        status = AccountStatus.ACTIVE,
-                    ),
-                )
-                logger.info("Admin user created")
-            }
-        }
-
-    @Bean
-    @Profile("local")
-    fun createTestUser(userRepository: UserRepository, passwordEncoder: PasswordEncoder) =
-        CommandLineRunner {
-            val existingUser = userRepository.findByUsername("johndoe")
-            if (existingUser == null) {
-                userRepository.save(
-                    UserEntity(
-                        id = null,
-                        username = "johndoe",
-                        password = passwordEncoder.encode("supersecurepassword"),
-                        email = "johndoe@example.com",
-                        role = UserRole.DEFAULT,
-                        status = AccountStatus.ACTIVE,
-                    ),
-                )
-                logger.info(
-                    "Test user created successfully. username=johndoe, email=johndoe@example" +
-                        ".com, password=supersecurepassword",
-                )
-            }
-        }
-
     @Bean
     fun errorAttributes(): ErrorAttributes = object : DefaultErrorAttributes() {
         override fun getErrorAttributes(
@@ -101,8 +46,4 @@ class ApplicationConfig {
                 .description("Api endpoints are security with bearer token (jwt)"),
         ),
     ).addSecurityItem(SecurityRequirement().addList("bearerAuth").addList("basicAuth"))
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(ApplicationConfig::class.java)
-    }
 }
