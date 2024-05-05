@@ -99,12 +99,7 @@ class ApplicationConfig {
             "bearerAuth",
             SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer")
                 .description("Api endpoints are security with bearer token (jwt)"),
-        )
-            .addSecuritySchemes(
-                "basicAuth",
-                SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")
-                    .description("Technical endpoints are secured with basic auth"),
-            ),
+        ),
     ).addSecurityItem(SecurityRequirement().addList("bearerAuth").addList("basicAuth"))
 
     companion object {

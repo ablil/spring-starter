@@ -2,6 +2,8 @@ package com.ablil.springstarter.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -17,13 +19,24 @@ import org.springframework.web.context.annotation.RequestScope
 @Configuration
 class SecurityConfig {
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    fun apiSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.invoke {
+            securityMatcher("/api/**")
+            authorizeRequests { authorize(anyRequest, authenticated) }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            oauth2ResourceServer { jwt { } }
+            csrf { disable() }
+        }
+        return http.formLogin { it.disable() }.build()
+    }
+
+    @Bean
+    @Order(Ordered.LOWEST_PRECEDENCE)
+    fun fallbackSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.invoke {
             authorizeRequests {
                 authorize("/error", permitAll)
-
-                authorize("/api/todos/**", hasAuthority("DEFAULT"))
-                authorize("/api/users/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
 
                 authorize("/swagger-ui/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
                 authorize("/v3/api-docs/**", hasAnyAuthority("ADMIN", "TECHNICAL"))
@@ -33,10 +46,9 @@ class SecurityConfig {
 
                 authorize(anyRequest, authenticated)
             }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             csrf { disable() }
             httpBasic { }
-            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
-            oauth2ResourceServer { jwt { } }
         }
         http.formLogin { it.disable() }
         return http.build()
