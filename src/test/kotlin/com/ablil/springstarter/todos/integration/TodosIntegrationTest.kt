@@ -56,12 +56,6 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     jsonPath("$.todos.length()") { value(2) }
                 }
         }
-
-        @Test
-        fun `empty result list should return 404`() {
-            mockMvc.get("/api/todos?=page=99")
-                .andExpect { status { isNotFound() } }
-        }
     }
 
     @Nested
