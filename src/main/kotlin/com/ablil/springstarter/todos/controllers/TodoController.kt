@@ -1,6 +1,5 @@
 package com.ablil.springstarter.todos.controllers
 
-import com.ablil.springstarter.PageNotFound
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
@@ -40,9 +39,6 @@ class TodoController(val service: TodoService) : TodoApi {
 
     override fun getAllTodos(page: Int, size: Int): ResponseEntity<GetAllTodos200Response> {
         val result = service.findAll(page, size)
-        if (result.get().toList().isEmpty()) {
-            throw PageNotFound(page)
-        }
         return ResponseEntity.ok(
             GetAllTodos200Response(
                 todos = result.get().map {
