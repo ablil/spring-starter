@@ -44,11 +44,11 @@ By default, most endpoints are protected with bearer token, except some technica
 
 To issue a bearer token, request it from Keycloak authorization server (run container locally)
 ```shell
-curl --location 'http://localhost:8081/realms/{realm}/protocol/openid-connect/token' \
+curl --location 'http://localhost:8081/realms/master/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'client_id={client_id}' \
---data-urlencode 'username={username} \
---data-urlencode 'password={password}' \
+--data-urlencode 'client_id=springstarter' \
+--data-urlencode 'username=user' \
+--data-urlencode 'password=hellofriend' \
 --data-urlencode 'grant_type=password'
 ```
 
