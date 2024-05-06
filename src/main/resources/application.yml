@@ -1,40 +1,30 @@
-app:
-  host: localhost
-  port: 8080
-  url: http://localhost:8080
-  db:
-    user: postgres
-    password: supersecurepassword
-    name: postgres
-    host: localhost
-    port: 5432
-
 spring:
   application:
     name: springstarter
   main:
     banner-mode: off
+  output:
+    ansi:
+      enabled: always
   datasource:
-    username: ${app.db.user}
-    password: ${app.db.password}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:supersecurepassword}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${app.db.host}:${app.db.port}/${app.db.name}
+    url: jdbc:postgresql://${DB_HOST:0.0.0.0}:${DB_PORT:5432}/${DB_NAME:postgres}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-  output:
-    ansi:
-      enabled: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://${KC_HOST:0.0.0.0}:8081/realms/${KC_REALM:springstarter}/protocol/openid-connect/certs
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
   default-produces-media-type: application/json
-
-
-server:
-  port: ${app.port}
 
 management:
   endpoints:
