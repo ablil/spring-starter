@@ -3,30 +3,44 @@ services:
   database:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: supersecurepassword
+      POSTGRES_PASSWORD: &dbpassword supersecurepassword
     ports:
-      - 5432:5432
+      - "5432:5432"
   keycloak:
     image: quay.io/keycloak/keycloak
-    command: [ "start-dev", "--import-realm" ]
-    restart: unless-stopped
+    command:
+      - start-dev
+      - --import-realm
+      - --proxy=edge
+      - --hostname-strict=false
+      - --hostname-strict-https=false
+      - --proxy-headers=forwarded
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_PORT: 8081
     ports:
-      - 8081:8080
+      - "8081:8081"
     volumes:
       - ./local/realm.json:/opt/keycloak/data/import/realm.json:ro
   app:
+#    image: spring-starter
     image: ghcr.io/ablil/spring-starter:latest
-    container_name: springstarter_app
     depends_on:
       - database
     ports:
-      - "8080:80"
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      DB_PASSWORD: supersecurepassword
+      DB_PASSWORD: *dbpassword
       DB_HOST: database
-      host: localhost
-      URL: http://localhost
+      KC_HOST: keycloak
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - keycloak
+      - app

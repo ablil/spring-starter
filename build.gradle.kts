@@ -64,6 +64,15 @@ tasks.withType<Test> {
     }
 }
 
+tasks.named("generateGitProperties") {
+    dependsOn("setupGithooks")
+}
+
+tasks.named("runKtlintCheckOverMainSourceSet") {
+    dependsOn("openApiGenerate")
+}
+
+
 openApiGenerate {
     // more config here: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
     val pkgName = "com.ablil.springstarter.webapi"
