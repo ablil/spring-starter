@@ -120,6 +120,7 @@ ktlint {
         "ktlint_standard_multine-expression-wrapping" to  "disabled",
         "ktlint_standard_function-signature" to "disabled",
         "ktlint_standard_multiline-expression-wrapping" to "disabled",
+        "ktlint_standard_no-wildcard-imports" to "disabled"
     ))
     filter {
         exclude("**/*.gradle.kts")

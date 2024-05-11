@@ -3,24 +3,37 @@ package com.ablil.springstarter.todos.services
 import com.ablil.springstarter.ResourceNotFound
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
+import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
-import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class TodoService(val repository: TodoRepository, var authenticatedUser: UserDetails) {
-    fun createTodo(
-        @NotBlank content: String,
-    ): TodoEntity {
-        return repository.save(TodoEntity(content = content))
+    fun createTodo(dto: TodoDto): TodoEntity {
+        return repository.save(dto.toEntity())
     }
 
     fun updateTodo(dto: TodoDto): TodoEntity {
         val todo = fetchTodo(requireNotNull(dto.id))
-        return repository.save(todo.copy(content = dto.content, status = dto.status))
+        return repository.save(
+            todo.copy(
+                id = todo.id,
+                title = dto.title,
+                content = dto.content,
+                status = dto.status?.let { TodoStatus.valueOf(it) } ?: TodoStatus.PENDING,
+                tags = dto.tags,
+            ).apply {
+                createdBy = todo.createdBy
+                createdAt = todo.createdAt
+                updatedBy = todo.updatedBy
+                updatedAt =
+                    Instant.now()
+            },
+        )
     }
 
     private fun fetchTodo(id: Long): TodoEntity {

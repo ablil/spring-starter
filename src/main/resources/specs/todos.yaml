@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: '1.0.0'
-  title: Users management
+  title: Spring starter
 tags:
   - name: todo
     description: Todos management
@@ -28,6 +28,30 @@ paths:
             format: int32
             minimum: 1
             default: 20
+        - in: query
+          name: keyword
+          description: 'case insensitive'
+          schema:
+            type: string
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortFilter'
+        - in: query
+          name: order
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/Status'
+
       responses:
         200:
           description: List of todos owned by the authenticated user
@@ -39,7 +63,7 @@ paths:
                   todos:
                     type: array
                     items:
-                      $ref: '#/components/schemas/FullTodo'
+                      $ref: '#/components/schemas/Todo'
                   total:
                     type: integer
                     example: 10
@@ -61,20 +85,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  example: 'lorem ipsum'
-              required:
-                - content
+              $ref: '#/components/schemas/Todo'
       responses:
         201:
           description: Todo created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FullTodo'
+                $ref: '#/components/schemas/Todo'
   /api/todos/{id}:
     get:
       summary: Get single todo by id
@@ -95,9 +113,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FullTodo'
+                $ref: '#/components/schemas/Todo'
     put:
       summary: Update a todo (full update)
+      description: 'Full update of todo, status is reset to PENDING if not provided and tags are entirely replaced'
       operationId: updateTodo
       tags:
         - todo
@@ -115,9 +134,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Todo'
-              required:
-                - content
-                - status
       responses:
         200:
           description: 'todo content updated successfully'
@@ -143,32 +159,48 @@ paths:
           description: 'Todo removed successfully'
 components:
   schemas:
+    Status:
+      type: string
+      enum:
+        - PENDING
+        - DONE
     Todo:
       type: object
       properties:
+        id:
+          type: string
+          readOnly: true
+          example: 1
+        title:
+          type: string
+          example: "buy groceries"
         content:
           type: string
           example: 'lorem ipsum'
         status:
-          type: string
-          enum: [ 'PENDING', 'DONE' ]
-          example: 'PENDING'
-      required:
-        - content
-        - status
-    FullTodo:
-      allOf:
-        - $ref: '#/components/schemas/Todo'
-      properties:
-        id:
-          type: string
+          $ref: '#/components/schemas/Status'
+          example: PENDING
+        tags:
+          type: array
+          items:
+            type: string
+          example: ['foo', 'bar']
+          description: 'list of tags associated with the Todo'
         created_at:
           type: string
           format: date-time
+          readOnly: true
         updated_at:
           type: string
           format: date-time
+          readOnly: true
       required:
-        - id
-        - updated_at
-        - created_at
+        - title
+    SortFilter:
+      type: string
+      enum: ['MODIFIED_AT', 'CREATED_AT', 'TITLE', 'ID']
+      default: 'ID'
+    SortOrder:
+      type: string
+      enum: ['ASC', 'DESC']
+      default: 'ASC'

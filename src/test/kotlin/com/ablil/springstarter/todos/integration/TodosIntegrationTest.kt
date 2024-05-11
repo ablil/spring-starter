@@ -3,22 +3,20 @@ package com.ablil.springstarter.todos.integration
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.IntegrationTest
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
+import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.delete
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.*
 
 @IntegrationTest
-@WithMockUser("johndoe", authorities = ["DEFAULT"])
+@WithMockUser("johndoe")
 class TodosIntegrationTest : BaseIntegrationTest() {
     @Autowired
     lateinit var todoRepository: TodoRepository
@@ -30,7 +28,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     inner class FetchAllTodos {
         @BeforeEach
         fun setup() {
-            todoRepository.truncate()
+            todoRepository.deleteAll()
             todoRepository.saveAll(sampleTodos)
         }
 
@@ -67,11 +65,20 @@ class TodosIntegrationTest : BaseIntegrationTest() {
 
         @Test
         fun `fetch an existing todo`() {
-            val savedTodo = saveSingleTodo("random content")
+            val savedTodo = saveSingleTodo(
+                TodoDto(
+                    title = "a title",
+                    content = "lorem ipsum",
+                    status = "DONE",
+                ),
+            )
             mockMvc.get("/api/todos/${requireNotNull(savedTodo.id)}")
                 .andExpectAll {
                     status { isOk() }
                     jsonPath("$.id") { value(requireNotNull(savedTodo.id)) }
+                    jsonPath("$.title") { value("a title") }
+                    jsonPath("$.content") { value("lorem ipsum") }
+                    jsonPath("$.status") { value("DONE") }
                 }
         }
     }
@@ -79,34 +86,102 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     @Nested
     inner class CreateAndUpdateTodo {
         @Test
-        fun `create todo`() {
+        fun `create todo given minimum attributes`() {
             mockMvc.post("/api/todos") {
                 contentType = MediaType.APPLICATION_JSON
                 content =
                     """
-                    {"content": "randomcontent"}
+                    { "title": "a title" }
                     """.trimIndent()
             }.andExpectAll {
                 status { isCreated() }
-                jsonPath("$.id") { exists() }
-                jsonPath("$.content") { value("randomcontent") }
+                jsonPath("$.id") { isNotEmpty() }
+                jsonPath("$.title") { value("a title") }
+                jsonPath("$.content") { isNull<String>() }
                 jsonPath("$.status") { value("PENDING") }
+                jsonPath("$.tags") { isNull<List<String>>() }
+                jsonPath("$.created_at") { isNotEmpty() }
+                jsonPath("$.updated_at") { isNotEmpty() }
             }
         }
 
         @Test
-        fun `fully update todo`() {
-            val existingTodo = saveSingleTodo("original")
+        fun `create todo given all attributes`() {
+            mockMvc.post("/api/todos") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {
+                    "title": "a title",
+                    "content": "lorem ipsum",
+                    "status": "DONE",
+                    "tags": ["foo", "bar"]
+                    }
+                    """.trimIndent()
+            }.andExpectAll {
+                status { isCreated() }
+                jsonPath("$.id") { isNotEmpty() }
+                jsonPath("$.title") { value("a title") }
+                jsonPath("$.content") { value("lorem ipsum") }
+                jsonPath("$.status") { value("DONE") }
+                jsonPath("$.tags") { isArray() }
+                jsonPath("$.created_at") { isNotEmpty() }
+                jsonPath("$.updated_at") { isNotEmpty() }
+            }
+        }
+
+        @Test
+        fun `fully update todo given minimum attributes`() {
+            val existingTodo =
+                saveSingleTodo(
+                    TodoDto(
+                        "original",
+                        content = "content",
+                        status = "DONE",
+                        tags = listOf("foo", "bar"),
+                    ),
+                )
             mockMvc.put("/api/todos/${existingTodo.id}") {
                 contentType = MediaType.APPLICATION_JSON
                 content =
                     """
-                    {"content": "updated", "status": "DONE"}
+                    {"title": "updated title"}
                     """.trimIndent()
             }.andExpectAll {
                 status { isOk() }
-                jsonPath("$.content") { value("updated") }
+                jsonPath("$.id") { isNotEmpty() }
+                jsonPath("$.title") { value("updated title") }
+                jsonPath("$.content") { isNull<String>() }
+                jsonPath("$.status") { value("PENDING") }
+                jsonPath("$.tags") { isNull<List<String>>() }
+                jsonPath("$.created_at") { isNotEmpty() }
+                jsonPath("$.updated_at") { isNotEmpty() }
+            }
+        }
+
+        @Test
+        fun `fully update todo given all attributes`() {
+            val existingTodo =
+                saveSingleTodo(TodoDto("original", content = "content", status = "PENDING"))
+            mockMvc.put("/api/todos/${existingTodo.id}") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {
+                    "title": "updated title",
+                    "content": "updated lorem ipsum",
+                    "status": "DONE",
+                    "tags": ["foo", "bar"]
+                    }
+                    """.trimIndent()
+            }.andExpectAll {
+                status { isOk() }
+                jsonPath("$.title") { value("updated title") }
+                jsonPath("$.content") { value("updated lorem ipsum") }
                 jsonPath("$.status") { value("DONE") }
+                jsonPath("$.tags") { isArray() }
+                jsonPath("$.created_at") { isNotEmpty() }
+                jsonPath("$.updated_at") { isNotEmpty() }
             }
         }
     }
@@ -115,7 +190,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     inner class DeleteTodo {
         @Test
         fun `delete an existing todo`() {
-            val savedTodo = saveSingleTodo("random content")
+            val savedTodo = saveSingleTodo(TodoDto("random content"))
             mockMvc.delete("/api/todos/${savedTodo.id}")
                 .andExpect { status { isNoContent() } }
         }
@@ -127,8 +202,8 @@ class TodosIntegrationTest : BaseIntegrationTest() {
         }
     }
 
-    private fun saveSingleTodo(content: String): TodoEntity {
-        return todoRepository.save(TodoEntityFactory.withContent(content))
+    private fun saveSingleTodo(dto: TodoDto): TodoEntity {
+        return todoRepository.save(dto.toEntity())
     }
 
     companion object {

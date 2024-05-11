@@ -5,12 +5,12 @@ import com.ablil.springstarter.todos.entities.TodoStatus
 
 object TodoEntityFactory {
     fun random(): TodoEntity = TodoEntity(
-        content = "random todo content",
+        title = "random todo content",
         status = TodoStatus.PENDING,
     ).also { it.createdBy = "johndoe" }
 
     fun withContent(content: String) = TodoEntity(
-        content = content,
+        title = content,
         status = TodoStatus.PENDING,
     ).also { it.createdBy = "johndoe" }
 }

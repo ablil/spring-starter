@@ -15,7 +15,7 @@ class TodoRepositoryTest {
     lateinit var repository: TodoRepository
 
     @BeforeEach
-    fun setup(): Unit = repository.truncate()
+    fun setup(): Unit = repository.deleteAll()
 
     @Test
     fun `get paginated todos`() {

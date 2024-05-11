@@ -6,7 +6,7 @@ import org.springframework.test.context.ContextConfiguration
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @ContextConfiguration(initializers = [BaseIntegrationTest.Initializer::class])
 @AutoConfigureMockMvc
 annotation class IntegrationTest
