@@ -1,0 +1,247 @@
+openapi: 3.0.3
+info:
+  version: '1.0.0'
+  title: Spring starter
+externalDocs:
+  description: Github repository
+  url: https://github.com/ablil/spring-starter
+tags:
+  - name: todo
+    description: Todos management
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/todos:
+    get:
+      summary: Get list of todos
+      operationId: getAllTodos
+      tags:
+        - todo
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/sizeParam'
+        - $ref: '#/components/parameters/keywordParam'
+        - $ref: '#/components/parameters/tagsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/statusParam'
+      responses:
+        200:
+          description: List of todos owned by the authenticated user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  todos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Todo'
+                  total:
+                    type: integer
+                    example: 10
+                  page:
+                    type: integer
+                    example: 1
+                required:
+                  - total
+                  - page
+                  - todos
+
+    post:
+      summary: Create new todo
+      operationId: createTodo
+      tags:
+        - todo
+      requestBody:
+        $ref: '#/components/requestBodies/Todo'
+      responses:
+        201:
+          $ref: '#/components/responses/Todo'
+  /api/todos/{id}:
+    get:
+      summary: Get single todo by id
+      operationId: getTodo
+      tags:
+        - todo
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: "Todo id"
+      responses:
+        200:
+          $ref: '#/components/responses/Todo'
+    put:
+      summary: Update a todo (full update)
+      description: 'Full update of todo, status is reset to PENDING if not provided and tags are entirely replaced'
+      operationId: updateTodo
+      tags:
+        - todo
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        $ref: '#/components/requestBodies/Todo'
+      responses:
+        200:
+          $ref: '#/components/responses/Todo'
+    delete:
+      summary: Delete a todo by id
+      operationId: deleteTodo
+      tags:
+        - todo
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: "Todo id"
+      responses:
+        204:
+          description: 'Todo removed successfully'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    idParam:
+      in: path
+      name: id
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: "Todo id"
+    pageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 1
+    sizeParam:
+      in: query
+      name: size
+      description: Total number of items per page to return
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 20
+    keywordParam:
+      in: query
+      name: keyword
+      description: 'Search by free text included in title, content or (case insenstivie)'
+      schema:
+        type: string
+    tagsParam:
+      in: query
+      name: tags
+      description: filter by tags associated with todo (at least one tag is present)
+      schema:
+        type: array
+        items:
+          type: string
+    sortParam:
+      in: query
+      name: sort
+      schema:
+        type: string
+        enum: ['MODIFIED_AT', 'CREATED_AT', 'TITLE', 'ID']
+        default: 'ID'
+    orderParam:
+      in: query
+      name: order
+      schema:
+        type: string
+        enum: ['ASC', 'DESC']
+        default: 'ASC'
+    statusParam:
+      in: query
+      name: status
+      description: 'filter by status, return all if param is missing'
+      schema:
+        $ref: '#/components/schemas/Status'
+
+  schemas:
+    Status:
+      type: string
+      enum:
+        - PENDING
+        - DONE
+    Todo:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+          example: 1
+        title:
+          type: string
+          example: "buy groceries"
+        content:
+          type: string
+          example: 'lorem ipsum'
+        status:
+          $ref: '#/components/schemas/Status'
+          example: PENDING
+        tags:
+          type: array
+          items:
+            type: string
+          example: ['foo', 'bar']
+          description: 'list of tags associated with the Todo'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
+
+  requestBodies:
+    Todo:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Todo'
+
+  responses:
+    Todo:
+      description: 'todo'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Todo'
+    GenericError:
+      description: 'Generic error'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                description: 'business error code'
+              message:
+                type: string
+                description: 'error message'
+              error:
+                type: string
+                description: 'Http status error name (eg: Not found)'

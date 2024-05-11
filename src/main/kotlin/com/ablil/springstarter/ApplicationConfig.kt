@@ -1,11 +1,5 @@
 package com.ablil.springstarter
 
-import io.swagger.v3.oas.models.Components
-import io.swagger.v3.oas.models.ExternalDocumentation
-import io.swagger.v3.oas.models.OpenAPI
-import io.swagger.v3.oas.models.info.Info
-import io.swagger.v3.oas.models.security.SecurityRequirement
-import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorAttributes
@@ -29,21 +23,4 @@ class ApplicationConfig {
             }
         }
     }
-
-    @Bean
-    fun getApiInfo(): Info = Info().title("API Specification").version("0.0.1")
-
-    @Bean
-    fun openApiProperties(info: Info): OpenAPI = OpenAPI().info(info).externalDocs(
-        ExternalDocumentation().description("Github repository").url(
-            "https://github" +
-                ".com/ablil/spring-starter.git",
-        ),
-    ).components(
-        Components().addSecuritySchemes(
-            "bearerAuth",
-            SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer")
-                .description("Api endpoints are security with bearer token (jwt)"),
-        ),
-    ).addSecurityItem(SecurityRequirement().addList("bearerAuth").addList("basicAuth"))
 }

@@ -3,4 +3,3 @@ logging:
     console: "%clr(${LOG_LEVEL_PATTERN:%p}) %clr(%logger){cyan} %clr([%M]){magenta}  %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
   level:
     com.ablil: DEBUG
-    org.springframework.security: TRACE

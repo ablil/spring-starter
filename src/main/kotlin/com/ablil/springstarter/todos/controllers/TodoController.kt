@@ -4,16 +4,12 @@ import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
 import com.ablil.springstarter.webapi.model.*
-import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 import java.time.OffsetDateTime
 
 @RestController
-@Tag(name = "Todo", description = "Everything about managing todos")
-@SecurityRequirement(name = "bearerAuth")
 class TodoController(val service: TodoService) : TodoApi {
     override fun createTodo(todo: Todo): ResponseEntity<Todo> {
         val createTodo = service.createTodo(
@@ -47,8 +43,8 @@ class TodoController(val service: TodoService) : TodoApi {
         size: Int,
         keyword: String?,
         tags: List<String>?,
-        sort: SortFilter,
-        order: SortOrder,
+        sort: String,
+        order: String,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
         val result = service.findAll(page, size)

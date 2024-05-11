@@ -24,6 +24,10 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+    urls:
+      - url: /todos.yml
+        name: todos
+        display-name: Todos
   default-produces-media-type: application/json
 
 management:
