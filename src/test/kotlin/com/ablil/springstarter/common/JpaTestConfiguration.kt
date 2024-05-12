@@ -4,12 +4,14 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.userdetails.User
-import java.util.Optional
+import java.util.*
 
 @TestConfiguration
-class WithMockUserContext {
+class JpaTestConfiguration {
     @Bean
-    fun integrationAuditorProvider(): AuditorAware<String> = AuditorAware<String> { Optional.of("johndoe") }
+    fun auditorProvider(): AuditorAware<String> = AuditorAware<String> {
+        Optional.of("johndoe")
+    }
 
     @Bean
     fun authenticatedUser() = User("johndoe", "{noop}supersecurepassword", emptyList())
