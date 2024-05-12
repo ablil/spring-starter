@@ -1,9 +1,14 @@
 package com.ablil.springstarter.todos.controllers
 
+import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.TodoDto
+import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
-import com.ablil.springstarter.webapi.model.*
+import com.ablil.springstarter.webapi.model.GetAllTodos200Response
+import com.ablil.springstarter.webapi.model.Status
+import com.ablil.springstarter.webapi.model.Todo
+import org.springframework.data.domain.Sort.Direction
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
@@ -42,12 +47,19 @@ class TodoController(val service: TodoService) : TodoApi {
         page: Int,
         size: Int,
         keyword: String?,
-        tags: List<String>?,
         sort: String,
         order: String,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
-        val result = service.findAll(page, size)
+        val result = service.findAll(
+            FiltersDto(
+                page = page,
+                size = size,
+                keyword = keyword,
+                status = if (status == null) null else TodoStatus.valueOf(status.name),
+                order = Direction.valueOf(order),
+            ),
+        )
         return ResponseEntity.ok(
             GetAllTodos200Response(
                 todos = result.get().map {

@@ -23,7 +23,6 @@ paths:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/sizeParam'
         - $ref: '#/components/parameters/keywordParam'
-        - $ref: '#/components/parameters/tagsParam'
         - $ref: '#/components/parameters/sortParam'
         - $ref: '#/components/parameters/orderParam'
         - $ref: '#/components/parameters/statusParam'
@@ -146,14 +145,6 @@ components:
       description: 'Search by free text included in title, content or (case insenstivie)'
       schema:
         type: string
-    tagsParam:
-      in: query
-      name: tags
-      description: filter by tags associated with todo (at least one tag is present)
-      schema:
-        type: array
-        items:
-          type: string
     sortParam:
       in: query
       name: sort

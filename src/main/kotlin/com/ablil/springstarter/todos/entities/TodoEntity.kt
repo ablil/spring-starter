@@ -1,6 +1,7 @@
 package com.ablil.springstarter.todos.entities
 
 import com.ablil.springstarter.common.persistence.AuditingEntity
+import com.ablil.springstarter.common.persistence.ListToStringConverter
 import jakarta.persistence.*
 
 @Entity
@@ -9,7 +10,7 @@ data class TodoEntity(
     @Column(nullable = false)
     val title: String,
     val content: String? = null,
-    @ElementCollection(fetch = FetchType.EAGER)
+    @Convert(converter = ListToStringConverter::class)
     val tags: List<String>? = null,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

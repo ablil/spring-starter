@@ -6,9 +6,12 @@ import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
+import com.ablil.springstarter.todos.services.TodoServiceTest
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -199,6 +202,26 @@ class TodosIntegrationTest : BaseIntegrationTest() {
         fun `delete non existing todo`() {
             mockMvc.delete("/api/todo/99")
                 .andExpect { status { isNotFound() } }
+        }
+    }
+
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    inner class FilterMultipleTodos {
+        @BeforeAll
+        fun setup() {
+            todoRepository.saveAll(TodoServiceTest.todos)
+        }
+
+        @Test
+        fun `filter todos given some filters`() {
+            mockMvc.get("/api/todos?status=PENDING&keyword=groceries")
+                .andExpectAll {
+                    status { isOk() }
+                    jsonPath("$.total") { value(1) }
+                    jsonPath("$.page") { value(1) }
+                    jsonPath("$.todos.length()") { value(1) }
+                }
         }
     }
 
