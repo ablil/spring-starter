@@ -1,21 +1,25 @@
 package com.ablil.springstarter.todos.presistence
 
-import com.ablil.springstarter.common.RepositoryTest
+import com.ablil.springstarter.common.WithMockUserContext
+import com.ablil.springstarter.common.persistence.JPAConfiguration
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import junit.framework.TestCase.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 
-@RepositoryTest
+@DataJpaTest
+@Import(JPAConfiguration::class, WithMockUserContext::class)
 class TodoRepositoryTest {
     @Autowired
     lateinit var repository: TodoRepository
 
     @BeforeEach
-    fun setup(): Unit = repository.truncate()
+    fun setup(): Unit = repository.deleteAll()
 
     @Test
     fun `get paginated todos`() {

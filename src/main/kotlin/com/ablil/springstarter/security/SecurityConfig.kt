@@ -39,6 +39,7 @@ class SecurityConfig {
                 authorize("/error", permitAll)
 
                 authorize("/swagger-ui/**", permitAll)
+                authorize("/todos.yml", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
 
                 authorize("/actuator/health/**", permitAll)

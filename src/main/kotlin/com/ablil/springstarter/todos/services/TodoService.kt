@@ -1,26 +1,43 @@
 package com.ablil.springstarter.todos.services
 
 import com.ablil.springstarter.ResourceNotFound
+import com.ablil.springstarter.todos.dtos.FiltersDto
+import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
+import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
-import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class TodoService(val repository: TodoRepository, var authenticatedUser: UserDetails) {
-    fun createTodo(
-        @NotBlank content: String,
-    ): TodoEntity {
-        return repository.save(TodoEntity(content = content))
+    fun createTodo(dto: TodoDto): TodoEntity {
+        return repository.save(dto.toEntity())
     }
 
     fun updateTodo(dto: TodoDto): TodoEntity {
         val todo = fetchTodo(requireNotNull(dto.id))
-        return repository.save(todo.copy(content = dto.content, status = dto.status))
+        return repository.save(
+            todo.copy(
+                id = todo.id,
+                title = dto.title,
+                content = dto.content,
+                status = dto.status?.let { TodoStatus.valueOf(it) } ?: TodoStatus.PENDING,
+                tags = dto.tags,
+            ).apply {
+                createdBy = todo.createdBy
+                createdAt = todo.createdAt
+                updatedBy = todo.updatedBy
+                updatedAt =
+                    Instant.now()
+            },
+        )
     }
 
     private fun fetchTodo(id: Long): TodoEntity {
@@ -35,6 +52,40 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
 
     fun deleteTodoById(id: Long) {
         repository.delete(fetchTodo(id))
+    }
+
+    fun findAll(filters: FiltersDto): Page<TodoEntity> {
+        val createdBy: Specification<TodoEntity> = Specification { root, _, builder ->
+            builder.equal(root.get<String>("createdBy"), authenticatedUser.username)
+        }
+
+        val havingStatus = Specification<TodoEntity> { root, _, builder ->
+            builder.equal(root.get<TodoStatus>("status"), filters.status)
+        }.takeIf { filters.status != null }
+
+        val titleContainsKeyword: Specification<TodoEntity>? = Specification<TodoEntity> { root, _, builder ->
+            builder.like(root.get("title"), "%${filters.keyword}%")
+        }.takeIf { !filters.keyword.isNullOrBlank() }
+
+        val contentContainsKeyword: Specification<TodoEntity>? = Specification<TodoEntity> { root, _, builder ->
+            builder.like(root.get("content"), "%${filters.keyword}%")
+        }.takeIf { !filters.keyword.isNullOrBlank() }
+
+        val combinedFilters: Specification<TodoEntity> = Specification.allOf(
+            listOfNotNull(
+                createdBy,
+                havingStatus,
+                titleContainsKeyword?.or(contentContainsKeyword),
+            ),
+        )
+        return repository.findAll(
+            combinedFilters,
+            PageRequest.of(
+                filters.page - 1,
+                filters.size,
+                Sort.by(Sort.Order(filters.order, filters.sortBy?.value ?: SortBy.ID.value)),
+            ),
+        )
     }
 
     fun findAll(page: Int, size: Int): Page<TodoEntity> {

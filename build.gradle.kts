@@ -37,6 +37,7 @@ dependencies {
     implementation("com.auth0:java-jwt:4.3.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+//    implementation("org.webjars:webjars-locator:0.45")
 
     runtimeOnly("org.postgresql:postgresql")
 
@@ -77,7 +78,7 @@ openApiGenerate {
     // more config here: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
     val pkgName = "com.ablil.springstarter.webapi"
     val outDir = "$buildDir/generated/openapi"
-    val specsDir = "$projectDir/src/main/resources/specs"
+    val specsDir = "$projectDir/src/main/resources/static"
 
     generatorName.set("kotlin-spring")
     inputSpecRootDirectory.set(specsDir)
@@ -115,11 +116,12 @@ ktlint {
     verbose.set(true)
 
     additionalEditorconfig.set(mapOf(
-        "max_line_length" to "100",
+        "max_line_length" to "120",
         "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
         "ktlint_standard_multine-expression-wrapping" to  "disabled",
         "ktlint_standard_function-signature" to "disabled",
         "ktlint_standard_multiline-expression-wrapping" to "disabled",
+        "ktlint_standard_no-wildcard-imports" to "disabled"
     ))
     filter {
         exclude("**/*.gradle.kts")
