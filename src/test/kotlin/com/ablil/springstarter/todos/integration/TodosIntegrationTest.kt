@@ -1,7 +1,7 @@
 package com.ablil.springstarter.todos.integration
 
 import com.ablil.springstarter.common.BaseIntegrationTest
-import com.ablil.springstarter.common.IntegrationTest
+import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
@@ -14,11 +14,16 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.*
 
-@IntegrationTest
+@SpringBootTest
+@ContextConfiguration(initializers = [BaseIntegrationTest.Initializer::class], classes = [JpaTestConfiguration::class])
+@AutoConfigureMockMvc
 @WithMockUser("johndoe")
 class TodosIntegrationTest : BaseIntegrationTest() {
     @Autowired

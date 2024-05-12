@@ -1,14 +1,14 @@
 package com.ablil.springstarter.todos.services
 
-import com.ablil.springstarter.common.WithMockUserContext
+import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.persistence.JPAConfiguration
-import com.ablil.springstarter.common.persistence.ListToStringConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -17,17 +17,13 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.Import
 import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.domain.Sort.Direction.*
+import org.springframework.data.domain.Sort.Direction.DESC
 import org.springframework.test.context.ContextConfiguration
 import java.time.Instant
 
 @DataJpaTest
-@ContextConfiguration(
-    classes = [JPAConfiguration::class, TodoService::class, ListToStringConverter::class],
-)
-@Import(WithMockUserContext::class)
+@ContextConfiguration(classes = [JPAConfiguration::class, JpaTestConfiguration::class, TodoService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TodoServiceTest {
     @Autowired

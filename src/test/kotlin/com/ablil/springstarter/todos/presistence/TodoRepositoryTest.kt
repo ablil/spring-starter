@@ -1,7 +1,8 @@
 package com.ablil.springstarter.todos.presistence
 
-import com.ablil.springstarter.common.WithMockUserContext
+import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.persistence.JPAConfiguration
+import com.ablil.springstarter.common.persistence.ListToStringConverter
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import junit.framework.TestCase.assertEquals
@@ -9,11 +10,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
+import org.springframework.test.context.ContextConfiguration
 
 @DataJpaTest
-@Import(JPAConfiguration::class, WithMockUserContext::class)
+@ContextConfiguration(classes = [JPAConfiguration::class, JpaTestConfiguration::class, ListToStringConverter::class])
 class TodoRepositoryTest {
     @Autowired
     lateinit var repository: TodoRepository
