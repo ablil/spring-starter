@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -12,7 +11,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.0.2"
     id("org.openapi.generator") version "7.1.0"
     id("com.google.cloud.tools.jib") version "3.4.0"
-    id ( "com.gorylenko.gradle-git-properties" ) version "2.4.0"
+    id("com.gorylenko.gradle-git-properties") version "2.4.0"
+    kotlin("kapt") version "1.9.24"
 }
 
 group = "com.ablil"
@@ -37,20 +37,20 @@ dependencies {
     implementation("com.auth0:java-jwt:4.3.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-//    implementation("org.webjars:webjars-locator:0.45")
-
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
-    testImplementation( "org.testcontainers:postgresql:1.19.3")
+    testImplementation("org.testcontainers:postgresql:1.19.3")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
         jvmTarget = "17"
     }
     dependsOn("openApiGenerate")
@@ -115,14 +115,16 @@ ktlint {
     debug.set(true)
     verbose.set(true)
 
-    additionalEditorconfig.set(mapOf(
-        "max_line_length" to "120",
-        "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
-        "ktlint_standard_multine-expression-wrapping" to  "disabled",
-        "ktlint_standard_function-signature" to "disabled",
-        "ktlint_standard_multiline-expression-wrapping" to "disabled",
-        "ktlint_standard_no-wildcard-imports" to "disabled"
-    ))
+    additionalEditorconfig.set(
+        mapOf(
+            "max_line_length" to "120",
+            "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than" to "4",
+            "ktlint_standard_multine-expression-wrapping" to "disabled",
+            "ktlint_standard_function-signature" to "disabled",
+            "ktlint_standard_multiline-expression-wrapping" to "disabled",
+            "ktlint_standard_no-wildcard-imports" to "disabled"
+        )
+    )
     filter {
         exclude("**/*.gradle.kts")
         exclude { it.file.path.contains("build/generated") }
@@ -155,3 +157,8 @@ tasks.register<Copy>("setupGithooks") {
 springBoot {
     buildInfo()
 }
+
+// improve the speed of kapt plugin by running their tasks in parallel
+// https://kotlinlang.org/docs/kapt.html#improve-the-speed-of-builds-that-use-kapt
+tasks.withType<org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask>()
+    .configureEach { kaptProcessJvmArgs.add("-Xmx512m") }

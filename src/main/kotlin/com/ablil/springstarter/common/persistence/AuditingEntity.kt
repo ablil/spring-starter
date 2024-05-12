@@ -8,14 +8,14 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.Instant
+import java.time.OffsetDateTime
 
 @EntityListeners(AuditingEntityListener::class)
 @MappedSuperclass
 abstract class AuditingEntity {
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    lateinit var createdAt: Instant
+    lateinit var createdAt: OffsetDateTime
 
     @CreatedBy
     @Column(updatable = false, nullable = false)
@@ -23,7 +23,7 @@ abstract class AuditingEntity {
 
     @LastModifiedDate
     @Column(nullable = false)
-    lateinit var updatedAt: Instant
+    lateinit var updatedAt: OffsetDateTime
 
     @LastModifiedBy
     @Column(nullable = false)
