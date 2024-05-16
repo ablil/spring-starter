@@ -3,6 +3,7 @@ package com.ablil.springstarter.todos.integration
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
+import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mapstruct.factory.Mappers
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -231,10 +233,11 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     }
 
     private fun saveSingleTodo(dto: TodoDto): TodoEntity {
-        return todoRepository.save(dto.toEntity())
+        return todoRepository.save(todoMapper.dtoToEntity(dto))
     }
 
     companion object {
+        val todoMapper = Mappers.getMapper(TodoConverter::class.java)
         val sampleTodos = (1..20).map {
             TodoEntityFactory.random().also {
                 it.createdBy = "johndoe"

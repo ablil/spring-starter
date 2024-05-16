@@ -1,6 +1,7 @@
 package com.ablil.springstarter.todos.services
 
 import com.ablil.springstarter.ResourceNotFound
+import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.dtos.TodoDto
@@ -13,12 +14,12 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.time.Instant
+import java.time.OffsetDateTime
 
 @Service
 class TodoService(val repository: TodoRepository, var authenticatedUser: UserDetails) {
     fun createTodo(dto: TodoDto): TodoEntity {
-        return repository.save(dto.toEntity())
+        return repository.save(TodoConverter.INSTANCE.dtoToEntity(dto))
     }
 
     fun updateTodo(dto: TodoDto): TodoEntity {
@@ -34,8 +35,7 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
                 createdBy = todo.createdBy
                 createdAt = todo.createdAt
                 updatedBy = todo.updatedBy
-                updatedAt =
-                    Instant.now()
+                updatedAt = OffsetDateTime.now()
             },
         )
     }

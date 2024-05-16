@@ -20,7 +20,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.domain.Sort.Direction.DESC
 import org.springframework.test.context.ContextConfiguration
-import java.time.Instant
+import java.time.OffsetDateTime
 
 @DataJpaTest
 @ContextConfiguration(classes = [JPAConfiguration::class, JpaTestConfiguration::class, TodoService::class])
@@ -126,8 +126,8 @@ class TodoServiceTest {
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
-                createdAt = Instant.parse("2024-10-10T00:00:00.00Z")
-                updatedAt = Instant.parse("2024-10-11T00:00:00.00Z")
+                createdAt = OffsetDateTime.parse("2024-10-10T00:00:00.00Z")
+                updatedAt = OffsetDateTime.parse("2024-10-11T00:00:00.00Z")
             },
             TodoEntity(
                 title = "groceries",
@@ -137,8 +137,8 @@ class TodoServiceTest {
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
-                createdAt = Instant.parse("2024-09-10T00:00:00.00Z")
-                updatedAt = Instant.parse("2024-10-11T00:00:00.00Z")
+                createdAt = OffsetDateTime.parse("2024-09-10T00:00:00.00Z")
+                updatedAt = OffsetDateTime.parse("2024-10-11T00:00:00.00Z")
             },
             TodoEntity(
                 title = "work",
@@ -148,8 +148,8 @@ class TodoServiceTest {
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
-                createdAt = Instant.parse("2024-08-10T00:00:00.00Z")
-                updatedAt = Instant.parse("2024-10-11T00:00:00.00Z")
+                createdAt = OffsetDateTime.parse("2024-08-10T00:00:00.00Z")
+                updatedAt = OffsetDateTime.parse("2024-10-11T00:00:00.00Z")
             },
             TodoEntity(
                 title = "kitchen",
@@ -159,8 +159,8 @@ class TodoServiceTest {
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
-                createdAt = Instant.parse("2024-12-10T00:00:00.00Z")
-                updatedAt = Instant.parse("2025-01-11T00:00:00.00Z")
+                createdAt = OffsetDateTime.parse("2024-12-10T00:00:00.00Z")
+                updatedAt = OffsetDateTime.parse("2025-01-11T00:00:00.00Z")
             },
         )
     }
