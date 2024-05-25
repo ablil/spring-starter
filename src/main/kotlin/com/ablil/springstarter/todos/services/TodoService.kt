@@ -1,6 +1,7 @@
 package com.ablil.springstarter.todos.services
 
 import com.ablil.springstarter.ResourceNotFound
+import com.ablil.springstarter.common.persistence.OffsetPageable
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
@@ -80,9 +81,9 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
         )
         return repository.findAll(
             combinedFilters,
-            PageRequest.of(
-                filters.page - 1,
-                filters.size,
+            OffsetPageable(
+                filters.offset,
+                filters.limit,
                 Sort.by(Sort.Order(filters.order, filters.sortBy?.value ?: SortBy.ID.value)),
             ),
         )

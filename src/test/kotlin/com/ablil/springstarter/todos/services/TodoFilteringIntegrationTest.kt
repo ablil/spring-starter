@@ -25,7 +25,7 @@ import java.time.OffsetDateTime
 @DataJpaTest
 @ContextConfiguration(classes = [JPAConfiguration::class, JpaTestConfiguration::class, TodoService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TodoServiceTest {
+class TodoFilteringIntegrationTest {
     @Autowired
     lateinit var repository: TodoRepository
 

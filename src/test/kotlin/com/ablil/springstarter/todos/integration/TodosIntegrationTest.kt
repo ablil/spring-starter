@@ -2,22 +2,27 @@ package com.ablil.springstarter.todos.integration
 
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
+import com.ablil.springstarter.common.matchers.SortedInOrder
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
-import com.ablil.springstarter.todos.services.TodoServiceTest
+import com.ablil.springstarter.todos.services.TodoFilteringIntegrationTest
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mapstruct.factory.Mappers
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ContextConfiguration
@@ -47,22 +52,44 @@ class TodosIntegrationTest : BaseIntegrationTest() {
             mockMvc.get("/api/todos")
                 .andExpectAll {
                     status { isOk() }
-                    jsonPath("$.total") { value(sampleTodos.size) }
-                    jsonPath("$.page") { value(1) }
+                    jsonPath("$.pagination") { exists() }
+                    jsonPath("$.pagination.offset") { value(0) }
+                    jsonPath("$.pagination.limit") { value(50) }
+                    jsonPath("$.pagination.total") { value(sampleTodos.size) }
                     jsonPath("$.todos") { isArray() }
-                    jsonPath("$.todos.length()") { value(20) }
+                    jsonPath("$.todos.length()") { value(sampleTodos.size) }
                 }
         }
 
         @Test
-        fun `fetch todos given some query params`() {
-            mockMvc.get("/api/todos?page=2&size=2")
+        fun `fetch todo with offset and limit`() {
+            val offset = 10
+            val limit = 4
+            mockMvc.get("/api/todos?offset=$offset&limit=$limit")
                 .andExpectAll {
                     status { isOk() }
-                    jsonPath("$.total") { value(sampleTodos.size) }
-                    jsonPath("$.page") { value(2) }
-                    jsonPath("$.todos.length()") { value(2) }
+                    jsonPath("$.pagination.offset") { value(offset) }
+                    jsonPath("$.pagination.limit") { value(limit) }
+                    jsonPath("$.pagination.total") { value(sampleTodos.size) }
+                    jsonPath("$.todos.length()") { value(Matchers.lessThanOrEqualTo(limit)) }
                 }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["id", "title", "updated_at", "created_at"])
+        fun `filter sorted todos by id`(attr: String) {
+            mockMvc.get("/api/todos?sort=+$attr").andExpectAll {
+                status {}
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.ASC, attr == "id")) }
+            }
+            mockMvc.get("/api/todos?sort=-$attr").andExpectAll {
+                status { isOk() }
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.DESC, attr == "id")) }
+            }
+            mockMvc.get("/api/todos?sort=$attr").andExpectAll {
+                status { isOk() }
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.ASC, attr == "id")) }
+            }
         }
     }
 
@@ -217,7 +244,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     inner class FilterMultipleTodos {
         @BeforeAll
         fun setup() {
-            todoRepository.saveAll(TodoServiceTest.todos)
+            todoRepository.saveAll(TodoFilteringIntegrationTest.todos)
         }
 
         @Test
@@ -225,8 +252,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
             mockMvc.get("/api/todos?status=PENDING&keyword=groceries")
                 .andExpectAll {
                     status { isOk() }
-                    jsonPath("$.total") { value(1) }
-                    jsonPath("$.page") { value(1) }
+                    jsonPath("$.pagination.total") { value(1) }
                     jsonPath("$.todos.length()") { value(1) }
                 }
         }

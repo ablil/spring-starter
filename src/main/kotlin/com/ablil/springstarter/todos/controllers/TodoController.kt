@@ -2,10 +2,12 @@ package com.ablil.springstarter.todos.controllers
 
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
+import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
 import com.ablil.springstarter.webapi.model.GetAllTodos200Response
+import com.ablil.springstarter.webapi.model.Pagination
 import com.ablil.springstarter.webapi.model.Status
 import com.ablil.springstarter.webapi.model.Todo
 import org.springframework.data.domain.Sort.Direction
@@ -28,27 +30,30 @@ class TodoController(val service: TodoService) : TodoApi {
     }
 
     override fun getAllTodos(
-        page: Int,
-        size: Int,
+        offset: Int?,
+        limit: Int?,
         keyword: String?,
-        sort: String,
-        order: String,
+        sort: String?,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
         val result = service.findAll(
             FiltersDto(
-                page = page,
-                size = size,
+                offset = offset ?: 0,
+                limit = limit ?: 50,
                 keyword = keyword,
                 status = if (status == null) null else TodoStatus.valueOf(status.name),
-                order = Direction.valueOf(order),
+                sortBy = sort?.trim('-', '+')?.let { SortBy.valueOf(it.uppercase()) },
+                order = Direction.DESC.takeIf { sort?.startsWith("-") == true } ?: Direction.ASC,
             ),
         )
         return ResponseEntity.ok(
             GetAllTodos200Response(
                 todos = result.get().map { TodoConverter.INSTANCE.entityToModel(it) }.toList(),
-                total = result.totalElements.toInt(),
-                page = result.number + 1,
+                pagination = Pagination(
+                    total = result.totalElements,
+                    offset = result.pageable.offset,
+                    limit = result.pageable.pageSize.toLong(),
+                ),
             ),
         )
     }
