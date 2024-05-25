@@ -1,6 +1,7 @@
 package com.ablil.springstarter.todos.services
 
 import com.ablil.springstarter.ResourceNotFound
+import com.ablil.springstarter.common.logger
 import com.ablil.springstarter.common.persistence.OffsetPageable
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
@@ -10,7 +11,6 @@ import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.core.userdetails.UserDetails
@@ -19,6 +19,8 @@ import java.time.OffsetDateTime
 
 @Service
 class TodoService(val repository: TodoRepository, var authenticatedUser: UserDetails) {
+    val logger by logger()
+
     fun createTodo(dto: TodoDto): TodoEntity {
         return repository.save(TodoConverter.INSTANCE.dtoToEntity(dto))
     }
@@ -43,8 +45,12 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
 
     private fun fetchTodo(id: Long): TodoEntity {
         val todo = repository.findById(id).orElseThrow { ResourceNotFound("todo", id.toString()) }
-            .takeIf { it.createdBy == authenticatedUser.username }
-        return todo ?: throw ResourceNotFound("todo", id.toString())
+
+        if (todo.createdBy != authenticatedUser.username) {
+            logger.debug("Todo {} not owned by user {}", id, authenticatedUser.username)
+            throw ResourceNotFound("todo", id.toString())
+        }
+        return todo
     }
 
     fun findById(id: Long): TodoEntity {
@@ -56,6 +62,7 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
     }
 
     fun findAll(filters: FiltersDto): Page<TodoEntity> {
+        logger.debug("Filtering todo by {}", filters)
         val createdBy: Specification<TodoEntity> = Specification { root, _, builder ->
             builder.equal(root.get<String>("createdBy"), authenticatedUser.username)
         }
@@ -85,16 +92,6 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
                 filters.offset,
                 filters.limit,
                 Sort.by(Sort.Order(filters.order, filters.sortBy?.value ?: SortBy.ID.value)),
-            ),
-        )
-    }
-
-    fun findAll(page: Int, size: Int): Page<TodoEntity> {
-        return repository.findAllByCreatedBy(
-            authenticatedUser.username,
-            PageRequest.of(
-                page - 1,
-                size,
             ),
         )
     }
