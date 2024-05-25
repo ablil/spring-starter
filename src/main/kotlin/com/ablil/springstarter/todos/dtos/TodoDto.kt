@@ -18,8 +18,8 @@ enum class SortBy(val value: String) {
 }
 
 data class FiltersDto(
-    val page: Int = 1,
-    val size: Int = 20,
+    val offset: Int = 0,
+    val limit: Int = 20,
     val keyword: String? = null,
     val status: TodoStatus? = null,
     val sortBy: SortBy? = null,

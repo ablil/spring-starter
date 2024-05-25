@@ -6,6 +6,7 @@ import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
 import com.ablil.springstarter.webapi.model.GetAllTodos200Response
+import com.ablil.springstarter.webapi.model.Pagination
 import com.ablil.springstarter.webapi.model.Status
 import com.ablil.springstarter.webapi.model.Todo
 import org.springframework.data.domain.Sort.Direction
@@ -28,8 +29,8 @@ class TodoController(val service: TodoService) : TodoApi {
     }
 
     override fun getAllTodos(
-        page: Int,
-        size: Int,
+        offset: Int?,
+        limit: Int?,
         keyword: String?,
         sort: String,
         order: String,
@@ -37,8 +38,8 @@ class TodoController(val service: TodoService) : TodoApi {
     ): ResponseEntity<GetAllTodos200Response> {
         val result = service.findAll(
             FiltersDto(
-                page = page,
-                size = size,
+                offset = offset ?: 0,
+                limit = limit ?: 50,
                 keyword = keyword,
                 status = if (status == null) null else TodoStatus.valueOf(status.name),
                 order = Direction.valueOf(order),
@@ -47,8 +48,11 @@ class TodoController(val service: TodoService) : TodoApi {
         return ResponseEntity.ok(
             GetAllTodos200Response(
                 todos = result.get().map { TodoConverter.INSTANCE.entityToModel(it) }.toList(),
-                total = result.totalElements.toInt(),
-                page = result.number + 1,
+                pagination = Pagination(
+                    total = result.totalElements,
+                    offset = result.pageable.offset,
+                    limit = result.pageable.pageSize.toLong(),
+                ),
             ),
         )
     }

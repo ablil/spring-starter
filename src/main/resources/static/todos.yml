@@ -20,8 +20,8 @@ paths:
       tags:
         - todo
       parameters:
-        - $ref: '#/components/parameters/pageParam'
-        - $ref: '#/components/parameters/sizeParam'
+        - $ref: '#/components/parameters/OffsetQuery'
+        - $ref: '#/components/parameters/LimitQuery'
         - $ref: '#/components/parameters/keywordParam'
         - $ref: '#/components/parameters/sortParam'
         - $ref: '#/components/parameters/orderParam'
@@ -38,16 +38,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Todo'
-                  total:
-                    type: integer
-                    example: 10
-                  page:
-                    type: integer
-                    example: 1
-                required:
-                  - total
-                  - page
-                  - todos
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
 
     post:
       summary: Create new todo
@@ -122,27 +114,23 @@ components:
         format: int64
       required: true
       description: "Todo id"
-    pageParam:
-      name: page
+    OffsetQuery:
+      name: offset
       in: query
+      required: false
       schema:
-        type: integer
-        format: int32
-        minimum: 1
-        default: 1
-    sizeParam:
+        $ref: '#/components/schemas/Offset'
+    LimitQuery:
       in: query
-      name: size
-      description: Total number of items per page to return
+      name: limit
+      required: false
+      description: Limit the number of returned result, a default value is set if not provided
       schema:
-        type: integer
-        format: int32
-        minimum: 1
-        default: 20
+        $ref: '#/components/schemas/Limit'
     keywordParam:
       in: query
       name: keyword
-      description: 'Search by free text included in title, content or (case insenstivie)'
+      description: 'Search by free text included in title, content or (case insensitive)'
       schema:
         type: string
     sortParam:
@@ -172,6 +160,12 @@ components:
       enum:
         - PENDING
         - DONE
+    Offset:
+      type: integer
+      description: Number of items to skip from the result list
+    Limit:
+      type: integer
+      description: Limit the number of results returned by teh backend
     Todo:
       type: object
       properties:
@@ -204,7 +198,21 @@ components:
           readOnly: true
       required:
         - title
-
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: Total number of items calculated by the backend for the given query
+        offset:
+          type: integer
+          format: int64
+          description: Number of skipped items from the result list
+        limit:
+          type: integer
+          format: int64
+          description: The number of items returned by the current query (!= total)
   requestBodies:
     Todo:
       required: true
