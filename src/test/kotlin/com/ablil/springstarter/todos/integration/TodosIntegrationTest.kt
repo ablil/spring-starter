@@ -2,6 +2,7 @@ package com.ablil.springstarter.todos.integration
 
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
+import com.ablil.springstarter.common.matchers.SortedInOrder
 import com.ablil.springstarter.common.testdata.TodoEntityFactory
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
@@ -14,11 +15,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mapstruct.factory.Mappers
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ContextConfiguration
@@ -69,6 +73,23 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     jsonPath("$.pagination.total") { value(sampleTodos.size) }
                     jsonPath("$.todos.length()") { value(Matchers.lessThanOrEqualTo(limit)) }
                 }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["id", "title", "updated_at", "created_at"])
+        fun `filter sorted todos by id`(attr: String) {
+            mockMvc.get("/api/todos?sort=+$attr").andExpectAll {
+                status {}
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.ASC, attr == "id")) }
+            }
+            mockMvc.get("/api/todos?sort=-$attr").andExpectAll {
+                status { isOk() }
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.DESC, attr == "id")) }
+            }
+            mockMvc.get("/api/todos?sort=$attr").andExpectAll {
+                status { isOk() }
+                jsonPath("$.todos[*].$attr") { value(SortedInOrder(Sort.Direction.ASC, attr == "id")) }
+            }
         }
     }
 

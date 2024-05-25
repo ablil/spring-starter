@@ -5,7 +5,7 @@ import com.ablil.springstarter.todos.entities.TodoStatus
 
 object TodoEntityFactory {
     fun random(): TodoEntity = TodoEntity(
-        title = "random todo content",
+        title = ('A'..'z').map { it }.shuffled().subList(0, 6).joinToString(""),
         status = TodoStatus.PENDING,
     ).also { it.createdBy = "johndoe" }
 

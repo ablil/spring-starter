@@ -13,6 +13,7 @@ data class TodoDto(
 
 enum class SortBy(val value: String) {
     ID("id"),
+    TITLE("title"),
     CREATED_AT("createdAt"),
     UPDATED_AT("updatedAt"),
 }

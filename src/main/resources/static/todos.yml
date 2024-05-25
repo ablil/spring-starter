@@ -24,7 +24,6 @@ paths:
         - $ref: '#/components/parameters/LimitQuery'
         - $ref: '#/components/parameters/keywordParam'
         - $ref: '#/components/parameters/sortParam'
-        - $ref: '#/components/parameters/orderParam'
         - $ref: '#/components/parameters/statusParam'
       responses:
         200:
@@ -136,17 +135,13 @@ components:
     sortParam:
       in: query
       name: sort
+      required: false
+      description: >
+        To indicate sorting direction, fields may be prefixed with + (ascending) or - (descending), e.g. /todo?sort=+id.
+        By default items are sorted by id
       schema:
         type: string
-        enum: ['MODIFIED_AT', 'CREATED_AT', 'TITLE', 'ID']
-        default: 'ID'
-    orderParam:
-      in: query
-      name: order
-      schema:
-        type: string
-        enum: ['ASC', 'DESC']
-        default: 'ASC'
+        pattern: '^[+-]?(id|title|created_at|updated_at)$'
     statusParam:
       in: query
       name: status

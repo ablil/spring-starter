@@ -2,6 +2,7 @@ package com.ablil.springstarter.todos.controllers
 
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
+import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
@@ -32,8 +33,7 @@ class TodoController(val service: TodoService) : TodoApi {
         offset: Int?,
         limit: Int?,
         keyword: String?,
-        sort: String,
-        order: String,
+        sort: String?,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
         val result = service.findAll(
@@ -42,7 +42,8 @@ class TodoController(val service: TodoService) : TodoApi {
                 limit = limit ?: 50,
                 keyword = keyword,
                 status = if (status == null) null else TodoStatus.valueOf(status.name),
-                order = Direction.valueOf(order),
+                sortBy = sort?.trim('-', '+')?.let { SortBy.valueOf(it.uppercase()) },
+                order = Direction.DESC.takeIf { sort?.startsWith("-") == true } ?: Direction.ASC,
             ),
         )
         return ResponseEntity.ok(
