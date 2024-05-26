@@ -1,5 +1,6 @@
 package com.ablil.springstarter.todos.controllers
 
+import com.ablil.springstarter.common.logger
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
@@ -17,7 +18,10 @@ import java.net.URI
 
 @RestController
 class TodoController(val service: TodoService) : TodoApi {
+    val logger by logger()
+
     override fun createTodo(todo: Todo): ResponseEntity<Todo> {
+        logger.info("Got request to create todo {}", todo)
         val createTodo = service.createTodo(TodoConverter.INSTANCE.modelToDto(todo))
         return ResponseEntity
             .created(URI("/api/todos/${createTodo.id}"))
@@ -25,6 +29,7 @@ class TodoController(val service: TodoService) : TodoApi {
     }
 
     override fun deleteTodo(id: Long): ResponseEntity<Unit> {
+        logger.info("Got request to delete todo {}", id)
         service.deleteTodoById(id)
         return ResponseEntity.noContent().build()
     }
@@ -36,6 +41,13 @@ class TodoController(val service: TodoService) : TodoApi {
         sort: String?,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
+        logger.info(
+            "Got request to filter todos: offset={}, limit={}, keyword={}, status={}",
+            offset,
+            limit,
+            keyword,
+            status,
+        )
         val result = service.findAll(
             FiltersDto(
                 offset = offset ?: 0,
@@ -59,10 +71,12 @@ class TodoController(val service: TodoService) : TodoApi {
     }
 
     override fun getTodo(id: Long): ResponseEntity<Todo> {
+        logger.info("Got request to fetch todo {}", id)
         return ResponseEntity.ok(TodoConverter.INSTANCE.entityToModel(service.findById(id)))
     }
 
     override fun updateTodo(id: Long, todo: Todo): ResponseEntity<Todo> {
+        logger.info("Got request to update todo {} with {}", id, todo)
         val updatedTodo = service.updateTodo(TodoConverter.INSTANCE.modelToDto(todo).copy(id = id))
         return ResponseEntity.ok(TodoConverter.INSTANCE.entityToModel(updatedTodo))
     }

@@ -1,5 +1,6 @@
 package com.ablil.springstarter.common.persistence
 
+import com.ablil.springstarter.todos.entities.Fields
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
@@ -18,7 +19,7 @@ abstract class AuditingEntity {
     lateinit var createdAt: OffsetDateTime
 
     @CreatedBy
-    @Column(updatable = false, nullable = false)
+    @Column(name = Fields.CREATED_BY, updatable = false, nullable = false)
     lateinit var createdBy: String
 
     @LastModifiedDate

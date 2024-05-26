@@ -7,16 +7,19 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "todos")
 data class TodoEntity(
-    @Column(nullable = false)
+    @Column(name = Fields.TITLE, nullable = false)
     val title: String,
+    @Column(name = Fields.CONTENT)
     val content: String? = null,
     @Convert(converter = ListToStringConverter::class)
+    @Column(name = Fields.TAGS)
     val tags: List<String>? = null,
-    @Column(nullable = false)
+    @Column(name = Fields.STATUS, nullable = false)
     @Enumerated(EnumType.STRING)
     val status: TodoStatus = TodoStatus.PENDING,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = Fields.ID)
     val id: Long? = null,
 ) : AuditingEntity()
 
