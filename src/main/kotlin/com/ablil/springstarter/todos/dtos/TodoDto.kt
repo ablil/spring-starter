@@ -1,5 +1,6 @@
 package com.ablil.springstarter.todos.dtos
 
+import com.ablil.springstarter.todos.entities.Fields
 import com.ablil.springstarter.todos.entities.TodoStatus
 import org.springframework.data.domain.Sort.Direction
 
@@ -12,10 +13,10 @@ data class TodoDto(
 )
 
 enum class SortBy(val value: String) {
-    ID("id"),
-    TITLE("title"),
-    CREATED_AT("createdAt"),
-    UPDATED_AT("updatedAt"),
+    ID(Fields.ID),
+    TITLE(Fields.TITLE),
+    CREATED_AT(Fields.CREATED_AT),
+    UPDATED_AT(Fields.UPDATED_AT),
 }
 
 data class FiltersDto(

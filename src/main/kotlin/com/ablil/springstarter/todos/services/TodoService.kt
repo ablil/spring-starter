@@ -7,10 +7,12 @@ import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
 import com.ablil.springstarter.todos.dtos.TodoDto
+import com.ablil.springstarter.todos.entities.Fields
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.core.userdetails.UserDetails
@@ -63,36 +65,42 @@ class TodoService(val repository: TodoRepository, var authenticatedUser: UserDet
 
     fun findAll(filters: FiltersDto): Page<TodoEntity> {
         logger.debug("Filtering todo by {}", filters)
+        val specification: Specification<TodoEntity> = convertFiltersToSpecification(filters)
+        val pageable: Pageable = convertFiltersToPageable(filters)
+        return repository.findAll(specification, pageable)
+    }
+
+    private fun convertFiltersToSpecification(filters: FiltersDto): Specification<TodoEntity> {
         val createdBy: Specification<TodoEntity> = Specification { root, _, builder ->
-            builder.equal(root.get<String>("createdBy"), authenticatedUser.username)
+            builder.equal(root.get<String>(Fields.CREATED_BY), authenticatedUser.username)
         }
 
         val havingStatus = Specification<TodoEntity> { root, _, builder ->
-            builder.equal(root.get<TodoStatus>("status"), filters.status)
+            builder.equal(root.get<TodoStatus>(Fields.STATUS), filters.status)
         }.takeIf { filters.status != null }
 
         val titleContainsKeyword: Specification<TodoEntity>? = Specification<TodoEntity> { root, _, builder ->
-            builder.like(root.get("title"), "%${filters.keyword}%")
+            builder.like(root.get(Fields.TITLE), "%${filters.keyword}%")
         }.takeIf { !filters.keyword.isNullOrBlank() }
 
         val contentContainsKeyword: Specification<TodoEntity>? = Specification<TodoEntity> { root, _, builder ->
-            builder.like(root.get("content"), "%${filters.keyword}%")
+            builder.like(root.get(Fields.CONTENT), "%${filters.keyword}%")
         }.takeIf { !filters.keyword.isNullOrBlank() }
 
-        val combinedFilters: Specification<TodoEntity> = Specification.allOf(
+        return Specification.allOf(
             listOfNotNull(
                 createdBy,
                 havingStatus,
                 titleContainsKeyword?.or(contentContainsKeyword),
             ),
         )
-        return repository.findAll(
-            combinedFilters,
-            OffsetPageable(
-                filters.offset,
-                filters.limit,
-                Sort.by(Sort.Order(filters.order, filters.sortBy?.value ?: SortBy.ID.value)),
-            ),
+    }
+
+    private fun convertFiltersToPageable(filters: FiltersDto): Pageable {
+        return OffsetPageable(
+            filters.offset,
+            filters.limit,
+            Sort.by(Sort.Order(filters.order, filters.sortBy?.value ?: SortBy.ID.value)),
         )
     }
 }
