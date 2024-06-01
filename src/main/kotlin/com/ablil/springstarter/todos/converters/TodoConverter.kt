@@ -10,7 +10,7 @@ import org.mapstruct.Mapping
 import org.mapstruct.ValueMapping
 import org.mapstruct.factory.Mappers
 
-@Mapper
+@Mapper(uses = [TagConverter::class])
 @JvmDefaultWithCompatibility
 interface TodoConverter {
     @Mapping(target = "status", source = "status", defaultValue = "PENDING")

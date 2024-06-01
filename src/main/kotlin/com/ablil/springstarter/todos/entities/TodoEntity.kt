@@ -1,7 +1,6 @@
 package com.ablil.springstarter.todos.entities
 
 import com.ablil.springstarter.common.persistence.AuditingEntity
-import com.ablil.springstarter.common.persistence.ListToStringConverter
 import jakarta.persistence.*
 
 @Entity
@@ -11,9 +10,8 @@ data class TodoEntity(
     val title: String,
     @Column(name = Fields.CONTENT)
     val content: String? = null,
-    @Convert(converter = ListToStringConverter::class)
-    @Column(name = Fields.TAGS)
-    val tags: List<String>? = null,
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "todo")
+    val tags: List<TagEntity>? = null,
     @Column(name = Fields.STATUS, nullable = false)
     @Enumerated(EnumType.STRING)
     val status: TodoStatus = TodoStatus.PENDING,
@@ -21,7 +19,12 @@ data class TodoEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = Fields.ID)
     val id: Long? = null,
-) : AuditingEntity()
+) : AuditingEntity() {
+    @PrePersist
+    fun populateForeignKeyReference() {
+        this.tags?.forEach { tag -> tag.todo = this }
+    }
+}
 
 enum class TodoStatus {
     PENDING,

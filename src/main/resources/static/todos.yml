@@ -1,13 +1,15 @@
 openapi: 3.0.3
 info:
   version: '1.0.0'
-  title: Spring starter
+  title: REST API
 externalDocs:
   description: Github repository
   url: https://github.com/ablil/spring-starter
 tags:
   - name: todo
     description: Todos management
+  - name: tags
+    description: Tags of todos
 
 security:
   - bearerAuth: []
@@ -97,6 +99,72 @@ paths:
         204:
           description: 'Todo removed successfully'
 
+  /api/todos/{todoId}/tags:
+    get:
+      operationId: getTags
+      summary: get tags of a single todo
+      parameters:
+        - $ref: '#/components/parameters/TodoId'
+      tags: ['tags']
+      responses:
+        200:
+          description: list of todo tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+    post:
+      operationId: addTags
+      summary: add tag to an existing todo
+      parameters:
+        - $ref: '#/components/parameters/TodoId'
+      tags: ['tags']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        201:
+          description: created tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
+  /api/tags/{tagId}:
+    put:
+      operationId: updateTag
+      summary: update tag
+      parameters:
+        - $ref: '#/components/parameters/TagId'
+      tags: ['tags']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        200:
+          description: update tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+    delete:
+      operationId: deleteTag
+      summary: delete tag
+      parameters:
+        - $ref: '#/components/parameters/TagId'
+      tags: ['tags']
+      responses:
+        204:
+          description: tag successfully deleted
+
 components:
   securitySchemes:
     bearerAuth:
@@ -148,13 +216,29 @@ components:
       description: 'filter by status, return all if param is missing'
       schema:
         $ref: '#/components/schemas/Status'
-
+    TodoId:
+      in: path
+      name: todoId
+      description: Todo id
+      schema:
+        type: integer
+        format: int64
+      required: true
+    TagId:
+      in: path
+      name: tagId
+      description: tag id
+      schema:
+        type: integer
+        format: int64
+      required: true
   schemas:
     Status:
       type: string
       enum:
         - PENDING
         - DONE
+      example: PENDING
     Offset:
       type: integer
       description: Number of items to skip from the result list
@@ -176,13 +260,11 @@ components:
           example: 'lorem ipsum'
         status:
           $ref: '#/components/schemas/Status'
-          example: PENDING
         tags:
           type: array
           items:
-            type: string
-          example: ['foo', 'bar']
-          description: 'list of tags associated with the Todo'
+            $ref: '#/components/schemas/Tag'
+          description: 'list of tags associatboed with the Todo'
         created_at:
           type: string
           format: date-time
@@ -208,6 +290,17 @@ components:
           type: integer
           format: int64
           description: The number of items returned by the current query (!= total)
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        tag:
+          type: string
+          example: foo
+      required: ['tag']
+
   requestBodies:
     Todo:
       required: true
