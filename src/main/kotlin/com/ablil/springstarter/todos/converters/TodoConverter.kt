@@ -8,7 +8,6 @@ import com.ablil.springstarter.webapi.model.Todo
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.ValueMapping
-import org.mapstruct.factory.Mappers
 
 @Mapper(uses = [TagConverter::class])
 @JvmDefaultWithCompatibility
@@ -23,8 +22,4 @@ interface TodoConverter {
     @ValueMapping(target = "PENDING", source = "PENDING")
     @ValueMapping(target = "DONE", source = "DONE")
     fun statusTosStatus(status: TodoStatus): Status
-
-    companion object {
-        val INSTANCE: TodoConverter = Mappers.getMapper(TodoConverter::class.java)
-    }
 }

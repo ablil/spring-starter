@@ -21,6 +21,7 @@ data class TodoEntity(
     val id: Long? = null,
 ) : AuditingEntity() {
     @PrePersist
+    @PreUpdate
     fun populateForeignKeyReference() {
         this.tags?.forEach { tag -> tag.todo = this }
     }

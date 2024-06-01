@@ -13,20 +13,19 @@ import java.time.OffsetDateTime
 
 @EntityListeners(AuditingEntityListener::class)
 @MappedSuperclass
-abstract class AuditingEntity {
+abstract class AuditingEntity(
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    lateinit var createdAt: OffsetDateTime
-
+    var createdAt: OffsetDateTime?,
     @CreatedBy
     @Column(name = Fields.CREATED_BY, updatable = false, nullable = false)
-    lateinit var createdBy: String
-
+    var createdBy: String?,
     @LastModifiedDate
     @Column(nullable = false)
-    lateinit var updatedAt: OffsetDateTime
-
+    var updatedAt: OffsetDateTime?,
     @LastModifiedBy
     @Column(nullable = false)
-    lateinit var updatedBy: String
+    var updatedBy: String?,
+) {
+    constructor() : this(null, null, null, null)
 }

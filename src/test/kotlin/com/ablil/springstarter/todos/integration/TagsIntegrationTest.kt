@@ -2,10 +2,10 @@ package com.ablil.springstarter.todos.integration
 
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
-import com.ablil.springstarter.common.testdata.TodoEntityFactory
-import com.ablil.springstarter.todos.entities.TagEntity
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
+import com.ablil.springstarter.todos.utils.RandomTodoUtils
+import com.ablil.springstarter.todos.utils.TagFactory
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -34,9 +34,7 @@ class TagsIntegrationTest {
 
     @BeforeAll
     fun setup() {
-        todo = repository.save(
-            TodoEntityFactory.random().copy(tags = listOf(TagEntity(tag = "foo"), TagEntity(tag = "bar"))),
-        )
+        todo = repository.save(RandomTodoUtils.random(listOf(TagFactory.create("foo"), TagFactory.create("bar"))))
     }
 
     @Test

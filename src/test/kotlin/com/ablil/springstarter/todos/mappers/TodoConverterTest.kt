@@ -1,10 +1,12 @@
 package com.ablil.springstarter.todos.mappers
 
+import com.ablil.springstarter.common.converter
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
-import com.ablil.springstarter.todos.entities.TagEntity
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
+import com.ablil.springstarter.todos.utils.TagFactory
+import com.ablil.springstarter.todos.utils.TodoFactory
 import com.ablil.springstarter.webapi.model.Status
 import com.ablil.springstarter.webapi.model.Tag
 import com.ablil.springstarter.webapi.model.Todo
@@ -12,23 +14,22 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.mapstruct.factory.Mappers
 import java.time.OffsetDateTime
 import java.util.stream.Stream
 
 class TodoConverterTest {
-    val mapper = Mappers.getMapper(TodoConverter::class.java)
+    val converter by converter(TodoConverter::class.java)
 
     @ParameterizedTest
     @MethodSource("dtoToEntity")
     fun `convert dto to entity`(dto: TodoDto, entity: TodoEntity) {
-        assertEquals(entity, mapper.dtoToEntity(dto))
+        assertEquals(entity, converter.dtoToEntity(dto))
     }
 
     @ParameterizedTest
     @MethodSource("modelToDto")
     fun `convert api model to entity`(model: Todo, dto: TodoDto) {
-        assertEquals(dto, TodoConverter.INSTANCE.modelToDto(model))
+        assertEquals(dto, converter.modelToDto(model))
     }
 
     @ParameterizedTest
@@ -36,7 +37,7 @@ class TodoConverterTest {
     fun `convert todo entity to model`(entity: TodoEntity, model: Todo) {
         assertEquals(
             model,
-            TodoConverter.INSTANCE.entityToModel(
+            converter.entityToModel(
                 entity.apply {
                     createdBy = "johndoe"
                     updatedBy = "johndoe"
@@ -52,7 +53,7 @@ class TodoConverterTest {
         fun dtoToEntity(): Stream<Arguments> = Stream.of(
             Arguments.of(
                 TodoDto(title = "title"),
-                TodoEntity(title = "title"),
+                TodoFactory.create("title"),
             ),
             Arguments.of(
                 TodoDto(
@@ -62,20 +63,19 @@ class TodoConverterTest {
                     tags = listOf(Tag("foo"), Tag("bar")),
                     id = 10,
                 ),
-                TodoEntity(
-                    title = "title",
-                    content = "random content",
-                    tags = listOf(TagEntity(tag = "foo"), TagEntity(tag = "bar")),
-                    status = TodoStatus.DONE,
-                    id = 10,
-                ),
+                TodoFactory.create(
+                    "title",
+                    "random content",
+                    TodoStatus.DONE,
+                    listOf(TagFactory.create("foo"), TagFactory.create("bar")),
+                ).copy(id = 10),
             ),
         )
 
         @JvmStatic
         fun entityToModel(): Stream<Arguments> = Stream.of(
             Arguments.of(
-                TodoEntity(title = "title"),
+                TodoFactory.create("title"),
                 Todo(
                     title = "title",
                     status = Status.PENDING,
@@ -84,13 +84,15 @@ class TodoConverterTest {
                 ),
             ),
             Arguments.of(
-                TodoEntity(
-                    title = "title",
-                    content = "random content",
-                    status = TodoStatus.DONE,
-                    tags = listOf(TagEntity(tag = "foo"), TagEntity(tag = "bar")),
-                    id = 10,
-                ),
+                TodoFactory.create(
+                    "title",
+                    "random content",
+                    TodoStatus.DONE,
+                    listOf(
+                        TagFactory.create("foo"),
+                        TagFactory.create("bar"),
+                    ),
+                ).copy(id = 10),
                 Todo(
                     title = "title",
                     content = "random content",

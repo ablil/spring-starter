@@ -1,5 +1,6 @@
 package com.ablil.springstarter.todos.controllers
 
+import com.ablil.springstarter.common.converter
 import com.ablil.springstarter.common.logger
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
@@ -16,16 +17,20 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
+const val DEFAULT_PAGINATION_OFFSET = 0
+const val DEFAULT_PAGINATION_LIMIT = 50
+
 @RestController
 class TodoController(val service: TodoService) : TodoApi {
     val logger by logger()
+    val converter by converter(TodoConverter::class.java)
 
     override fun createTodo(todo: Todo): ResponseEntity<Todo> {
         logger.info("Got request to create todo {}", todo)
-        val createTodo = service.createTodo(TodoConverter.INSTANCE.modelToDto(todo))
+        val createTodo = service.createTodo(converter.modelToDto(todo))
         return ResponseEntity
             .created(URI("/api/todos/${createTodo.id}"))
-            .body(TodoConverter.INSTANCE.entityToModel(createTodo))
+            .body(converter.entityToModel(createTodo))
     }
 
     override fun deleteTodo(id: Long): ResponseEntity<Unit> {
@@ -50,8 +55,8 @@ class TodoController(val service: TodoService) : TodoApi {
         )
         val result = service.findAll(
             FiltersDto(
-                offset = offset ?: 0,
-                limit = limit ?: 50,
+                offset = offset ?: DEFAULT_PAGINATION_OFFSET,
+                limit = limit ?: DEFAULT_PAGINATION_LIMIT,
                 keyword = keyword,
                 status = if (status == null) null else TodoStatus.valueOf(status.name),
                 sortBy = sort?.trim('-', '+')?.let { SortBy.valueOf(it.uppercase()) },
@@ -60,7 +65,7 @@ class TodoController(val service: TodoService) : TodoApi {
         )
         return ResponseEntity.ok(
             GetAllTodos200Response(
-                todos = result.get().map { TodoConverter.INSTANCE.entityToModel(it) }.toList(),
+                todos = result.get().map { converter.entityToModel(it) }.toList(),
                 pagination = Pagination(
                     total = result.totalElements,
                     offset = result.pageable.offset,
@@ -72,12 +77,12 @@ class TodoController(val service: TodoService) : TodoApi {
 
     override fun getTodo(id: Long): ResponseEntity<Todo> {
         logger.info("Got request to fetch todo {}", id)
-        return ResponseEntity.ok(TodoConverter.INSTANCE.entityToModel(service.findById(id)))
+        return ResponseEntity.ok(converter.entityToModel(service.findById(id)))
     }
 
     override fun updateTodo(id: Long, todo: Todo): ResponseEntity<Todo> {
         logger.info("Got request to update todo {} with {}", id, todo)
-        val updatedTodo = service.updateTodo(TodoConverter.INSTANCE.modelToDto(todo).copy(id = id))
-        return ResponseEntity.ok(TodoConverter.INSTANCE.entityToModel(updatedTodo))
+        val updatedTodo = service.updateTodo(converter.modelToDto(todo).copy(id = id))
+        return ResponseEntity.ok(converter.entityToModel(updatedTodo))
     }
 }

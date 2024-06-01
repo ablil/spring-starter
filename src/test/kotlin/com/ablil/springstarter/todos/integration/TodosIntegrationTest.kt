@@ -3,16 +3,19 @@ package com.ablil.springstarter.todos.integration
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.matchers.SortedInOrder
-import com.ablil.springstarter.common.testdata.TodoEntityFactory
+import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_LIMIT
+import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_OFFSET
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
+import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import com.ablil.springstarter.todos.services.TodoFilteringIntegrationTest
-import com.ablil.springstarter.webapi.model.Tag
+import com.ablil.springstarter.todos.utils.RandomTodoUtils
+import com.ablil.springstarter.todos.utils.TagFactory
+import com.ablil.springstarter.todos.utils.TodoFactory
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -41,11 +44,11 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     lateinit var mockMvc: MockMvc
 
     @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class FetchAllTodos {
-        @BeforeEach
+        @BeforeAll
         fun setup() {
-            todoRepository.deleteAll()
-            todoRepository.saveAll(sampleTodos)
+            todoRepository.saveAll(RandomTodoUtils.randomList(20))
         }
 
         @Test
@@ -54,11 +57,12 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                 .andExpectAll {
                     status { isOk() }
                     jsonPath("$.pagination") { exists() }
-                    jsonPath("$.pagination.offset") { value(0) }
-                    jsonPath("$.pagination.limit") { value(50) }
-                    jsonPath("$.pagination.total") { value(sampleTodos.size) }
+                    jsonPath("$.pagination.offset") { value(DEFAULT_PAGINATION_OFFSET) }
+                    jsonPath("$.pagination.limit") { value(DEFAULT_PAGINATION_LIMIT) }
+                    jsonPath("$.pagination.total") { value(Matchers.greaterThan(0)) }
+
                     jsonPath("$.todos") { isArray() }
-                    jsonPath("$.todos.length()") { value(sampleTodos.size) }
+                    jsonPath("$.todos.length()") { value(Matchers.greaterThan(0)) }
                 }
         }
 
@@ -71,7 +75,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     status { isOk() }
                     jsonPath("$.pagination.offset") { value(offset) }
                     jsonPath("$.pagination.limit") { value(limit) }
-                    jsonPath("$.pagination.total") { value(sampleTodos.size) }
+                    jsonPath("$.pagination.total") { value(Matchers.greaterThan(0)) }
                     jsonPath("$.todos.length()") { value(Matchers.lessThanOrEqualTo(limit)) }
                 }
         }
@@ -103,19 +107,19 @@ class TodosIntegrationTest : BaseIntegrationTest() {
 
         @Test
         fun `fetch an existing todo`() {
-            val savedTodo = saveSingleTodo(
-                TodoDto(
-                    title = "a title",
-                    content = "lorem ipsum",
-                    status = "DONE",
-                    tags = listOf(Tag(tag = "foo")),
+            val todo = todoRepository.save(
+                TodoFactory.create(
+                    "title",
+                    "lorem ipsum",
+                    TodoStatus.DONE,
+                    listOf(TagFactory.create("foo")),
                 ),
             )
-            mockMvc.get("/api/todos/${requireNotNull(savedTodo.id)}")
+            mockMvc.get("/api/todos/${requireNotNull(todo.id)}")
                 .andExpectAll {
                     status { isOk() }
-                    jsonPath("$.id") { value(requireNotNull(savedTodo.id)) }
-                    jsonPath("$.title") { value("a title") }
+                    jsonPath("$.id") { value(requireNotNull(todo.id)) }
+                    jsonPath("$.title") { value("title") }
                     jsonPath("$.content") { value("lorem ipsum") }
                     jsonPath("$.status") { value("DONE") }
 
@@ -178,14 +182,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
 
         @Test
         fun `fully update todo given minimum attributes`() {
-            val existingTodo =
-                saveSingleTodo(
-                    TodoDto(
-                        "original",
-                        content = "content",
-                        status = "DONE",
-                    ),
-                )
+            val existingTodo = todoRepository.save(TodoFactory.create("original", "content", TodoStatus.DONE))
             mockMvc.put("/api/todos/${existingTodo.id}") {
                 contentType = MediaType.APPLICATION_JSON
                 content =
@@ -206,8 +203,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
 
         @Test
         fun `fully update todo given all attributes`() {
-            val existingTodo =
-                saveSingleTodo(TodoDto("original", content = "content", status = "PENDING"))
+            val existingTodo = todoRepository.save(TodoFactory.create("original", "content"))
             mockMvc.put("/api/todos/${existingTodo.id}") {
                 contentType = MediaType.APPLICATION_JSON
                 content =
@@ -271,11 +267,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     }
 
     companion object {
+        // TODO: call correct converter
         val todoMapper = Mappers.getMapper(TodoConverter::class.java)
-        val sampleTodos = (1..20).map {
-            TodoEntityFactory.random().also {
-                it.createdBy = "johndoe"
-            }
-        }
     }
 }

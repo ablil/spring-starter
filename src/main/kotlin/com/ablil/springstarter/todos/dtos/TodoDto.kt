@@ -1,5 +1,7 @@
 package com.ablil.springstarter.todos.dtos
 
+import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_LIMIT
+import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_OFFSET
 import com.ablil.springstarter.todos.entities.Fields
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.webapi.model.Tag
@@ -21,8 +23,8 @@ enum class SortBy(val value: String) {
 }
 
 data class FiltersDto(
-    val offset: Int = 0,
-    val limit: Int = 20,
+    val offset: Int = DEFAULT_PAGINATION_OFFSET,
+    val limit: Int = DEFAULT_PAGINATION_LIMIT,
     val keyword: String? = null,
     val status: TodoStatus? = null,
     val sortBy: SortBy? = null,

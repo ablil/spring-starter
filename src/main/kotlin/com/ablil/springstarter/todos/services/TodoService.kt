@@ -22,7 +22,6 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.time.OffsetDateTime
 
 @Service
 class TodoService(
@@ -31,30 +30,19 @@ class TodoService(
     var authenticatedUser: UserDetails,
 ) {
     val logger by logger()
+    val todoConverter by converter(TodoConverter::class.java)
     val tagConverter by converter(TagConverter::class.java)
 
-    fun createTodo(dto: TodoDto): TodoEntity {
-        val todo = TodoConverter.INSTANCE.dtoToEntity(dto).apply {
-            tags?.forEach { tag -> tag.todo = this }
-        }
-        return repository.saveAndFlush(todo)
-    }
+    fun createTodo(dto: TodoDto): TodoEntity = repository.save(todoConverter.dtoToEntity(dto))
 
     fun updateTodo(dto: TodoDto): TodoEntity {
         val todo = fetchTodo(requireNotNull(dto.id))
         return repository.save(
-            todo.copy(
-                id = todo.id,
-                title = dto.title,
-                content = dto.content,
-                status = dto.status?.let { TodoStatus.valueOf(it) } ?: TodoStatus.PENDING,
-                tags = dto.tags?.map { tag -> tagConverter.dtoToEntity(tag) },
-            ).apply {
-                createdBy = todo.createdBy
+            todoConverter.dtoToEntity(dto).apply {
+                // Not set by Spring data
                 createdAt = todo.createdAt
-                updatedBy = todo.updatedBy
-                updatedAt = OffsetDateTime.now()
-                tags?.forEach { tag -> tag.todo = this }
+                createdBy = todo.createdBy
+                tags?.forEach { tag -> tag.todo = this } // set foreign key manually otherwise NPE
             },
         )
     }
