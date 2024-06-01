@@ -2,9 +2,11 @@ package com.ablil.springstarter.todos.mappers
 
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.TodoDto
+import com.ablil.springstarter.todos.entities.TagEntity
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.webapi.model.Status
+import com.ablil.springstarter.webapi.model.Tag
 import com.ablil.springstarter.webapi.model.Todo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
@@ -57,14 +59,14 @@ class TodoConverterTest {
                     title = "title",
                     content = "random content",
                     status = "DONE",
-                    tags = listOf("foo", "bar"),
+                    tags = listOf(Tag("foo"), Tag("bar")),
                     id = 10,
                 ),
                 TodoEntity(
                     title = "title",
                     content = "random content",
+                    tags = listOf(TagEntity(tag = "foo"), TagEntity(tag = "bar")),
                     status = TodoStatus.DONE,
-                    tags = listOf("foo", "bar"),
                     id = 10,
                 ),
             ),
@@ -86,14 +88,14 @@ class TodoConverterTest {
                     title = "title",
                     content = "random content",
                     status = TodoStatus.DONE,
-                    tags = listOf("foo", "bar"),
+                    tags = listOf(TagEntity(tag = "foo"), TagEntity(tag = "bar")),
                     id = 10,
                 ),
                 Todo(
                     title = "title",
                     content = "random content",
                     status = Status.DONE,
-                    tags = listOf("foo", "bar"),
+                    tags = listOf(Tag("foo"), Tag("bar")),
                     id = "10",
                     createdAt = OffsetDateTime.parse("2024-10-10T00:00:00.00Z"),
                     updatedAt = OffsetDateTime.parse("2024-10-10T00:00:00.00Z"),
@@ -112,15 +114,15 @@ class TodoConverterTest {
                     title = "title",
                     content = "random content",
                     status = Status.DONE,
-                    tags = listOf("foo", "bar"),
+                    tags = listOf(Tag("foo"), Tag("foo")),
                     id = "10",
                 ),
                 TodoDto(
                     title = "title",
                     content = "random content",
                     status = "DONE",
-                    tags = listOf("foo", "bar"),
                     id = 10,
+                    tags = listOf(Tag("foo"), Tag("foo")),
                 ),
             ),
         )

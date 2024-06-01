@@ -2,13 +2,14 @@ package com.ablil.springstarter.todos.dtos
 
 import com.ablil.springstarter.todos.entities.Fields
 import com.ablil.springstarter.todos.entities.TodoStatus
+import com.ablil.springstarter.webapi.model.Tag
 import org.springframework.data.domain.Sort.Direction
 
 data class TodoDto(
     val title: String,
     val content: String? = null,
     val status: String? = null,
-    val tags: List<String>? = null,
+    val tags: List<Tag>? = null,
     val id: Long? = null,
 )
 

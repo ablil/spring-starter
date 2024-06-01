@@ -9,6 +9,7 @@ import com.ablil.springstarter.todos.dtos.TodoDto
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import com.ablil.springstarter.todos.services.TodoFilteringIntegrationTest
+import com.ablil.springstarter.webapi.model.Tag
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -107,6 +108,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     title = "a title",
                     content = "lorem ipsum",
                     status = "DONE",
+                    tags = listOf(Tag(tag = "foo")),
                 ),
             )
             mockMvc.get("/api/todos/${requireNotNull(savedTodo.id)}")
@@ -116,6 +118,13 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     jsonPath("$.title") { value("a title") }
                     jsonPath("$.content") { value("lorem ipsum") }
                     jsonPath("$.status") { value("DONE") }
+
+                    jsonPath("$.created_at") { exists() }
+                    jsonPath("$.updated_at") { exists() }
+
+                    jsonPath("$.tags") { isArray() }
+                    jsonPath("$.tags.length()") { value(1) }
+                    jsonPath("$.tags[0].tag") { value("foo") }
                 }
         }
     }
@@ -152,7 +161,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     "title": "a title",
                     "content": "lorem ipsum",
                     "status": "DONE",
-                    "tags": ["foo", "bar"]
+                    "tags": [{ "tag": "foo" }, { "tag": "bar" }]
                     }
                     """.trimIndent()
             }.andExpectAll {
@@ -175,7 +184,6 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                         "original",
                         content = "content",
                         status = "DONE",
-                        tags = listOf("foo", "bar"),
                     ),
                 )
             mockMvc.put("/api/todos/${existingTodo.id}") {
@@ -208,7 +216,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     "title": "updated title",
                     "content": "updated lorem ipsum",
                     "status": "DONE",
-                    "tags": ["foo", "bar"]
+                    "tags": [{ "tag": "foo" }, { "tag": "bar" }]
                     }
                     """.trimIndent()
             }.andExpectAll {
@@ -259,7 +267,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     }
 
     private fun saveSingleTodo(dto: TodoDto): TodoEntity {
-        return todoRepository.save(todoMapper.dtoToEntity(dto))
+        return todoRepository.save(todoMapper.dtoToEntity(dto).apply { tags?.forEach { it.todo = this } })
     }
 
     companion object {

@@ -4,6 +4,7 @@ import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.persistence.JPAConfiguration
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
+import com.ablil.springstarter.todos.entities.TagEntity
 import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
@@ -122,7 +123,7 @@ class TodoFilteringIntegrationTest {
                 title = "title",
                 content = "lorem ipsum",
                 status = TodoStatus.DONE,
-                tags = listOf("foo", "bar"),
+                tags = listOf(TagEntity("foo"), TagEntity("bar")),
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
@@ -133,7 +134,7 @@ class TodoFilteringIntegrationTest {
                 title = "groceries",
                 content = "buy needed stuff for kitchen",
                 status = TodoStatus.PENDING,
-                tags = listOf("foo", "buzz"),
+                tags = listOf(TagEntity("foo"), TagEntity("buzz")),
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
@@ -144,7 +145,7 @@ class TodoFilteringIntegrationTest {
                 title = "work",
                 content = "create a new jira ticket",
                 status = TodoStatus.DONE,
-                tags = listOf("jira", "fizz"),
+                tags = listOf(TagEntity("jira"), TagEntity("fizz")),
             ).apply {
                 createdBy = "johndoe"
                 updatedBy = "johndoe"
