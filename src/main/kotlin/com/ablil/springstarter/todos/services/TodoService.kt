@@ -16,6 +16,8 @@ import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TagRepository
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import com.ablil.springstarter.webapi.model.Tag
+import jakarta.persistence.criteria.Join
+import jakarta.persistence.criteria.JoinType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -93,10 +95,16 @@ class TodoService(
             builder.like(root.get(Fields.CONTENT), "%${filters.keyword}%")
         }.takeIf { !filters.keyword.isNullOrBlank() }
 
+        val havingTag: Specification<TodoEntity>? = Specification<TodoEntity> { root, _, builder ->
+            val tags: Join<TodoEntity, TagEntity> = root.join("tags", JoinType.INNER)
+            tags.get<String>("tag").`in`(filters.tags)
+        }.takeIf { !filters.tags.isNullOrEmpty() }
+
         return Specification.allOf(
             listOfNotNull(
                 createdBy,
                 havingStatus,
+                havingTag,
                 titleContainsKeyword?.or(contentContainsKeyword),
             ),
         )

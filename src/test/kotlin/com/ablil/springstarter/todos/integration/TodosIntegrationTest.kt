@@ -260,6 +260,15 @@ class TodosIntegrationTest : BaseIntegrationTest() {
                     jsonPath("$.todos.length()") { value(1) }
                 }
         }
+
+        @Test
+        fun `filter todos by tags`() {
+            mockMvc.get("/api/todos?tags=foo,fizz").andExpectAll {
+                status { isOk() }
+                jsonPath("$.pagination.total") { value(Matchers.greaterThan(0)) }
+                jsonPath("$.todos[*].tags[?(@.tag in ['foo', 'fizz'])]") { exists() }
+            }
+        }
     }
 
     private fun saveSingleTodo(dto: TodoDto): TodoEntity {

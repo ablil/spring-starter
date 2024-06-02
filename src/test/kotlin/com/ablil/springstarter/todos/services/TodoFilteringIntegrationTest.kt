@@ -62,6 +62,13 @@ class TodoFilteringIntegrationTest {
     }
 
     @ParameterizedTest
+    @CsvSource("foo,2", "jira,1", "foo/fizz,3", "fizz/bar,2")
+    fun `fetch todos by tags`(tags: String, expectedTotal: Int) {
+        val actual = service.findAll(FiltersDto(tags = tags.split("/")))
+        assertEquals(expectedTotal, actual.content.size)
+    }
+
+    @ParameterizedTest
     @EnumSource(value = Direction::class, names = ["ASC", "DESC"])
     fun `fetch todos sorted by id`(direction: Direction) {
         val actual = service.findAll(

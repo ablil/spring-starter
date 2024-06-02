@@ -26,6 +26,7 @@ paths:
         - $ref: '#/components/parameters/LimitQuery'
         - $ref: '#/components/parameters/keywordParam'
         - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/TagsParam'
         - $ref: '#/components/parameters/statusParam'
       responses:
         200:
@@ -210,6 +211,14 @@ components:
       schema:
         type: string
         pattern: '^[+-]?(id|title|created_at|updated_at)$'
+    TagsParam:
+      in: query
+      name: tags
+      required: false
+      description: >
+        Comma separated list of tags (eg: ?tags=foo,bar). If ANY of the tags is included in the todo, it will be returned
+      schema:
+        type: string
     statusParam:
       in: query
       name: status

@@ -44,14 +44,16 @@ class TodoController(val service: TodoService) : TodoApi {
         limit: Int?,
         keyword: String?,
         sort: String?,
+        tags: String?,
         status: Status?,
     ): ResponseEntity<GetAllTodos200Response> {
         logger.info(
-            "Got request to filter todos: offset={}, limit={}, keyword={}, status={}",
+            "Got request to filter todos: offset={}, limit={}, keyword={}, status={}, tags={}",
             offset,
             limit,
             keyword,
             status,
+            tags,
         )
         val result = service.findAll(
             FiltersDto(
@@ -61,6 +63,7 @@ class TodoController(val service: TodoService) : TodoApi {
                 status = if (status == null) null else TodoStatus.valueOf(status.name),
                 sortBy = sort?.trim('-', '+')?.let { SortBy.valueOf(it.uppercase()) },
                 order = Direction.DESC.takeIf { sort?.startsWith("-") == true } ?: Direction.ASC,
+                tags = tags?.split(","),
             ),
         )
         return ResponseEntity.ok(

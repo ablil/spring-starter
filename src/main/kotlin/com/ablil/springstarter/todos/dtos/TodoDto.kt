@@ -29,4 +29,5 @@ data class FiltersDto(
     val status: TodoStatus? = null,
     val sortBy: SortBy? = null,
     val order: Direction = Direction.ASC,
+    val tags: Collection<String>? = null,
 )
