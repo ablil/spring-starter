@@ -5,6 +5,7 @@ import com.ablil.springstarter.common.logger
 import com.ablil.springstarter.todos.converters.TodoConverter
 import com.ablil.springstarter.todos.dtos.FiltersDto
 import com.ablil.springstarter.todos.dtos.SortBy
+import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.services.TodoService
 import com.ablil.springstarter.webapi.api.TodoApi
@@ -19,11 +20,18 @@ import java.net.URI
 
 const val DEFAULT_PAGINATION_OFFSET = 0
 const val DEFAULT_PAGINATION_LIMIT = 50
+const val DEFAULT_BULK_MAXIMUM = 50
 
 @RestController
 class TodoController(val service: TodoService) : TodoApi {
     val logger by logger()
     val converter by converter(TodoConverter::class.java)
+
+    override fun createBulk(todo: List<Todo>): ResponseEntity<List<Todo>> {
+        logger.info("Get bulk request to create todos")
+        val todos: Collection<TodoEntity> = service.createBulk(todo.map { converter.modelToDto(it) })
+        return ResponseEntity.ok(todos.map { converter.entityToModel(it) })
+    }
 
     override fun createTodo(todo: Todo): ResponseEntity<Todo> {
         logger.info("Got request to create todo {}", todo)

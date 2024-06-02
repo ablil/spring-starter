@@ -131,4 +131,9 @@ class TodoService(
         val original = fetchTag(tagId)
         return tagRepository.save(original.copy(tag = tag.tag).apply { todo = original.todo })
     }
+
+    fun createBulk(dtos: List<TodoDto>): Collection<TodoEntity> {
+        logger.info("creating {} bulk todos", dtos.size)
+        return repository.saveAll(dtos.map { todoConverter.dtoToEntity(it) })
+    }
 }

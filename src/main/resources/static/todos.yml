@@ -10,6 +10,8 @@ tags:
     description: Todos management
   - name: tags
     description: Tags of todos
+  - name: bulk
+    description: Bulk operations
 
 security:
   - bearerAuth: []
@@ -99,6 +101,26 @@ paths:
       responses:
         204:
           description: 'Todo removed successfully'
+  /api/todos/bulk:
+    post:
+      summary: Bulk todo creation
+      operationId: createBulk
+      tags:
+        - todo
+        - bulk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkTodos'
+      responses:
+        200:
+          description: All items have been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkTodos'
 
   /api/todos/{todoId}/tags:
     get:
@@ -309,6 +331,12 @@ components:
           type: string
           example: foo
       required: ['tag']
+    BulkTodos:
+      type: array
+      items:
+        $ref: '#/components/schemas/Todo'
+      minItems: 1
+      maxItems: 50
 
   requestBodies:
     Todo:

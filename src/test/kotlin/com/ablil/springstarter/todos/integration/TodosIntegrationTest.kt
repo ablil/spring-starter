@@ -3,17 +3,17 @@ package com.ablil.springstarter.todos.integration
 import com.ablil.springstarter.common.BaseIntegrationTest
 import com.ablil.springstarter.common.JpaTestConfiguration
 import com.ablil.springstarter.common.matchers.SortedInOrder
+import com.ablil.springstarter.todos.controllers.DEFAULT_BULK_MAXIMUM
 import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_LIMIT
 import com.ablil.springstarter.todos.controllers.DEFAULT_PAGINATION_OFFSET
-import com.ablil.springstarter.todos.converters.TodoConverter
-import com.ablil.springstarter.todos.dtos.TodoDto
-import com.ablil.springstarter.todos.entities.TodoEntity
 import com.ablil.springstarter.todos.entities.TodoStatus
 import com.ablil.springstarter.todos.repositories.TodoRepository
 import com.ablil.springstarter.todos.services.TodoFilteringIntegrationTest
 import com.ablil.springstarter.todos.utils.RandomTodoUtils
 import com.ablil.springstarter.todos.utils.TagFactory
 import com.ablil.springstarter.todos.utils.TodoFactory
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.commons.lang3.RandomStringUtils
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.mapstruct.factory.Mappers
 import org.mockito.kotlin.isNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -42,6 +41,9 @@ class TodosIntegrationTest : BaseIntegrationTest() {
 
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -231,7 +233,7 @@ class TodosIntegrationTest : BaseIntegrationTest() {
     inner class DeleteTodo {
         @Test
         fun `delete an existing todo`() {
-            val savedTodo = saveSingleTodo(TodoDto("random content"))
+            val savedTodo = todoRepository.save(TodoFactory.create("random content"))
             mockMvc.delete("/api/todos/${savedTodo.id}")
                 .andExpect { status { isNoContent() } }
         }
@@ -271,12 +273,60 @@ class TodosIntegrationTest : BaseIntegrationTest() {
         }
     }
 
-    private fun saveSingleTodo(dto: TodoDto): TodoEntity {
-        return todoRepository.save(todoMapper.dtoToEntity(dto).apply { tags?.forEach { it.todo = this } })
-    }
+    @Nested
+    inner class Bulk {
+        @Test
+        fun `create multiple todos at once`() {
+            mockMvc.post("/api/todos/bulk") {
+                content = List(3) {
+                    """
+                    {
+                        "title": "${RandomStringUtils.random(10)}",
+                        "content": "${RandomStringUtils.random(20)}",
+                        "status": "DONE",
+                        "tags": [
+                          {
+                            "tag": "${RandomStringUtils.randomAlphabetic(5)}"
+                          }
+                        ]
+                    }
+                    """.trimIndent()
+                }.joinToString(",", "[", "]")
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpectAll {
+                status { isOk() }
+                jsonPath("$") { isArray() }
+                jsonPath("$.length()") { value(3) }
+            }
+        }
 
-    companion object {
-        // TODO: call correct converter
-        val todoMapper = Mappers.getMapper(TodoConverter::class.java)
+        @Test
+        fun `create multiple todos given empty list`() {
+            mockMvc.post("/api/todos/bulk") {
+                contentType = MediaType.APPLICATION_JSON
+                content = "[ ]"
+            }.andExpect { status { isBadRequest() } }
+        }
+
+        @Test
+        fun `create multiple todos given more than maximum allowed`() {
+            mockMvc.post("/api/todos/bulk") {
+                contentType = MediaType.APPLICATION_JSON
+                content = List(DEFAULT_BULK_MAXIMUM + 10) {
+                    """
+                    {
+                        "title": "${RandomStringUtils.random(10)}",
+                        "content": "${RandomStringUtils.random(20)}",
+                        "status": "DONE",
+                        "tags": [
+                          {
+                            "tag": "${RandomStringUtils.randomAlphabetic(5)}"
+                          }
+                        ]
+                    }
+                    """.trimIndent()
+                }.joinToString(",", "[", "]")
+            }.andExpect { status { isBadRequest() } }
+        }
     }
 }
