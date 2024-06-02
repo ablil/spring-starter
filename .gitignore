@@ -37,3 +37,7 @@ out/
 .vscode/
 src/main/resources/specs/merged.yaml
 src/main/resources/static/merged.yaml
+pythonenv
+.todo
+.commit
+.ebignore
